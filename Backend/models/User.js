@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
-const sequelize = new Sequelize('yourDatabase', 'username', 'password', {dialect: 'mariadb'});
+const sequelize = new Sequelize('wanunuzi_db', 'root', '', {dialect: 'mariadb'});
 
 class User extends Model {}
 
