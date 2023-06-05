@@ -13,8 +13,27 @@ app.use(express.json());
 app.post('/signup', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        //verify that the email is not already in use
+        const emailExists = await User.findOne({ where: { email: req.body.email } });
+        if (emailExists) {
+            return res.status(500).json({ message: 'Email already in use' });
+        }
+        //verify that the phone number is not already in use
+        const phoneNumberExists = await User.findOne({ where: { phoneNumber: req.body.phoneNumber } });
+        if (phoneNumberExists) {
+            return res.status(500).json({ message: 'Phone number already in use' });
+        }
+        //verify that the id number is not already in use
+        const idNumberExists = await User.findOne({ where: { idNumber: req.body.idNumber } });
+        if (idNumberExists) {
+            return res.status(500).json({ message: 'ID number already in use' });
+        }
+
         const user = await User.create({
-            username: req.body.username,
+            fullName: req.body.fullName,
+            email: req.body.email,
+            phoneNumber: req.body.phoneNumber,
+            idNumber: req.body.idNumber,
             password: hashedPassword
         });
         res.status(201).json({ message: 'User created successfully', username: user.username });
@@ -26,7 +45,7 @@ app.post('/signup', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     try {
-        const user = await User.findOne({ where: { username: req.body.username } });
+        const user = await User.findOne({ where: { email: req.body.username } });
         if (user && await bcrypt.compare(req.body.password, user.password)) {
             const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET);
             res.json({ message: 'Logged in successfully', token });

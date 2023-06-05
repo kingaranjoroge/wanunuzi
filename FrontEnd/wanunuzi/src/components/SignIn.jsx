@@ -11,6 +11,7 @@ const SignIn = () => {
         try {
             const res = await axios.post('http://localhost:3000/login', { username, password });
             setResponse(res.data.message);
+            window.location.href = "/home";
         } catch (error) {
             //console.error(error);
             setResponse(error.response.data.message);
@@ -23,7 +24,7 @@ const SignIn = () => {
                 <h2 className="text-3xl font-bold text-green-900">Login</h2>
                 <input className="input input-bordered w-full max-w-xs"
                        type="text"
-                       placeholder="Enter Username"
+                       placeholder="Enter Email"
                        required={true}
                        value={username}
                        onChange={(e) => setUsername(e.target.value)}
