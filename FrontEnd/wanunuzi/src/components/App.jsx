@@ -1,26 +1,33 @@
 import React from 'react';
-import {BrowserRouter, BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route, useLocation} from 'react-router-dom';
 import SignUp from "./SignUp.jsx";
 import SignIn from "./SignIn.jsx";
 import NavBar from "./NavBar.jsx";
 import Homepage from "./Homepage.jsx";
+import NavBeforeLogin from "./NavBarUnlogged.jsx";
+
+function Content() {
+    const location = useLocation();
+
+    return (
+        <>
+            {(location.pathname !== '/login' && location.pathname !== '/register') && <NavBar />}
+            {(location.pathname === '/login' || location.pathname === '/register') && <NavBeforeLogin />}
+            <Routes>
+                <Route path="/login" element={<SignIn />} />
+                <Route path="/" element={<SignIn />} />
+                <Route path="/register" element={<SignUp />} />
+                <Route path="/home" element={<Homepage />} />
+            </Routes>
+        </>
+    );
+}
 
 function App() {
     return (
-        <BrowserRouter>
-            <NavBar />
-            <Routes>
-
-                <Route path="/login" element={<SignIn />}>
-                </Route>
-                <Route path="/" element={<SignIn />}>
-                </Route>
-                <Route path="/register" element={<SignUp />}>
-                </Route>
-                <Route path="/home" element={<Homepage />}>
-                </Route>
-            </Routes>
-        </BrowserRouter>
+        <Router>
+            <Content />
+        </Router>
     );
 }
 
