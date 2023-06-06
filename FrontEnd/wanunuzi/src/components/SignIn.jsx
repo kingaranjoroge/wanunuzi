@@ -24,7 +24,6 @@ const SignIn = () => {
 
       // Store the token in local storage
       localStorage.setItem('token', token);
-      console.log(token)
 
       // Redirect to the home page or perform other actions
       navigate("/home");
