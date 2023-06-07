@@ -15,8 +15,13 @@
     "axios": "^1.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+<<<<<<< HEAD
     "react-icons": "^4.9.0",
     "react-router-dom": "^6.11.2"
+=======
+    "react-router-dom": "^6.11.2",
+    "@react-buddy/ide-toolbox": "^2.3.1"
+>>>>>>> 2cc35c1969ac0ffadf9eb7128890ac897bef05ee
   },
   "devDependencies": {
     "@types/react": "^18.0.37",
