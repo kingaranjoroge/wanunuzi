@@ -13,7 +13,7 @@ function NavRight() {
         navigate("/login");
     }
     return (
-        <div className="navbar bg-green-700 justify-center w-[100px] h-full flex flex-col items-center text-black">
+        <div className="navbar bg-green-700 justify-center w-[70px] h-full flex flex-col items-center text-black">
             <i className="text-2xl my-8">
                 <i className="far fa-money-bill-transfer"></i>
             </i>
