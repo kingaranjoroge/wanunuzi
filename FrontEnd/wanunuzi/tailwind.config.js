@@ -2,7 +2,11 @@ module.exports = {
   purge: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        customGreen: '#087F23',
+      }
+    },
     fontFamily: {
         'sans': ['ui-sans-serif', 'system-ui'],
         'serif': ['ui-serif', 'Georgia'],
