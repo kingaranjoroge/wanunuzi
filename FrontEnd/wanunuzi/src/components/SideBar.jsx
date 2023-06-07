@@ -12,7 +12,7 @@ function NavRight() {
         navigate("/login");
     }
     return (
-        <div className="navbar bg-green-700 justify-center w-[100px] h-full">
+        <div className="navbar bg-green-700 justify-center w-[70px] h-full">
         </div>
     );
 }

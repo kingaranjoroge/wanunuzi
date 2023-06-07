@@ -1,5 +1,6 @@
 import React from 'react';
 import NavRight from "./SideBar.jsx";
+import NavBar from "./NavBar.jsx";
 
 const Homepage = () => {
     return (

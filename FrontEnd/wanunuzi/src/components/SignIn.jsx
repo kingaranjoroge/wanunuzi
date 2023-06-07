@@ -37,10 +37,12 @@ const SignIn = () => {
       <form className="w-80 flex flex-col gap-3 justify-center place-content-center place-items-center" onSubmit={handleSubmit}>
         <h2 className="text-3xl font-bold text-green-900">Login</h2>
         <input className="input input-bordered w-full max-w-xs"
-          type="text"
+          type="email"
           placeholder="Enter Email"
           required={true}
           value={username}
+          aria-autocomplete="both"
+               autoComplete="email"
           onChange={(e) => setUsername(e.target.value)}
         />
         <input className="input input-bordered w-full max-w-xs"
@@ -48,6 +50,7 @@ const SignIn = () => {
           placeholder="Password"
           value={password}
           required={true}
+
           onChange={(e) => setPassword(e.target.value)}
         />
         <button className="btn w-full bg-green-400 ring-2 ring-red-600" type="submit">Sign In</button>
