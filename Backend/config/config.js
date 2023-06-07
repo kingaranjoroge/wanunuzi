@@ -1,7 +1,7 @@
 module.exports = {
   development: {
     username: "root",
-    password: "",
+    password: "K!ngb48987",
     database: "wanunuzi_db",
     host: "127.0.0.1",
     dialect: "mariadb",
@@ -9,7 +9,7 @@ module.exports = {
   },
   test: {
     username: "root",
-    password: "",
+    password: "K!ngb48987",
     database: "wanunuzi_db",
     host: "127.0.0.1",
     dialect: "mariadb",
@@ -17,7 +17,7 @@ module.exports = {
   },
   production: {
     username: "root",
-    password: "",
+    password: "K!ngb48987",
     database: "wanunuzi_db",
     host: "127.0.0.1",
     dialect: "mariadb",

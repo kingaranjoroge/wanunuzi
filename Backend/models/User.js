@@ -1,5 +1,10 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
-const sequelize = new Sequelize('wanunuzi_db', 'root', '', {dialect: 'mariadb'});
+const sequelize = new Sequelize('wanunuzi_db', 'root', 'K!ngb48987', {
+  dialect: 'mariadb',
+  host: '127.0.0.1',
+  port: '3306'
+});
+
 
 class User extends Model {}
 
