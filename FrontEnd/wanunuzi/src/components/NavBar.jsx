@@ -12,28 +12,11 @@ function NavBar() {
         navigate("/login");
     }
     return (
-        <div className="navbar bg-base-100 justify-center">
+        <div className="navbar bg-green-700 justify-center">
             <div className="navbar-start">
-                <div className="md:hidden dropdown">
-                    <label tabIndex={0} className="btn btn-ghost btn-circle">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
-                    </label>
-                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a>Homepage</a></li>
-                        <li><a>Portfolio</a></li>
-                        <li><a>About</a></li>
-                    </ul>
-                </div>
-                <div className="md:block hidden dropdown">
-                    <ul className="flex gap-2">
-                        <li><a>Homepage</a></li>
-                        <li><a>Portfolio</a></li>
-                        <li><a>About</a></li>
-                    </ul>
-                </div>
             </div>
             <div className="navbar-center">
-                <a className="btn btn-ghost normal-case text-xl">Wanunuzi Sacco</a>
+                <div className="text-3xl font-bold">Wanunuzi sacco</div>
             </div>
             <div className="navbar-end">
                 <button className="btn btn-ghost btn-circle">
@@ -45,8 +28,8 @@ function NavBar() {
                         <span className="badge badge-xs badge-primary indicator-item"></span>
                     </div>
                 </button>
-                <button className="btn btn-ghost btn-circle" onClick={handleLogout}>
-                    Logout
+                <button className="btn btn-ghost btn-circle " onClick={handleLogout}>
+                    <i className="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
         </div>

@@ -10,7 +10,7 @@ function Content() {
     const location = useLocation();
 
     return (
-        <>
+        <div className="sans">
             {(location.pathname !== '/login' && location.pathname !== '/register') && <NavBar />}
             {(location.pathname === '/login' || location.pathname === '/register') && <NavBeforeLogin />}
             <Routes>
@@ -19,7 +19,7 @@ function Content() {
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/home" element={<Homepage />} />
             </Routes>
-        </>
+        </div>
     );
 }
 
