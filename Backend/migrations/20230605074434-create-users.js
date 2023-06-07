@@ -38,3 +38,6 @@ module.exports = {
     await queryInterface.dropTable('Users');
   }
 };
+
+
+//npx sequelize-cli db:migrate ---- command to run migration
