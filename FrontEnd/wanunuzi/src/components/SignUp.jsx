@@ -50,7 +50,7 @@ const SignUp = () => {
     //check if password is the same as confirm password
 
     return (
-        <div className="w-full flex flex-col place-items-center h-fit md:h-[90vh] justify-center">
+        <div className="w-full flex flex-col place-items-center mt-10 h-fit md:h-[90vh] justify-center">
         <form className="w-80 md:w-1/2 flex flex-col gap-3 justify-center place-content-center place-items-center" onSubmit={handleSubmit}>
             <h2 className="text-3xl font-bold text-green-900 mb-4">Join Us</h2>
             <div className="flex md:flex-row flex-col gap-2 w-full">
