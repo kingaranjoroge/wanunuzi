@@ -3,20 +3,23 @@ import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom
 import SignIn from './SignIn.jsx';
 import SignUp from './SignUp.jsx';
 import Homepage from './Homepage.jsx';
-import NavBar from './NavBar.jsx';
-import NavBeforeLogin from './NavBarUnlogged.jsx';
+import jwtDecode from 'jwt-decode';
 
 const ProtectedRoute = ({children}) => {
     const token = localStorage.getItem('token');
+    const expirationTime = localStorage.getItem('expirationTime');
 
-    return token ? children : <Navigate to="/login" />;
+    if (token && Date.now() <= expirationTime) {
+        return children;
+    } else {
+        return <Navigate to="/login" />;
+    }
 }
+
 
 function App() {
     return (
         <Router>
-            {(location.pathname !== '/login' && location.pathname !== '/register') && <NavBar />}
-            {(location.pathname === '/login' || location.pathname === '/register') && <NavBeforeLogin />}
             <Routes>
                 <Route path="/login" element={<SignIn />} />
                 <Route path="/register" element={<SignUp />} />

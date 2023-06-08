@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import jwt_decode from 'jwt-decode';
 
 const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      navigate("/home");
-    }
-  }, [navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -22,11 +16,17 @@ const SignIn = () => {
       const { message, token } = res.data;
       setResponse(message);
 
-      // Store the token in local storage
+      // Store the token and its expiration time in local storage
+      const decoded = jwt_decode(token);
       localStorage.setItem('token', token);
+      localStorage.setItem('expirationTime', decoded.exp * 1000); // Convert expiration time to milliseconds
 
-      // Redirect to the home page or perform other actions
-      navigate("/home");
+      // Redirect to the home page if the token is valid
+      if (token && Date.now() <= localStorage.getItem('expirationTime')) {
+        navigate("/home");
+      } else {
+        setResponse("Session expired. Please log in again.");
+      }
     } catch (error) {
       setResponse(error.response.data.message);
     }
