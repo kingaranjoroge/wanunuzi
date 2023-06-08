@@ -70,8 +70,12 @@ app.post('/login', async (req, res) => {
       res.json({ message: 'Logged in successfully', token });
     } else {
       res.status(401).json({ message: 'Invalid username or password' });
-    }
-<<<<<<< HEAD
+    } 
+  }
+    catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error logging in' });
+    }    
   });
 
 
@@ -100,16 +104,7 @@ app.post('/payment', async (req, res) => {
     // Handle any errors
     res.status(500).json({ success: false, message: 'Failed to initiate payment' });
   }
-});
-=======
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error logging in' });
-  }
-});
-
->>>>>>> ba6c0eacb6eb40faeb697770286b849fac4382cb
-  
+});  
 
 const port = process.env.PORT || 3000;
 
