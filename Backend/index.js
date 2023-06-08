@@ -2,15 +2,16 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
+const Loan = require('./models/Loan');
 const cors = require('cors'); // don't forget to install this: npm install cors
-const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser');
+const sequelize = require('./models/database');
 require('dotenv').config(); // don't forget to install this: npm install dotenv
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json());
 
 app.post('/signup', async (req, res) => {
     try {
@@ -41,7 +42,7 @@ app.post('/signup', async (req, res) => {
   
       // Generate a JWT token for the newly registered user
       const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, {
-        expiresIn: '1h' // Token expiration time (optional)
+        expiresIn: '5m' // Token expiration time (optional)
       });
   
       res.status(201).json({ message: 'User created successfully', token, username: user.username });

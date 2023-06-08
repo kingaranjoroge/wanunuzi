@@ -54,6 +54,7 @@ const Homepage = () => {
             <section className="h-12 items-center md:justify-start justify-center px-7 flex text-white w-full bg-red-800">
                 <p>Welcome {user.name}</p>
             </section>
+            {/*
             <div className="px-4 mt-36 py-2 text-lg text-red-800 font-semibold">
 
                 <p>Email: {user.email}</p>
@@ -61,6 +62,9 @@ const Homepage = () => {
                 <p>ID Number: {user.idNumber}</p>
                 <p>User ID: {user.userId}</p>
             </div>
+         */}
+
+            {/*
 
 
             <div className="px-4 mb-6">
@@ -98,8 +102,9 @@ const Homepage = () => {
                 </div>
             </div>
 
-
-            <div className="grid pt-7 md:pt-28 md:pl-7 md:pr-5 grid-cols-1 w-full md:grid-cols-3 gap-6 justify-items-center h-full">
+            */
+            }
+            <div className="grid pt-7 md:pt-24 md:pl-7 md:pr-5 grid-cols-1 w-full md:grid-cols-3 gap-6 justify-items-center h-full">
                 {cardData.map((card, index) => (
                     <div key={index} className="w-10/12 h-36 p-4 rounded-lg shadow-lg bg-customGreen flex flex-col justify-center items-center space-y-3">
                         <div className="text-5xl text-white">

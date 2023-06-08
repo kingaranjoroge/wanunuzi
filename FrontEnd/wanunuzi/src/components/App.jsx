@@ -28,6 +28,7 @@ function App() {
                 <Route path="/login" element={<SignIn />} />            
                 <Route path="/home" element={<ProtectedRoute><Homepage /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/login" />} />
+                <Route path="loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
             </Route>
         </Routes>
     );

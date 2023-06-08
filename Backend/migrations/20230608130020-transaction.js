@@ -1,38 +1,35 @@
-// migration file for User
+// migration file for Transaction
 'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Transactions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      fullName: {
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+      },
+      amount: {
+        type: Sequelize.FLOAT,
+        allowNull: false,
+      },
+      transactionType: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
       },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      idNumber: {
-        type: Sequelize.STRING,
+      timestamp: {
+        type: Sequelize.DATE,
         allowNull: false,
-        unique: true
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
-      },
-      phoneNumber: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        defaultValue: Sequelize.NOW,
       },
       createdAt: {
         allowNull: false,
@@ -45,6 +42,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Transactions');
   }
 };
