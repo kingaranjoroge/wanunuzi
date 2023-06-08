@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 const cors = require('cors'); // don't forget to install this: npm install cors
 const cookieParser = require('cookie-parser');
+const sequelize = require('./models/database');
 require('dotenv').config(); // don't forget to install this: npm install dotenv
 
 const app = express();
@@ -40,7 +41,7 @@ app.post('/signup', async (req, res) => {
   
       // Generate a JWT token for the newly registered user
       const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, {
-        expiresIn: '1h' // Token expiration time (optional)
+        expiresIn: '5m' // Token expiration time (optional)
       });
   
       res.status(201).json({ message: 'User created successfully', token, username: user.username });
