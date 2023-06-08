@@ -3,8 +3,7 @@ const sequelize = new Sequelize('wanunuzi_db', 'root', '', {dialect: 'mariadb'})
 
 class Transaction extends Model {}
 
-Transaction.initModel = (sequelize) => {
-    Transaction.init({
+Transaction.init({
         userId: {
             type: DataTypes.INTEGER,
             references: {
@@ -29,7 +28,7 @@ Transaction.initModel = (sequelize) => {
         sequelize,
         modelName: 'Transaction'
     });
-};
+
 Transaction.associateModels = () => {
     const User = require('./User');
 

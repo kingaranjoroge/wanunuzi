@@ -3,7 +3,6 @@ const User = require("./User");
 const sequelize = new Sequelize('wanunuzi_db', 'root', '', {dialect: 'mariadb'});
 class Balance extends Model {}
 
-Balance.initModel = (sequelize) => {
     Balance.init({
         userId: {
             type: DataTypes.INTEGER,
@@ -21,7 +20,6 @@ Balance.initModel = (sequelize) => {
         sequelize,
         modelName: 'Balance'
     });
-};
 
 Balance.associateModels = () => {
     const User = require('./User');

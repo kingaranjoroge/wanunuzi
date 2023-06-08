@@ -3,7 +3,6 @@ const sequelize = new Sequelize('wanunuzi_db', 'root', '', {dialect: 'mariadb'})
 
 class Loan extends Model {}
 
-Loan.initModel = (sequelize) => {
     Loan.init({
         userId: {
             type: DataTypes.INTEGER,
@@ -38,7 +37,6 @@ Loan.initModel = (sequelize) => {
         sequelize,
         modelName: 'Loan'
     });
-};
 Loan.associateModels = () => {
     const User = require('./User');
 

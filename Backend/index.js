@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
+const Loan = require('./models/Loan');
 const cors = require('cors'); // don't forget to install this: npm install cors
 const cookieParser = require('cookie-parser');
 const sequelize = require('./models/database');
@@ -76,7 +77,26 @@ app.post('/login', async (req, res) => {
   }
 });
 
-  
+
+app.post('/createLoan', async (req, res) => {
+  try {
+    const { userId, amount, interestRate, dueDate } = req.body;
+    const loan = await Loan.create({
+      userId,
+      amount,
+      interestRate,
+      startDate: new Date(),
+      dueDate: new Date(dueDate),
+      status: 'pending'
+    });
+
+    res.status(201).json({ message: 'Loan created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error creating Loan' });
+  }
+});
+
 
 const port = process.env.PORT || 3000;
 
