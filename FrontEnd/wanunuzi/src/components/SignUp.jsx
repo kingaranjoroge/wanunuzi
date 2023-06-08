@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
+
+    const navigate = useNavigate();
+
     const [fullName, setFullName] = useState("");
     const [password, setPassword] = useState("");
     const [response, setResponse] = useState("");
@@ -26,7 +30,7 @@ const SignUp = () => {
                 phoneNumber,
                 idNumber
             });
-            window.location.href = "/home";
+            navigate('/payment');
         } catch (error) {
             //console.error(error);
             setResponse(error.response.data.message);
