@@ -13,6 +13,20 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+require('dotenv').config();
+
+// create reusable transporter object using the default SMTP transport
+let transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  },
+});
 
 app.post('/signup', async (req, res) => {
     try {
@@ -32,26 +46,88 @@ app.post('/signup', async (req, res) => {
       if (idNumberExists) {
         return res.status(500).json({ message: 'ID number already in use' });
       }
-  
+
+      // generate a random token for email verification
+      const buffer = crypto.randomBytes(20);
+      const token = buffer.toString('hex');
+
       const user = await User.create({
         fullName: req.body.fullName,
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
         idNumber: req.body.idNumber,
-        password: hashedPassword
+        password: hashedPassword,
+        emailVerificationToken: token,  // store the token in the user model
+        emailVerified: false  // flag to check if the email is verified
       });
-  
-      // Generate a JWT token for the newly registered user
-      const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, {
-        expiresIn: '5m' // Token expiration time (optional)
+
+      // send an email with the verification token
+      const mailOptions = {
+        from: '"My App" <myapp@example.com>', // sender address
+        to: req.body.email, // receiver address
+        subject: 'Email Verification', // Subject line
+        text: `Please verify your email by using the following token: ${token}`, // plain text body
+      };
+
+      await transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.error(error);
+          res.status(500).json({message: 'Error sending verification email'});
+        } else {
+          res.status(201).json({message: 'User created successfully. Verification email sent.'});
+        }
       });
-  
-      res.status(201).json({ message: 'User created successfully', token, username: user.username });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error creating user' });
     }
-  });
+});
+
+app.post('/verify-email', async (req, res) => {
+  try {
+    // Find the user with the provided email
+    const user = await User.findOne({ where: { email: req.body.email } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the provided token matches the token in the database
+    if (user.emailVerificationToken === req.body.token) {
+      // If it matches, update the emailVerified field to true
+      user.emailVerified = true;
+      await user.save();
+      res.status(200).json({ message: 'Email verified successfully' });
+    } else {
+      res.status(400).json({ message: `Invalid verification token for ${user.email}` });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error verifying email' });
+  }
+});
+
+
+
+app.post('/createLoan', async (req, res) => {
+  try {
+    const { userId, amount, interestRate, dueDate } = req.body;
+    const loan = await Loan.create({
+      userId,
+      amount,
+      interestRate,
+      startDate: new Date(),
+      dueDate: new Date(dueDate),
+      status: 'pending'
+    });
+
+    res.status(201).json({ message: 'Loan created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error creating Loan' });
+  }
+});
+
 
 
 app.post('/login', async (req, res) => {
