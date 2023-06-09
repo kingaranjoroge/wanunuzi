@@ -3,6 +3,7 @@ import NavRight from "./SideBar.jsx";
 import NavBar from "./NavBar.jsx";
 import TestNav from "./testNav.jsx";
 import jwt_decode from 'jwt-decode';
+import {useNavigate} from "react-router-dom";
 
 const cardData = [
     {
@@ -27,9 +28,10 @@ const cardData = [
     },
     {
 
-            icon: 'fa-landmark',
-            text: 'Apply for loan',
-            moreText: 'Apply for loan here',
+        icon: 'fa-landmark',
+        text: 'Apply for loan',
+        moreText: 'Apply for loan here',
+        link: '/loan',
     },
     {
             icon: 'fa-clock-rotate-left',
@@ -39,6 +41,12 @@ const cardData = [
 ];
 
 const Homepage = () => {
+    const navigateToLoans = useNavigate();
+
+    const handleLoans = () => {
+        navigateToLoans('/loan');
+    };
+
     const [user, setUser] = useState({});
 
     useEffect(() => {
@@ -107,10 +115,13 @@ const Homepage = () => {
             <div className="grid pt-7 md:pt-24 md:pl-7 md:pr-5 grid-cols-1 w-full md:grid-cols-3 gap-6 justify-items-center h-full">
                 {cardData.map((card, index) => (
                     <div key={index} className="w-10/12 h-36 p-4 rounded-lg shadow-lg bg-customGreen flex flex-col justify-center items-center space-y-3">
+                        <a href={card.link}>
                         <div className="text-5xl text-white">
                             <i className={`fa ${card.icon}`}></i>
                         </div>
+                        </a>
                         <h2 className="text-lg text-white font-semibold">{card.text}</h2>
+
                         <p className="text-sm text-white">{card.moreText}</p>
                     </div>
                 ))}
