@@ -6,6 +6,8 @@ const Loan = require('./models/Loan');
 const cors = require('cors'); // don't forget to install this: npm install cors
 const cookieParser = require('cookie-parser');
 const sequelize = require('./models/database');
+const axios = require('axios');
+const base64 = require('base-64');
 require('dotenv').config(); // don't forget to install this: npm install dotenv
 
 const app = express();
@@ -57,7 +59,8 @@ app.post('/signup', async (req, res) => {
         idNumber: req.body.idNumber,
         password: hashedPassword,
         emailVerificationToken: token,  // store the token in the user model
-        emailVerified: false  // flag to check if the email is verified
+        emailVerified: false,  // flag to check if the email is verified
+        accountActivated: false // flag to check if the account is activated
       });
 
       // send an email with the verification token
@@ -81,6 +84,7 @@ app.post('/signup', async (req, res) => {
       res.status(500).json({ message: 'Error creating user' });
     }
 });
+
 
 app.post('/verify-email', async (req, res) => {
   try {
@@ -157,30 +161,42 @@ app.post('/login', async (req, res) => {
 
 // Handle the payment initiation route
 app.post('/payment', async (req, res) => {
-  // Retrieve the amount and phone number from the request body
-  const { amount, phoneNumber } = req.body;
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
 
-  try {
-    // Make a request to the M-Pesa Daraja API to initiate the payment
-    // Include other required parameters for M-Pesa API
-    await axios.post('https://api.safaricom.co.ke/payment', {
-      amount,
-      phoneNumber,
-      // ...
-    }, {
-      headers: {
-        // Include necessary headers for authentication
-        // ...
-      },
-    });
+  const consumerKey = process.env.CONSUMER_KEY;
+  const consumerSecret = process.env.CONSUMER_SECRET;
 
-    // Handle the successful response or perform any necessary actions
-    res.json({ success: true, message: 'Payment initiated successfully' });
-  } catch (error) {
-    // Handle any errors
-    res.status(500).json({ success: false, message: 'Failed to initiate payment' });
-  }
-});  
+  // Get OAuth access token
+  const authRes = await axios.get('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
+    headers: {
+      'Authorization': `Basic ${base64.encode(`${consumerKey}:${consumerSecret}`)}`
+    }
+  });
+
+  const accessToken = authRes.data.access_token;
+
+  // Make actual payment request
+  const paymentRes = await axios.post('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', {
+    "BusinessShortCode": req.body.BusinessShortCode,
+    "Password": req.body.Password,
+    "Timestamp": req.body.Timestamp,
+    "TransactionType": req.body.TransactionType,
+    "Amount": req.body.Amount,
+    "PartyA": req.body.PartyA,
+    "PartyB": req.body.PartyB,
+    "PhoneNumber": req.body.PhoneNumber,
+    "CallBackURL": req.body.CallBackURL,
+    "AccountReference": req.body.AccountReference,
+    "TransactionDesc": req.body.TransactionDesc
+  }, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  });
+
+  res.send(paymentRes.data);
+});
 
 const port = process.env.PORT || 3000;
 
