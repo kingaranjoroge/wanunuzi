@@ -35,6 +35,10 @@ User.init({
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
+    accountActivated: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
 }, {
     sequelize,
     modelName: 'User'

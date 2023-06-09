@@ -221,9 +221,10 @@ const SignUp = () => {
 
             )}
             {formStep === 2 && (
-                <form className={"flex flex-col gap-2"} onSubmit={verifyEmail}>
+                <form className={"flex flex-col items-center justify-center gap-4"} onSubmit={verifyEmail}>
                     <label htmlFor="emailToken">Email Verification Code</label>
                     <input
+                        className="input input-bordered input-success w-full max-w-xs"
                         id="emailToken"
                         type="text"
                         required={true}
@@ -231,7 +232,7 @@ const SignUp = () => {
                         value={emailToken}
                         onChange={(e) => setEmailToken(e.target.value)}
                     />
-                    <button className={"btn bg-green-800 "} type="submit">Verify Email</button>
+                    <button className={"btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800"} type="submit">Verify Email</button>
                     {response && <p className="text-red-500">{response}</p>}
                 </form>
             )}
