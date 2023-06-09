@@ -70,33 +70,41 @@ app.post('/login', async (req, res) => {
       res.json({ message: 'Logged in successfully', token });
     } else {
       res.status(401).json({ message: 'Invalid username or password' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error logging in' });
+    } 
   }
-});
+    catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error logging in' });
+    }    
+  });
 
 
-app.post('/createLoan', async (req, res) => {
+// Handle the payment initiation route
+app.post('/payment', async (req, res) => {
+  // Retrieve the amount and phone number from the request body
+  const { amount, phoneNumber } = req.body;
+
   try {
-    const { userId, amount, interestRate, dueDate } = req.body;
-    const loan = await Loan.create({
-      userId,
+    // Make a request to the M-Pesa Daraja API to initiate the payment
+    // Include other required parameters for M-Pesa API
+    await axios.post('https://api.safaricom.co.ke/payment', {
       amount,
-      interestRate,
-      startDate: new Date(),
-      dueDate: new Date(dueDate),
-      status: 'pending'
+      phoneNumber,
+      // ...
+    }, {
+      headers: {
+        // Include necessary headers for authentication
+        // ...
+      },
     });
 
-    res.status(201).json({ message: 'Loan created successfully' });
+    // Handle the successful response or perform any necessary actions
+    res.json({ success: true, message: 'Payment initiated successfully' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error creating Loan' });
+    // Handle any errors
+    res.status(500).json({ success: false, message: 'Failed to initiate payment' });
   }
-});
-
+});  
 
 const port = process.env.PORT || 3000;
 
