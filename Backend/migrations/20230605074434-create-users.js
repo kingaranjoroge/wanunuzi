@@ -1,4 +1,3 @@
-// migration file for User
 'use strict';
 
 module.exports = {
@@ -12,8 +11,7 @@ module.exports = {
       },
       fullName: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        allowNull: false
       },
       password: {
         type: Sequelize.STRING,
@@ -33,6 +31,13 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true
+      },
+      emailVerificationToken: {
+        type: Sequelize.STRING
+      },
+      emailVerified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,

@@ -26,7 +26,8 @@ function App() {
             <Route path="/" element={<Layout />} >
                 <Route index element={<SignUp />} />                    
                 <Route path="/payment" element={<Payment />} />
-                <Route path="/login" element={<SignIn />} />            
+                <Route path="/login" element={<SignIn />} />
+                <Route path="/register" element={<SignUp />} />
                 <Route path="/home" element={<ProtectedRoute><Homepage /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/login" />} />
                 <Route path="loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
