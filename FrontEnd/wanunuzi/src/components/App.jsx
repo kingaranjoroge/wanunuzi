@@ -5,10 +5,8 @@ import SignIn from './SignIn.jsx';
 import SignUp from './SignUp.jsx';
 import Homepage from './Homepage.jsx';
 import Payment from './Payment.jsx';
-import NavBar from './NavBar.jsx';
-import NavBeforeLogin from './NavBarUnlogged.jsx';
 import 'tailwindcss/tailwind.css';
-import jwtDecode from 'jwt-decode';
+import Loan from "./Loan.jsx";
 
 const ProtectedRoute = ({children}) => {
     const token = localStorage.getItem('token');
