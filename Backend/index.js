@@ -6,6 +6,7 @@ const Loan = require('./models/Loan');
 const cors = require('cors'); // don't forget to install this: npm install cors
 const cookieParser = require('cookie-parser');
 const sequelize = require('./models/database');
+const axios = require('axios');
 require('dotenv').config(); // don't forget to install this: npm install dotenv
 
 const app = express();
