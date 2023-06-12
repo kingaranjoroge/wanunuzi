@@ -194,21 +194,25 @@ app.post('/payment', async (req, res) => {
       'Authorization': `Bearer ${accessToken}`
     }
   });
-
-  // Check if the payment was successful
-  if (paymentRes.data.status === "Success") {
-    // Update the 'accountActivated' column for the user in the database
-    const updatedUser = await User.update(
-        { accountActivated: true },
-        { where: { phoneNumber: req.body.PhoneNumber } }
-    );
-
-    if (!updatedUser[0]) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-  }
   res.send(paymentRes.data);
 });
+
+//callback url for the payment
+app.post('/payment/callback', async (req, res) => {
+  const { Body: { stkCallback: { ResultCode, ResultDesc, CallbackMetadata } } } = req.body;
+
+  if (ResultCode === 0) {
+    const amount = CallbackMetadata.Item.find(item => item.Name === 'Amount').Value;
+    const phoneNumber = CallbackMetadata.Item.find(item => item.Name === 'PhoneNumber').Value;
+
+    console.log(`Payment of ${amount} was successful for user with phone number: ${phoneNumber}`);
+  } else {
+    console.error(`Payment failed with error: ${ResultDesc}`);
+  }
+
+  res.status(200).end();
+});
+
 
 const port = process.env.PORT || 3000;
 

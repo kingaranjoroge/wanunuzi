@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import {flex} from "@tailwindcss/postcss7-compat/lib/plugins/index.js";
 import Modal from "react-modal";
 
 const SignUp = () => {
@@ -14,7 +13,6 @@ const SignUp = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [username, setUsername] = useState("");
     const [idNumber, setIdNumber] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [formStep, setFormStep] = useState(1); // Initialize formStep to 1
