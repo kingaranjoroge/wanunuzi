@@ -10,6 +10,13 @@ const Payment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+
+    const phoneNumberRegex = /^(2547|2541)\d{8}$/;
+    if (!phoneNumberRegex.test(phoneNumber)) {
+      setError('Please enter a valid Kenyan phone number starting with 2547 or 2541.');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:3000/payment', {
         "BusinessShortCode": 174379,
