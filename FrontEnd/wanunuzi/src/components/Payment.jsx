@@ -7,34 +7,10 @@ const Payment = () => {
   const [error, setError] = useState(null);
   const [responseData, setResponseData] = useState(null);
 
-  function formatPhoneNumber(phoneNumber) {
-    // Remove any non-numeric characters
-    let cleaned = ('' + phoneNumber).replace(/\D/g, '');
-
-    // Check if the phone number starts with '0'
-    let match = cleaned.match(/^0(\d{9})$/);
-
-    // If the phone number starts with '0', replace '0' with '254'
-    if (match) {
-      cleaned = '254' + match[1];
-    }
-
-    // Now mask the number
-    if (cleaned.length == 12) {
-      console.log(cleaned);
-      return cleaned;
-    }
-
-    // If the input isn't valid, just return the original value
-    return phoneNumber;
-  }
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      console.log("Hello ",formatPhoneNumber(phoneNumber));
       const response = await axios.post('http://localhost:3000/payment', {
         "BusinessShortCode": 174379,
         "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjMwNjA5MTI1MTIw",
@@ -43,7 +19,7 @@ const Payment = () => {
         "Amount": amount,
         "PartyA": phoneNumber,
         "PartyB": 174379,
-        "PhoneNumber": formatPhoneNumber(phoneNumber),
+        "PhoneNumber": phoneNumber,
         "CallBackURL": "https://mydomain.com/path",
         "AccountReference": "CompanyXLTD",
         "TransactionDesc": "Payment of X"
@@ -74,13 +50,13 @@ const Payment = () => {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
-        <input className="input input-bordered w-full max-w-xs"
-               type="text"
-               id="phoneNumber"
-               placeholder='Enter Phone Number'
-               value={formatPhoneNumber(phoneNumber)}
-               onChange={(e) => setPhoneNumber(e.target.value)}
-        />
+          <input className="input input-bordered w-full max-w-xs"
+            type="text"
+            id="phoneNumber"
+            placeholder='Enter Phone Number'
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+          />
         <button className="btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800" type="submit">Pay</button>
       </form>
     </div>

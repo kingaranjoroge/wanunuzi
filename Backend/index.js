@@ -195,6 +195,18 @@ app.post('/payment', async (req, res) => {
     }
   });
 
+  // Check if the payment was successful
+  if (paymentRes.data.status === "Success") {
+    // Update the 'accountActivated' column for the user in the database
+    const updatedUser = await User.update(
+        { accountActivated: true },
+        { where: { phoneNumber: req.body.PhoneNumber } }
+    );
+
+    if (!updatedUser[0]) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+  }
   res.send(paymentRes.data);
 });
 
