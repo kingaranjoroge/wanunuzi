@@ -18,7 +18,8 @@ class Balance extends Model {}
         }
     }, {
         sequelize,
-        modelName: 'Balance'
+        modelName: 'Balance',
+        tableName: 'balances'
     });
 
 Balance.associateModels = () => {

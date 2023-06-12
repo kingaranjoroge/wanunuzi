@@ -3,44 +3,68 @@ import NavRight from "./SideBar.jsx";
 import NavBar from "./NavBar.jsx";
 import TestNav from "./testNav.jsx";
 import jwt_decode from 'jwt-decode';
+import axios from 'axios';
 import {useNavigate} from "react-router-dom";
 
-const cardData = [
-    {
-        icon: 'fa-wallet',
-        text: 'Balance',
-        moreText: '5000',
-    },
-    {
-        icon: 'fa-circle-check',
-        text: 'Loanable Amount',
-        moreText: '3000',
-    },
-    {
-        icon: 'fa-list-check',
-        text: 'Manage Loans',
-        moreText: 'Manage Loans here',
-    },
-    {
-        icon: 'fa-money-bill-trend-up',
-        text: 'Savings',
-        moreText: '6000',
-    },
-    {
+const Homepage = () => {
 
-        icon: 'fa-landmark',
-        text: 'Apply for loan',
-        moreText: 'Apply for loan here',
-        link: '/loan',
-    },
-    {
+    const [balance, setBalance] = useState(null);
+
+    useEffect(() => {
+        const fetchBalance = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const decoded = jwt_decode(token);
+                setUser(decoded);
+
+                try {
+                    // Fetch the user's balance
+                    const { data } = await axios.get(`http://localhost:3000/balance/${decoded.userId}`);
+                    setBalance(data.balance);
+                } catch (error) {
+                    console.error('Error fetching balance:', error);
+                }
+            }
+        };
+
+        fetchBalance();
+    }, []);
+
+    const cardData = [
+        {
+            icon: 'fa-wallet',
+            text: 'Balance',
+            moreText: balance === null ? 'Loading...' : balance.toString(),
+            link: '/balance',
+        },
+        {
+            icon: 'fa-circle-check',
+            text: 'Loanable Amount',
+            moreText: '3000',
+        },
+        {
+            icon: 'fa-list-check',
+            text: 'Manage Loans',
+            moreText: 'Manage Loans here',
+        },
+        {
+            icon: 'fa-money-bill-trend-up',
+            text: 'Savings',
+            moreText: '6000',
+        },
+        {
+
+            icon: 'fa-landmark',
+            text: 'Apply for loan',
+            moreText: 'Apply for loan here',
+            link: '/loan',
+        },
+        {
             icon: 'fa-clock-rotate-left',
             text: 'History',
             moreText: 'Transaction History',
-    }
-];
-
-const Homepage = () => {
+        }
+    ];
     const navigateToLoans = useNavigate();
 
     const handleLoans = () => {
