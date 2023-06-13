@@ -40,7 +40,7 @@ const Homepage = () => {
         {
             icon: 'fa-circle-check',
             text: 'Loanable Amount',
-            moreText: '3000',
+            moreText: balance === null ? 'Loading...' : (balance * 0.8).toFixed(2),
         },
         {
             icon: 'fa-list-check',

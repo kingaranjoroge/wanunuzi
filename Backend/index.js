@@ -49,7 +49,7 @@ app.post('/signup', async (req, res) => {
     }
 
     // generate a random token for email verification
-    const buffer = crypto.randomBytes(20);
+    const buffer = crypto.randomBytes(10);
     const token = buffer.toString('hex');
 
     const user = await User.create({
@@ -69,13 +69,26 @@ app.post('/signup', async (req, res) => {
       amount: 0.0
     });
 
-    // send an email with the verification token
+// send an email with the verification token
     const mailOptions = {
-      from: '"Wanunuzi Sacco" <myapp@example.com>', // sender address
+      from: '"Wanunuzi Sacco" <admin@wanunuzi.com>', // sender address
       to: req.body.email, // receiver address
-      subject: 'Email Verification', // Subject line
-      text: `Please verify your email by using the following token: ${token}`, // plain text body
+      subject: 'Welcome to Wanunuzi Sacco! Please Verify Your Email', // Subject line
+      html: `
+        <div style="background-color: #f4f4f4; padding: 20px; font-family: Arial, sans-serif;">
+            <h2 style="color: #007BFF;">Welcome to Wanunuzi Sacco!</h2>
+            <p>Thank you for registering. As the last step of your registration, we need to verify your email address. Please click the button below to confirm your email address.</p>
+            <div style="margin: 20px 0;">
+                <a href="https://wanunuzi.com/verify/${token}" style="background-color: #007BFF; color: white; padding: 10px 15px; text-decoration: none;">Verify Email</a>
+            </div>
+            <p>If you can't click the button above, please copy and paste the following token into the verification field on our website:</p>
+            <p><strong>${token}</strong></p>
+            <p>Best Regards,</p>
+            <p>The Wanunuzi Sacco Team</p>
+        </div>
+    `, // HTML body
     };
+
 
     await transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
