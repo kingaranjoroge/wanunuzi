@@ -148,6 +148,22 @@ app.post('/addGuarantor', async (req, res) => {
 });
 
 
+app.get('/user/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findByPk(id);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "An error occurred" });
+  }
+});
+
+
+
 app.post('/addGuarantorsToLoan', async (req, res) => {
   const { userId, loanId, guarantors } = req.body;
 
@@ -244,6 +260,22 @@ app.get('/balance/:userId', async (req, res) => {
 });
 
 
+app.get('/getLoans/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const loans = await Loan.findAll({ where: { userId: userId }});
+    if (loans.length) {
+      res.json(loans);
+    } else {
+      res.status(404).json({ message: "No loans found for the provided user id" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "An error occurred" });
+  }
+});
+
 
 
 
@@ -259,7 +291,7 @@ app.post('/login', async (req, res) => {
         userId: user.id
         // Add other user details you might want to include
       }, process.env.JWT_SECRET, {
-        expiresIn: '5m' // Token expiration time (optional)
+        expiresIn: '50m' // Token expiration time (optional)
       });
       res.json({ message: 'Logged in successfully', token });
     } else {
