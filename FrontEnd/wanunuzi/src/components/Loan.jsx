@@ -19,6 +19,16 @@ const CreateLoanForm = () => {
     const [serverResponse, setServerResponse] = useState('');
     const [user, setUser] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [useGuarantor, setUseGuarantor] = useState(null);
+    const [showChooseGuarantorModal, setShowChooseGuarantorModal] = useState(true);
+    const [balance, setBalance] = useState(null);
+    const [guarantors, setGuarantors] = useState([]);
+    const [guarantorID, setGuarantorID] = useState('');
+    const [verifiedGuarantors, setVerifiedGuarantors] = useState([]);
+
+
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,9 +53,29 @@ const CreateLoanForm = () => {
             return;
         }
 
+        // check if user chose to use a guarantor
+        if (useGuarantor) {
+            // set loan limit to user balance
+            if (amount > balance) {
+                setServerResponse('You can apply for up to 100% of your balance when using a guarantor.');
+                return;
+            }
+        } else {
+            // set loan limit to 90% of user balance
+            if (amount > (balance * 0.9)) {
+                // user cannot apply for more than 90% of their balance
+                setServerResponse(`You can apply for up to ${balance * 0.9} when not using a guarantor.`);
+                return;
+            }
+        }
+
         setIsModalOpen(true);
     };
 
+    useEffect(() => {
+        // show modal asking whether user wants to use guarantors or not
+        setShowChooseGuarantorModal(true);
+    }, []);
 
     const createLoan = async () => {
         try {
@@ -74,11 +104,98 @@ const CreateLoanForm = () => {
         }
     }, [amount, dueDate, interestRate]);
 
+    useEffect(() => {
+        const fetchBalance = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const decoded = jwt_decode(token);
+                setUser(decoded);
+
+                try {
+                    // Fetch the user's balance
+                    const { data } = await axios.get(`http://localhost:3000/balance/${decoded.userId}`);
+                    setBalance(data.balance);
+                } catch (error) {
+                    console.error('Error fetching balance:', error);
+                }
+            }
+        };
+
+        fetchBalance();
+    }, []);
+
+    const addGuarantor = async (e) => {
+        e.preventDefault();
+
+        if (guarantors.includes(guarantorID)) {
+            setServerResponse('This Guarantor is already added.');
+            setGuarantorID(''); // Reset the input field
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:3000/addGuarantor', { userId: user.userId, guarantorID });
+
+            if (response.data.message === 'Email sent successfully') {
+                setGuarantors([...guarantors, guarantorID]);
+                setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, isVerified: true }]); // Update the verification status
+                setServerResponse(response.data.message);
+            } else {
+                setServerResponse('Failed to add the Guarantor');
+            }
+        } catch (error) {
+            console.error(error);
+            setServerResponse('An error occurred while adding a Guarantor.');
+        }
+
+        setGuarantorID(''); // Reset the input field after adding the guarantor
+    }
+
+
     return (
         <div className="">
             <TestNav />
+
+            {guarantors.length > 0 &&
+                <ul>
+                    {verifiedGuarantors.map(guarantor => (
+                        <li key={guarantor.id}>
+                            {guarantor.id} {guarantor.isVerified ? '✅' : '❌'}
+                        </li>
+                    ))}
+                </ul>
+            }
+
+            {useGuarantor && guarantors.length < 3 ? (
+                <div>
+                    <form className={"flex flex-col gap-3 "} onSubmit={addGuarantor}>
+                        <input
+                            className={"input input-bordered w-full max-w-xs"}
+                            type={"text"}
+                            placeholder={"ID Number"}
+                            value={guarantorID}
+                            onChange={e => setGuarantorID(e.target.value)}
+                        />
+                        <input
+                            className={"btn max-w-xs w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800"}
+                            type={"submit"}
+                            value={"Add Guarantor"}
+                        />
+                    </form>
+                </div>
+            ) : <div></div>}
+
             <div className={"flex flex-col justify-center items-center"}>
-            <form className="w-full justify-center h-full pt-28 items-center flex flex-col gap-2" onSubmit={handleSubmit}>
+                <div>
+                    <h1 className={"text-4xl font-bold text-center"}>Create Loan</h1>
+                    <p>Your balance is {balance}</p>
+                    {/* show this if user chooses to use guarantor */}
+                    <p>Using guarantor {useGuarantor ? "yes" : "no"}</p>
+                    <p>Loanable amount {useGuarantor ? balance * 3 : balance * 0.9}</p>
+                </div>
+
+
+                <form className="w-full justify-center h-full pt-28 items-center flex flex-col gap-2" onSubmit={handleSubmit}>
                 <input className="input input-bordered w-full max-w-xs" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount" required />
                 <input className="input input-bordered w-full max-w-xs" type="text" value={`${interestRate}%`} disabled />
                 <input className="input input-bordered w-full max-w-xs" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} placeholder="Due Date" required />
@@ -118,6 +235,38 @@ const CreateLoanForm = () => {
                     </button>
                 </div>
             </Modal>
+
+                <Modal
+                    isOpen={showChooseGuarantorModal}
+                    onRequestClose={() => setShowChooseGuarantorModal(false)}
+                    contentLabel="Choose Guarantor Modal"
+                    className="w-fit h-fit bg-white rounded-lg shadow-lg p-4 flex flex-col gap-4 justify-center items-center text-center"
+                    style={{
+                        overlay: {
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        },
+                        content: {
+                            position: 'relative',
+                            top: 'auto',
+                            left: 'auto',
+                            right: 'auto',
+                            bottom: 'auto',
+                        }
+                    }}
+                >
+                    <h2>Use Guarantor?</h2>
+                    <p>Do you want to use a guarantor for this loan?</p>
+                    <p>Your current balance is: {balance}</p>
+                    <p>With guarantor you can loan up to: {balance * 3}</p>
+                    <p>Without a guarantor, you can loan up to: {balance * 0.9}</p>
+                    <div className="flex flex-row gap-4">
+                        <button className="btn bg-green-500 text-white" onClick={() => { setUseGuarantor(true); setShowChooseGuarantorModal(false); }}>Yes</button>
+                        <button className="btn bg-red-500 text-white" onClick={() => { setUseGuarantor(false); setShowChooseGuarantorModal(false); }}>No</button>
+                    </div>
+                </Modal>
+
 
             </div>
         </div>
