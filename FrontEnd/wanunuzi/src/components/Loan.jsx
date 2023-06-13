@@ -22,6 +22,7 @@ const CreateLoanForm = () => {
     const [useGuarantor, setUseGuarantor] = useState(null);
     const [showChooseGuarantorModal, setShowChooseGuarantorModal] = useState(true);
     const [balance, setBalance] = useState(null);
+    const [loanId, setLoanId] = useState('');
     const [guarantors, setGuarantors] = useState([]);
     const [guarantorID, setGuarantorID] = useState('');
     const [verifiedGuarantors, setVerifiedGuarantors] = useState([]);
@@ -80,13 +81,29 @@ const CreateLoanForm = () => {
     const createLoan = async () => {
         try {
             const response = await axios.post('http://localhost:3000/createLoan', { userId: user.userId, amount, interestRate, dueDate });
+            setLoanId(response.data.loanId);
             setServerResponse(response.data.message);
             setIsModalOpen(false);
+
+            // Call addGuarantorsToLoan after creating the loan
+            await addGuarantorsToLoan(loanId);
         } catch (error) {
             console.error(error);
             setServerResponse('An error occurred while creating the loan.');
         }
     }
+
+    useEffect(() => {
+        //console.log("loanId:", loanId);
+        if (loanId === undefined) {
+           // console.log("loanId is undefined");
+        } else if (loanId === null) {
+            //console.log("loanId is null");
+        } else {
+           // console.log("loanId:", loanId);
+        }
+    }, [loanId]);
+
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -122,7 +139,29 @@ const CreateLoanForm = () => {
         };
 
         fetchBalance();
-    }, []);
+    }, [])
+
+    const addGuarantorsToLoan = async (loanId) => {
+        if (guarantors.length < 3) {
+            setServerResponse('You must add at least 3 guarantors.');
+            return;
+        }
+
+        if (guarantors.length > 3) {
+            setServerResponse('You can only add up to 3 guarantors.');
+            return;
+        }
+
+        // Post request to add guarantors to loan
+        try {
+            const response = await axios.post('http://localhost:3000/addGuarantorsToLoan', { userId: user.userId, loanId, guarantors });
+            setServerResponse(response.data.message);
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error(error);
+            setServerResponse('An error occurred while adding the guarantors to the loan.');
+        }
+    };
 
     const addGuarantor = async (e) => {
         e.preventDefault();
@@ -184,6 +223,14 @@ const CreateLoanForm = () => {
                     </form>
                 </div>
             ) : <div></div>}
+
+
+
+            <button onClick={addGuarantorsToLoan}>TEST DATA</button>
+
+
+
+
 
             <div className={"flex flex-col justify-center items-center"}>
                 <div>
