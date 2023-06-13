@@ -51,6 +51,7 @@ const Homepage = () => {
             icon: 'fa-money-bill-trend-up',
             text: 'Savings',
             moreText: '6000',
+            link: '/savings'
         },
         {
 

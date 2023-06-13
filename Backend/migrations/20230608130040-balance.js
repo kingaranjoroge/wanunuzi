@@ -21,7 +21,7 @@ module.exports = {
       amount: {
         type: Sequelize.FLOAT,
         allowNull: false,
-        defaultValue: 0.0,
+        defaultValue: 1000.00,
       },
       createdAt: {
         allowNull: false,

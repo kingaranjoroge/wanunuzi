@@ -8,44 +8,47 @@ Guarantor.init({
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'loans',
-          key: 'id'
+            model: 'loans',
+            key: 'id'
         }
-      },
-      guarantor1: {
+    },
+    guarantor1Id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: 'users',
             key: 'id'
         }
-      },
-      guarantor2: {
+    },
+    guarantor2Id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: 'users',
             key: 'id'
         }
-      },
-      guarantor3: {
+    },
+    guarantor3Id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: 'users',
             key: 'id'
         }
-      }
-    }, {
-        sequelize,
-        modelName: 'Guarantor'
-    });
+    }
+}, {
+    sequelize,
+    modelName: 'Guarantor'
+});
+
 Guarantor.associateModels = () => {
     const Loan = require('./Loan');
     const User = require('./User')
 
     Guarantor.belongsTo(Loan, { foreignKey: 'loanId' });
-    Guarantor.belongsTo(User, { foreignKey: 'userId' });
+    Guarantor.belongsTo(User, { foreignKey: 'guarantor1Id' });
+    Guarantor.belongsTo(User, { foreignKey: 'guarantor2Id' });
+    Guarantor.belongsTo(User, { foreignKey: 'guarantor3Id' });
 }
 
 module.exports = Guarantor

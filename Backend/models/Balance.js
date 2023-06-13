@@ -14,7 +14,7 @@ class Balance extends Model {}
         amount: {
             type: DataTypes.FLOAT,
             allowNull: false,
-            defaultValue: 0.0,
+            defaultValue: 1000.00,
         }
     }, {
         sequelize,
