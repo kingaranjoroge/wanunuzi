@@ -17,6 +17,7 @@ app.use(express.json());
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const Balance = require("./models/Balance");
+const Guarantor = require("./models/Guarantor");
 require('dotenv').config();
 
 // create reusable transporter object using the default SMTP transport
@@ -108,8 +109,8 @@ app.post('/addGuarantor', async (req, res) => {
   try {
     // Get the guarantor from the database
     const guarantor = await User.findOne({ where: { id: req.body.guarantorID } });
-
-    console.log(guarantor);
+    // Get the user from the database
+    const user = await User.findOne({ where: { id: req.body.userId } });
 
     // If the guarantor doesn't exist, return an error
     if (!guarantor) {
@@ -127,7 +128,7 @@ app.post('/addGuarantor', async (req, res) => {
       from: '"Wanunuzi Sacco" <admin@wanunuzi.com>', // sender address
       to: guarantor.email, // receiver address
       subject: 'You have been added as a guarantor', // Subject line
-      text: `Hello, ${guarantor.fullName}. You have been added as a guarantor in Wanunuzi Sacco. Please confirm your email to proceed.`, // plaintext body
+      text: `Hello, ${guarantor.fullName}. You have been added as a guarantor by ${user.fullName} in Wanunuzi Sacco. Please confirm your email to proceed.`, // plaintext body
     };
 
     // Send the email
@@ -145,6 +146,41 @@ app.post('/addGuarantor', async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 });
+
+
+app.post('/addGuarantorsToLoan', async (req, res) => {
+  const { userId, loanId, guarantors } = req.body;
+
+  if (!guarantors || !Array.isArray(guarantors)) {
+    res.status(400).json({ error: 'Invalid guarantors array.' });
+    return;
+  }
+
+  if (!loanId) {
+    res.status(400).json({ error: 'Invalid loan ID.' });
+    return;
+  }
+
+  if (guarantors.length !== 3) {
+    res.status(400).json({ error: 'Exactly three guarantors must be provided.' });
+    return;
+  }
+
+  try {
+    await Guarantor.create({
+      loanId,
+      guarantor1: guarantors[0],
+      guarantor2: guarantors[1],
+      guarantor3: guarantors[2]
+    });
+
+    res.json({ message: 'Guarantors added successfully.' });
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ error: 'An error occurred while creating the guarantors.' });
+  }
+});
+
 
 
 
@@ -186,12 +222,13 @@ app.post('/createLoan', async (req, res) => {
       status: 'pending'
     });
 
-    res.status(201).json({ message: 'Loan created successfully' });
+    res.status(201).json({ message: 'Loan created successfully', loanId: loan.id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error creating Loan' });
   }
 });
+
 
 //balance
 app.get('/balance/:userId', async (req, res) => {
