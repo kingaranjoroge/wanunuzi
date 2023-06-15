@@ -19,7 +19,7 @@ const Homepage = () => {
 
                 try {
                     // Fetch the user's balance
-                    const { data } = await axios.get(`http://localhost:3000/balance/${decoded.userId}`);
+                    const { data } = await axios.get(`${process.env.REACT_APP_APP_URL}/balance/${decoded.userId}`);
                     setBalance(data.balance);
                 } catch (error) {
                     console.error('Error fetching balance:', error);

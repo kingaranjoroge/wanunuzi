@@ -12,7 +12,7 @@ const SignIn = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const res = await axios.post('http://localhost:3000/login', { username, password });
+      const res = await axios.post('http://test.wanunuzisacco.or.ke/login', { username, password });
       const { message, token } = res.data;
       setResponse(message);
 

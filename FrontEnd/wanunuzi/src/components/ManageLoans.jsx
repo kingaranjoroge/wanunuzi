@@ -15,7 +15,8 @@ const ManageLoans = () => {
 
             const fetchLoans = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:3000/getLoans/${decoded.userId}`);
+                    const response = await axios.get(`http://test.wanunuzisacco.or.ke/
+getLoans/${decoded.userId}`);
                     setLoans(response.data);
                     setLoading(false);
                 } catch (error) {
