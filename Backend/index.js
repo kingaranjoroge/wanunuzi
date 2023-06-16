@@ -20,7 +20,7 @@ app.use('/savingsBalance', require('./routes/savingsBalanceRoute'))
 app.use('/deposit', require('./routes/depositRoute'))
 app.use('/user', require('./routes/getUserRoute'))
 
-const port = process.env.PORT || 3000;
+const port = process.env.SERVERPORT || 3000;
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

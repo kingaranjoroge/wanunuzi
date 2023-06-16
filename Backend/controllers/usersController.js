@@ -9,12 +9,12 @@ const jwt = require('jsonwebtoken');
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
-    host: process.env.HOST,
-    port: process.env.PORT,
-    secure: process.env.SECURE,
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: process.env.SMTP_SECURE,
     auth: {
-        user: process.env.USER,
-        pass: process.env.PASS
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
     }
 });
 
