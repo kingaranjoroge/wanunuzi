@@ -19,7 +19,7 @@ const Payment = () => {
     const amount = 1; // The payment amount is now hardcoded
 
     try {
-      const response = await axios.post('http://localhost:3000/payment', {
+      const response = await axios.post('http://test.wanunuzisacco.or.ke/payment', {
         "BusinessShortCode": 174379,
         "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjMwNjA5MTI1MTIw",
         "Timestamp": "20230609125120",

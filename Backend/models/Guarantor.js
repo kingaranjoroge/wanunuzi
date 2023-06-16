@@ -11,7 +11,7 @@ Guarantor.init({
             key: 'id'
         }
     },
-    guarantor1Id: {
+    guarantor1: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -19,7 +19,7 @@ Guarantor.init({
             key: 'id'
         }
     },
-    guarantor2Id: {
+    guarantor2: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -27,7 +27,7 @@ Guarantor.init({
             key: 'id'
         }
     },
-    guarantor3Id: {
+    guarantor3: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -45,9 +45,9 @@ Guarantor.associateModels = () => {
     const User = require('./User')
 
     Guarantor.belongsTo(Loan, { foreignKey: 'loanId' });
-    Guarantor.belongsTo(User, { foreignKey: 'guarantor1Id' });
-    Guarantor.belongsTo(User, { foreignKey: 'guarantor2Id' });
-    Guarantor.belongsTo(User, { foreignKey: 'guarantor3Id' });
+    Guarantor.belongsTo(User, { foreignKey: 'guarantor1' });
+    Guarantor.belongsTo(User, { foreignKey: 'guarantor2' });
+    Guarantor.belongsTo(User, { foreignKey: 'guarantor3' });
 }
 
 module.exports = Guarantor

@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import jwt_decode from "jwt-decode";
 
 const navigation = [
-    { name: 'Dashboard', href: '#', current: true ,icon:'fa-solid fa-house-user'},
+    { name: 'Dashboard', href: '../home', current: true ,icon:'fa-solid fa-house-user'},
     { name: 'Deposit', href: '#', current: false ,icon:'fa-solid fa-building-columns'},
     { name: 'Withdraw', href: '#', current: false ,icon:'fa-solid fa-money-check-dollar'},
     { name: 'About', href: '#', current: false ,icon:'fa-solid fa-info-circle'},

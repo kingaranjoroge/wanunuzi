@@ -25,7 +25,7 @@ const SignUp = () => {
         event.preventDefault();
 
         try {
-            const res = await axios.post('http://localhost:3000/verify-email', {
+            const res = await axios.post('https://test.wanunuzisacco.or.ke/verify-email', {
                 email,
                 token: emailToken
             });
@@ -42,7 +42,7 @@ const SignUp = () => {
 
     const submitForm = async () => {
         try {
-            const res = await axios.post("http://localhost:3000/signup", {
+            const res = await axios.post("https://test.wanunuzisacco.or.ke/signup", {
                 fullName,
                 password,
                 email,
