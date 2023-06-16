@@ -6,6 +6,7 @@ const Loan = require('./models/Loan');
 const cors = require('cors'); // don't forget to install this: npm install cors
 const cookieParser = require('cookie-parser');
 const sequelize = require('./models/database');
+const { Verification } = require('./models/Verification');
 const axios = require('axios');
 const base64 = require('base-64');
 require('dotenv').config(); // don't forget to install this: npm install dotenv
@@ -22,14 +23,15 @@ require('dotenv').config();
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: false, // true for 465, false for other ports
+  host: process.env.HOST,
+  port: process.env.PORT,
+  secure: process.env.SECURE,
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  },
+    user: process.env.USER,
+    pass: process.env.PASS
+  }
 });
+
 app.post('/signup', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -307,8 +309,12 @@ app.post('/login', async (req, res) => {
 
 // Handle the payment initiation route
 app.post('/payment', async (req, res) => {
-  console.log('Headers:', req.headers);
-  console.log('Body:', req.body);
+  //console.log('Headers:', req.headers);
+  //console.log('Body:', req.body);
+
+  const userId = req.body.userId;
+
+  console.log('User ID:', userId);
 
   const consumerKey = process.env.CONSUMER_KEY;
   const consumerSecret = process.env.CONSUMER_SECRET;
@@ -340,24 +346,73 @@ app.post('/payment', async (req, res) => {
       'Authorization': `Bearer ${accessToken}`
     }
   });
+
+  if (paymentRes.data.ResponseCode == '0') {
+    // The request was accepted successfully
+    const verificationDetails = {
+      checkoutRequestID: paymentRes.data.CheckoutRequestID,
+      phoneNumber: req.body.PhoneNumber,
+      amount: req.body.Amount,
+      mpesaReceiptNumber: paymentRes.data.MerchantRequestID, // assuming this is the mpesaReceiptNumber
+      transactionDate: new Date(), // you need to get the transactionDate from somewhere or use the current date
+      resultCode: paymentRes.data.ResponseCode,
+      resultDesc: paymentRes.data.ResponseDescription,
+      userId: userId, // you need to get the userId from somewhere
+    };
+
+    try {
+      // Save the verification details in the database
+      await Verification.create(verificationDetails);
+      console.log(`Verification details saved with CheckoutRequestID ${verificationDetails.checkoutRequestID}`);
+    } catch (error) {
+      console.error('Failed to save verification details:', error);
+    }
+  } else {
+    console.log('Failed to initiate payment request:', paymentRes.data.CustomerMessage);
+  }
+
   res.send(paymentRes.data);
 });
 
 //callback url for the payment
-app.post('/payment/callback', async (req, res) => {
-  const { Body: { stkCallback: { ResultCode, ResultDesc, CallbackMetadata } } } = req.body;
+app.post('/callback', async (req, res) => {
+  const callbackData = req.body;
+  const resultCode = callbackData.Body.stkCallback.ResultCode;
+  const checkoutRequestID = callbackData.Body.stkCallback.CheckoutRequestID;
 
-  if (ResultCode === 0) {
-    const amount = CallbackMetadata.Item.find(item => item.Name === 'Amount').Value;
-    const phoneNumber = CallbackMetadata.Item.find(item => item.Name === 'PhoneNumber').Value;
+  try {
+    const verification = await Verification.findOne({ where: { checkoutRequestID: checkoutRequestID } });
 
-    console.log(`Payment of ${amount} was successful for user with phone number: ${phoneNumber}`);
-  } else {
-    console.error(`Payment failed with error: ${ResultDesc}`);
+    if (!verification) {
+      console.log(`No verification details found for CheckoutRequestID ${checkoutRequestID}`);
+      res.sendStatus(404);
+      return;
+    }
+
+    if (resultCode == '0') {
+      // The payment was successful
+      verification.resultCode = resultCode;
+      verification.resultDesc = callbackData.Body.stkCallback.ResultDesc;
+      verification.transactionID = callbackData.Body.stkCallback.CallbackMetadata.Item[1].Value;
+      verification.transactionDate = callbackData.Body.stkCallback.CallbackMetadata.Item[3].Value;
+      await verification.save();
+      console.log(`Verification details updated for CheckoutRequestID ${checkoutRequestID}`);
+    } else {
+      // The payment was not successful
+      verification.resultCode = resultCode;
+      verification.resultDesc = callbackData.Body.stkCallback.ResultDesc;
+      await verification.save();
+      console.log(`Verification details updated for CheckoutRequestID ${checkoutRequestID} with error: ${verification.resultDesc}`);
+    }
+  } catch (error) {
+    console.error('Failed to update verification details:', error);
+    res.sendStatus(500);
+    return;
   }
 
-  res.status(200).end();
+  res.sendStatus(200);
 });
+
 
 
 const port = process.env.PORT || 3000;

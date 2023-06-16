@@ -107,11 +107,11 @@ const CreateLoanForm = () => {
     useEffect(() => {
         //console.log("loanId:", loanId);
         if (loanId === undefined) {
-           // console.log("loanId is undefined");
+            // console.log("loanId is undefined");
         } else if (loanId === null) {
             //console.log("loanId is null");
         } else {
-           // console.log("loanId:", loanId);
+            // console.log("loanId:", loanId);
         }
     }, [loanId]);
 
@@ -141,7 +141,7 @@ const CreateLoanForm = () => {
 
                 try {
                     // Fetch the user's balance
-                    const { data } = await axios.get(`http://test.wanunuzisacco.or.ke/balance/${decoded.userId}`);
+                    const { data } = await axios.get(`https://test.wanunuzisacco.or.ke/balance/${decoded.userId}`);
                     setBalance(data.balance);
                 } catch (error) {
                     console.error('Error fetching balance:', error);
@@ -165,7 +165,7 @@ const CreateLoanForm = () => {
 
         // Post request to add guarantors to loan
         try {
-            const response = await axios.post('http://test.wanunuzisacco.or.ke/addGuarantorsToLoan', { userId: user.userId, loanId, guarantors });
+            const response = await axios.post('https://test.wanunuzisacco.or.ke/addGuarantorsToLoan', { userId: user.userId, loanId, guarantors });
             setServerResponse(response.data.message);
             setIsModalOpen(false);
         } catch (error) {
@@ -192,10 +192,10 @@ const CreateLoanForm = () => {
 
         try {
             // Fetch the guarantor's full name
-            const guarantorRes = await axios.get(`http://test.wanunuzisacco.or.ke/user/${guarantorID}`);
+            const guarantorRes = await axios.get(`https://test.wanunuzisacco.or.ke/user/${guarantorID}`);
             const guarantorName = guarantorRes.data.fullName;
 
-            const response = await axios.post('http://test.wanunuzisacco.or.ke/addGuarantor', { userId: user.userId, guarantorID });
+            const response = await axios.post('https://test.wanunuzisacco.or.ke/addGuarantor', { userId: user.userId, guarantorID });
 
             if (response.data.message === 'Email sent successfully') {
                 setGuarantors([...guarantors, guarantorID]);
@@ -230,14 +230,14 @@ const CreateLoanForm = () => {
     return (
         <div className="">
             <TestNav />
-<div className={"flex flex-wrap"}>
+            <div className={"flex flex-wrap"}>
 
                 {
                     useGuarantor ? <>
                         <div className={"w-full flex flex-col justify-center items-center md:w-1/3 lg:w-1/3"}>
-                        <div className="flex justify-center items-center m-4 gap-2">
-                            <h2 className={"font-bold text-2xl text-gray-600 text-center"}>Add Guarantors</h2>
-                        </div>
+                            <div className="flex justify-center items-center m-4 gap-2">
+                                <h2 className={"font-bold text-2xl text-gray-600 text-center"}>Add Guarantors</h2>
+                            </div>
 
 
                             {guarantors.length > 0 &&
@@ -253,7 +253,7 @@ const CreateLoanForm = () => {
                                             <button className="btn btn-circle ring-offset-1 border-2 border-customGreen bg-customGreen text-white text-2xl ring-2 ring-inset ring-white" onClick={() => removeGuarantor(guarantor.id)}>
 
                                                 <i className="fa-solid fa-trash">
-                                            </i>
+                                                </i>
                                             </button>
 
                                         </li>
@@ -288,107 +288,107 @@ const CreateLoanForm = () => {
                 }
 
 
-            <div className={ useGuarantor ?  "w-full md:w-2/3 lg:w-2/3 flex flex-col justify-center items-center" : "w-full flex flex-col justify-center items-center" }>
+                <div className={ useGuarantor ?  "w-full md:w-2/3 lg:w-2/3 flex flex-col justify-center items-center" : "w-full flex flex-col justify-center items-center" }>
 
 
-                <div className="flex w-full justify-between max-w-xs m-4 pt-5 gap-2">
-                    <div className="w-24 h-24 flex flex-col items-center justify-center bg-green-600 text-white rounded-lg shadow-md p-2 transition-transform duration-300 ease-in-out transform hover:scale-110">
-                        <i className="fas fa-wallet text-2xl"></i>
-                        <span>{balance}</span>
-                        <span className="text-[10px]">Balance</span>
+                    <div className="flex w-full justify-between max-w-xs m-4 pt-5 gap-2">
+                        <div className="w-24 h-24 flex flex-col items-center justify-center bg-green-600 text-white rounded-lg shadow-md p-2 transition-transform duration-300 ease-in-out transform hover:scale-110">
+                            <i className="fas fa-wallet text-2xl"></i>
+                            <span>{balance}</span>
+                            <span className="text-[10px]">Balance</span>
+                        </div>
+                        <div className="w-24 h-24 flex flex-col items-center justify-center bg-red-600 text-white rounded-lg shadow-md p-2 transition-transform duration-300 ease-in-out transform hover:scale-110">
+                            <i className="fas fa-user-friends text-2xl"></i>
+                            <span>{useGuarantor ? "yes" : "no"}</span>
+                            <span className="text-[10px]">Guarantors</span>
+                        </div>
+                        <div className="w-24 h-24 flex flex-col items-center justify-center bg-blue-600 text-white rounded-lg shadow-md p-2 transition-transform duration-300 ease-in-out transform hover:scale-110">
+                            <i className="fas fa-money-bill-wave text-2xl"></i>
+                            <span>{useGuarantor ? balance * 3 : balance * 0.9}</span>
+                            <span className="text-[10px]">Loanable Cash</span>
+                        </div>
                     </div>
-                    <div className="w-24 h-24 flex flex-col items-center justify-center bg-red-600 text-white rounded-lg shadow-md p-2 transition-transform duration-300 ease-in-out transform hover:scale-110">
-                        <i className="fas fa-user-friends text-2xl"></i>
-                        <span>{useGuarantor ? "yes" : "no"}</span>
-                        <span className="text-[10px]">Guarantors</span>
-                    </div>
-                    <div className="w-24 h-24 flex flex-col items-center justify-center bg-blue-600 text-white rounded-lg shadow-md p-2 transition-transform duration-300 ease-in-out transform hover:scale-110">
-                        <i className="fas fa-money-bill-wave text-2xl"></i>
-                        <span>{useGuarantor ? balance * 3 : balance * 0.9}</span>
-                        <span className="text-[10px]">Loanable Cash</span>
-                    </div>
+
+
+                    <form className="w-full justify-center h-full pt-7 items-center flex flex-col gap-2" onSubmit={handleSubmit}>
+                        <input className="input input-bordered w-full max-w-xs" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount" required />
+                        <input className="input input-bordered w-full max-w-xs" type="text" value={`${interestRate}%`} disabled />
+                        <input className="input input-bordered w-full max-w-xs" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} placeholder="Due Date" required />
+                        {totalAmount && <p className="mt-4 text-green-500">Total amount to be paid: {totalAmount}</p>}
+                        <button className="btn max-w-xs w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800" type="submit">Create Loan</button>
+                    </form>
+                    {serverResponse && <div className="mt-4 text-green-500">{serverResponse}</div>}
+                    <Modal
+                        isOpen={isModalOpen}
+                        onRequestClose={() => setIsModalOpen(false)}
+                        contentLabel="Loan Confirmation Modal"
+                        className="w-fit h-fit bg-white rounded-lg shadow-lg p-4 flex flex-col gap-4 justify-center items-center text-center"
+                        style={{
+                            overlay: {
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            },
+                            content: {
+                                position: 'relative',
+                                top: 'auto',
+                                left: 'auto',
+                                right: 'auto',
+                                bottom: 'auto',
+                            }
+                        }}
+                    >
+                        <h2>Confirm Loan</h2>
+                        <p>You will pay a total amount of {totalAmount}. Do you want to proceed?</p>
+                        <p className="text-red-500">This action cannot be undone.</p>
+                        <div className="flex flex-row gap-4">
+                            <button className="btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white text-2xl ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-700" onClick={createLoan}>
+                                <i className="fas fa-check"></i>
+                            </button>
+                            <button className="btn btn-circle ring-offset-1 border-2 border-customGreen bg-customGreen text-white text-2xl ring-2 ring-inset ring-white" onClick={() => setIsModalOpen(false)}>
+                                <i className="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </Modal>
+
+                    <Modal
+                        isOpen={showChooseGuarantorModal}
+                        onRequestClose={() => setShowChooseGuarantorModal(false)}
+                        contentLabel="Choose Guarantor Modal"
+                        className="w-fit h-fit bg-white rounded-lg shadow-lg p-4 flex flex-col gap-4 justify-center items-center text-center"
+                        style={{
+                            overlay: {
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            },
+                            content: {
+                                position: 'relative',
+                                top: 'auto',
+                                left: 'auto',
+                                right: 'auto',
+                                bottom: 'auto',
+                            }
+                        }}
+                    >
+                        <h2>Use Guarantor?</h2>
+                        <p>Do you want to use a guarantor for this loan?</p>
+                        <p>Your current balance is: {balance}</p>
+                        <p>With guarantor you can loan up to: {balance * 3}</p>
+                        <p>Without a guarantor, you can loan up to: {balance * 0.9}</p>
+                        <div className="flex flex-row gap-4">
+                            <button className="btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white text-2xl ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-70" onClick={() => { setUseGuarantor(true); setShowChooseGuarantorModal(false); }}>
+                                <i className="fas fa-check"></i>
+                            </button>
+                            <button className="btn btn-circle ring-offset-1 border-2 border-customGreen bg-customGreen text-white text-2xl ring-2 ring-inset ring-white" onClick={() => { setUseGuarantor(false); setShowChooseGuarantorModal(false); }}>
+                                <i className="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </Modal>
+
+
                 </div>
-
-
-                <form className="w-full justify-center h-full pt-7 items-center flex flex-col gap-2" onSubmit={handleSubmit}>
-                <input className="input input-bordered w-full max-w-xs" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount" required />
-                <input className="input input-bordered w-full max-w-xs" type="text" value={`${interestRate}%`} disabled />
-                <input className="input input-bordered w-full max-w-xs" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} placeholder="Due Date" required />
-                {totalAmount && <p className="mt-4 text-green-500">Total amount to be paid: {totalAmount}</p>}
-                <button className="btn max-w-xs w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800" type="submit">Create Loan</button>
-            </form>
-            {serverResponse && <div className="mt-4 text-green-500">{serverResponse}</div>}
-            <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
-                contentLabel="Loan Confirmation Modal"
-                className="w-fit h-fit bg-white rounded-lg shadow-lg p-4 flex flex-col gap-4 justify-center items-center text-center"
-                style={{
-                    overlay: {
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    },
-                    content: {
-                        position: 'relative',
-                        top: 'auto',
-                        left: 'auto',
-                        right: 'auto',
-                        bottom: 'auto',
-                    }
-                }}
-            >
-                <h2>Confirm Loan</h2>
-                <p>You will pay a total amount of {totalAmount}. Do you want to proceed?</p>
-                <p className="text-red-500">This action cannot be undone.</p>
-                <div className="flex flex-row gap-4">
-                    <button className="btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white text-2xl ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-700" onClick={createLoan}>
-                        <i className="fas fa-check"></i>
-                    </button>
-                    <button className="btn btn-circle ring-offset-1 border-2 border-customGreen bg-customGreen text-white text-2xl ring-2 ring-inset ring-white" onClick={() => setIsModalOpen(false)}>
-                        <i className="fas fa-times"></i>
-                    </button>
-                </div>
-            </Modal>
-
-                <Modal
-                    isOpen={showChooseGuarantorModal}
-                    onRequestClose={() => setShowChooseGuarantorModal(false)}
-                    contentLabel="Choose Guarantor Modal"
-                    className="w-fit h-fit bg-white rounded-lg shadow-lg p-4 flex flex-col gap-4 justify-center items-center text-center"
-                    style={{
-                        overlay: {
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        },
-                        content: {
-                            position: 'relative',
-                            top: 'auto',
-                            left: 'auto',
-                            right: 'auto',
-                            bottom: 'auto',
-                        }
-                    }}
-                >
-                    <h2>Use Guarantor?</h2>
-                    <p>Do you want to use a guarantor for this loan?</p>
-                    <p>Your current balance is: {balance}</p>
-                    <p>With guarantor you can loan up to: {balance * 3}</p>
-                    <p>Without a guarantor, you can loan up to: {balance * 0.9}</p>
-                    <div className="flex flex-row gap-4">
-                        <button className="btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white text-2xl ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-70" onClick={() => { setUseGuarantor(true); setShowChooseGuarantorModal(false); }}>
-                            <i className="fas fa-check"></i>
-                        </button>
-                        <button className="btn btn-circle ring-offset-1 border-2 border-customGreen bg-customGreen text-white text-2xl ring-2 ring-inset ring-white" onClick={() => { setUseGuarantor(false); setShowChooseGuarantorModal(false); }}>
-                            <i className="fas fa-times"></i>
-                        </button>
-                    </div>
-                </Modal>
-
-
             </div>
-</div>
         </div>
     );
 };
