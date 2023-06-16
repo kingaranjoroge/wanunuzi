@@ -1,6 +1,6 @@
 const axios = require('axios');
 const base64 = require('base-64');
-const { Verification } = require('./models/Verification');
+const { Verification } = require("../models/Verification");
 
 // Handle the payment initiation route
 const payment = async (req, res) => {
