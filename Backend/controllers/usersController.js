@@ -13,8 +13,8 @@ let transporter = nodemailer.createTransport({
   port: 465, 
   secure: true, 
   auth: {
-    user: "postmaster@test.wanunuzisacco.or.ke",  
-    pass: "9541b677848a4aaafc1a38f18caad8f6-af778b4b-82616e57"
+    user: "",  
+    pass: ""
   },
 });
 
