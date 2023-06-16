@@ -19,7 +19,7 @@ const Homepage = () => {
 
                 try {
                     // Fetch the user's balance
-                    const { data } = await axios.get(`http://localhost:3000/balance/${decoded.userId}`);
+                    const { data } = await axios.get(`https://test.wanunuzisacco.or.ke/balance/${decoded.userId}`);
                     setBalance(data.balance);
                 } catch (error) {
                     console.error('Error fetching balance:', error);
@@ -47,6 +47,7 @@ const Homepage = () => {
             icon: 'fa-list-check',
             text: 'Manage Loans',
             moreText: 'Manage Loans here',
+            link: '/manage-loans',
         },
         {
             icon: 'fa-money-bill-trend-up',
@@ -136,11 +137,11 @@ const Homepage = () => {
       </div>
       */}
 
-      <div className="grid pt-7 md:pt-24 md:pl-7 md:pr-5 grid-cols-1 w-full md:grid-cols-3 gap-6 justify-items-center h-full">
+      <div className="grid pt-7 md:pt-24 md:pl-7 md:pr-5 grid-cols-1 w-full md:grid-cols-3 gap-3 md:gap-6 justify-items-center h-full">
         {cardData.map((card, index) => (
           <div
             key={index}
-            className="w-10/12 h-36 p-4 rounded-lg shadow-lg bg-customGreen flex flex-col justify-center items-center space-y-3 hover:scale-105 transition-all"
+            className="md:w-10/12 w-11/12 h-52 md:h-40 p-4 rounded-lg shadow-lg bg-customGreen flex flex-col justify-center items-center space-y-3 hover:scale-102 transition-all"
           >
             <a href={card.link}>
               <div className="text-5xl text-white">
