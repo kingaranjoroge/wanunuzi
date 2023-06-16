@@ -7,6 +7,7 @@ import Homepage from './Homepage.jsx';
 import Payment from './Payment.jsx';
 import 'tailwindcss/tailwind.css';
 import Loan from "./Loan.jsx";
+import Savings from './Savings.jsx';
 
 const ProtectedRoute = ({children}) => {
     const token = localStorage.getItem('token');
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/home" element={<ProtectedRoute><Homepage /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/login" />} />
                 <Route path="loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
+                <Route path="savings" element={<Savings/>} />
             </Route>
         </Routes>
     );

@@ -1,5 +1,6 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
-const sequelize = new Sequelize('wanunuzi_db', 'root', '', {dialect: 'mariadb'});
+const { Sequelize }  = require('sequelize');
+
+const { sequelize, DataTypes, Model } = require('./sequel');
 
 class Loan extends Model {}
 
