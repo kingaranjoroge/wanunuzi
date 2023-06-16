@@ -1,6 +1,7 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
+const { sequelize, DataTypes, Model } = require('./sequel');
+
 const User = require("./User");
-const sequelize = new Sequelize('wanunuzi_db', 'root', '', {dialect: 'mariadb'});
+
 class Balance extends Model {}
 
     Balance.init({

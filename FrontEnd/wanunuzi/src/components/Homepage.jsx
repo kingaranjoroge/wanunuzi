@@ -30,6 +30,7 @@ const Homepage = () => {
         fetchBalance();
     }, []);
 
+
     const cardData = [
         {
             icon: 'fa-wallet',
@@ -51,7 +52,7 @@ const Homepage = () => {
         {
             icon: 'fa-money-bill-trend-up',
             text: 'Savings',
-            moreText: '6000',
+            moreText: 'Add savings here',
             link: '/savings'
         },
         {
