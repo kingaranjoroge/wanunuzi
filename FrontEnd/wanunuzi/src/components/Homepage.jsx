@@ -5,7 +5,7 @@ import TestNav from "./testNav.jsx";
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import {useNavigate} from "react-router-dom";
-
+import config from '../../config';
 const Homepage = () => {
 
     const [balance, setBalance] = useState(null);
@@ -19,7 +19,7 @@ const Homepage = () => {
 
                 try {
                     // Fetch the user's balance
-                    const { data } = await axios.get(`https://test.wanunuzisacco.or.ke/balance/${decoded.userId}`);
+                    const { data } = await axios.get(`${config.BASE_API_URL}/balance/${decoded.userId}`);
                     setBalance(data.balance);
                 } catch (error) {
                     console.error('Error fetching balance:', error);
