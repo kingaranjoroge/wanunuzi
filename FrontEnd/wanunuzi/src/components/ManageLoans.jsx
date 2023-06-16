@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
+import config from '../../config';
 
 const ManageLoans = () => {
     const [loans, setLoans] = useState([]);
@@ -15,7 +16,7 @@ const ManageLoans = () => {
 
             const fetchLoans = async () => {
                 try {
-                    const response = await axios.get(`http://test.wanunuzisacco.or.ke/
+                    const response = await axios.get(`${config.BASE_API_URL}/
 getLoans/${decoded.userId}`);
                     setLoans(response.data);
                     setLoading(false);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import config from "../../Config.js";
 
 const Savings = () => {
   const [savingsBalance, setSavingsBalance] = useState(0);
@@ -10,7 +11,7 @@ const Savings = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/savingsBalance');
+        const response = await axios.get(`${config.BASE_API_URL}/savingsBalance`);
         setSavingsBalance(response.data.balance);
       } catch (error) {
         console.error('Error retrieving savings balance:', error);

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
+import config from '../../config';
 
 const SignUp = () => {
 
@@ -25,7 +26,7 @@ const SignUp = () => {
         event.preventDefault();
 
         try {
-            const res = await axios.post('https://test.wanunuzisacco.or.ke/verify-email', {
+            const res = await axios.post(`${config.BASE_API_URL}/verify-email`, {
                 email,
                 token: emailToken
             });
@@ -42,7 +43,7 @@ const SignUp = () => {
 
     const submitForm = async () => {
         try {
-            const res = await axios.post("https://test.wanunuzisacco.or.ke/signup", {
+            const res = await axios.post(`${config.BASE_API_URL}/signup`, {
                 fullName,
                 password,
                 email,

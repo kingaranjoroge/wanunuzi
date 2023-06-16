@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import jwt_decode from 'jwt-decode';
+import config from '../../config';
 
 const SignIn = () => {
   const [username, setUsername] = useState("");
@@ -12,7 +13,7 @@ const SignIn = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const res = await axios.post('http://test.wanunuzisacco.or.ke/login', { username, password });
+      const res = await axios.post(`${config.BASE_API_URL}/login`, { username, password });
       const { message, token } = res.data;
       setResponse(message);
 

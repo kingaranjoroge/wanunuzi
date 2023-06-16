@@ -4,6 +4,7 @@ import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import Modal from 'react-modal';
 import TestNav from "./testNav.jsx";
+import config from '../../config';
 
 function navigateToLogin() {
     window.location.href = '/login';
@@ -88,7 +89,7 @@ const CreateLoanForm = () => {
                     return;
                 }
             }
-            const response = await axios.post('http://test.wanunuzisacco.or.ke/createLoan', { userId: user.userId, amount, interestRate, dueDate });
+            const response = await axios.post(`${config.BASE_API_URL}/createLoan`, { userId: user.userId, amount, interestRate, dueDate });
             setLoanId(response.data.loanId);
             setServerResponse(response.data.message);
             setIsModalOpen(false);
@@ -141,7 +142,7 @@ const CreateLoanForm = () => {
 
                 try {
                     // Fetch the user's balance
-                    const { data } = await axios.get(`https://test.wanunuzisacco.or.ke/balance/${decoded.userId}`);
+                    const { data } = await axios.get(`${config.BASE_API_URL}/balance/${decoded.userId}`);
                     setBalance(data.balance);
                 } catch (error) {
                     console.error('Error fetching balance:', error);
@@ -165,7 +166,7 @@ const CreateLoanForm = () => {
 
         // Post request to add guarantors to loan
         try {
-            const response = await axios.post('https://test.wanunuzisacco.or.ke/addGuarantorsToLoan', { userId: user.userId, loanId, guarantors });
+            const response = await axios.post(`${config.BASE_API_URL}/addGuarantorsToLoan`, { userId: user.userId, loanId, guarantors });
             setServerResponse(response.data.message);
             setIsModalOpen(false);
         } catch (error) {
@@ -192,10 +193,10 @@ const CreateLoanForm = () => {
 
         try {
             // Fetch the guarantor's full name
-            const guarantorRes = await axios.get(`https://test.wanunuzisacco.or.ke/user/${guarantorID}`);
+            const guarantorRes = await axios.get(`${config.BASE_API_URL}/user/${guarantorID}`);
             const guarantorName = guarantorRes.data.fullName;
 
-            const response = await axios.post('https://test.wanunuzisacco.or.ke/addGuarantor', { userId: user.userId, guarantorID });
+            const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, { userId: user.userId, guarantorID });
 
             if (response.data.message === 'Email sent successfully') {
                 setGuarantors([...guarantors, guarantorID]);

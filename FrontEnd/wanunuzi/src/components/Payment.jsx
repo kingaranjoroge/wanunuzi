@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import jwt_decode from "jwt-decode";
-
+import config from '../../config';
 function navigateToLogin() {
   window.location.href = '/login';
 }
@@ -38,7 +38,7 @@ const Payment = () => {
         if (token) {
           const decoded = jwt_decode(token);
           try {
-            const response = await axios.get(`https://test.wanunuzisacco.or.ke/user/${decoded.userId}`, {
+            const response = await axios.get(`${config.BASE_API_URL}/user/${decoded.userId}`, {
               headers: {
                 'Authorization': `Bearer ${token}`
               }
@@ -86,7 +86,7 @@ const Payment = () => {
     }
 
     try {
-      const response = await axios.post('https://test.wanunuzisacco.or.ke/payment', {
+      const response = await axios.post(`${config.BASE_API_URL}/payment`, {
         "BusinessShortCode": 174379,
         "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjMwNjA5MTI1MTIw",
         "Timestamp": "20230609125120",
