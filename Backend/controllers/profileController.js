@@ -31,7 +31,7 @@ const userProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const { fullName, email, phoneNumber, idNumber } = req.body;
+        const { name, email, phoneNumber, idNumber } = req.body;
         const { userId } = req.params;
 
         // Retrieve user details from the database
@@ -43,7 +43,7 @@ const updateProfile = async (req, res) => {
         }
 
         // Update the user details
-        user.fullName = fullName;
+        user.fullName = name;
         user.email = email;
         user.phoneNumber = phoneNumber;
         user.idNumber = idNumber;

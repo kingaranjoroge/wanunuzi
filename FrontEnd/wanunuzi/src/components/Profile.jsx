@@ -60,14 +60,14 @@ const Profile = () => {
       {isLoading ? (
         <p>Loading user details...</p>
       ) : userDetails ? (
-        <form className="bg-white p-6 rounded shadow-lg">
-          <h2 className="text-2xl mb-6">User Details</h2>
-          <div className="mb-4">
+        <form className="bg-white p-6 rounded shadow-lg w-2/4 flex flex-col items-center">
+          <h2 className="text-2xl mb-6 text-green-700 font-bold">User Details</h2>
+          <div className="mb-4 w-2/4">
             <label className="block mb-2" htmlFor="name">
               Name:
             </label>
             <input
-              className="w-full px-4 py-2 border rounded"
+              className="w-full px-4 py-2 border rounded border-green-600"
               type="text"
               id="name"
               name="name"
@@ -75,12 +75,12 @@ const Profile = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4 w-2/4">
             <label className="block mb-2" htmlFor="email">
               Email:
             </label>
             <input
-              className="w-full px-4 py-2 border rounded"
+              className="w-full px-4 py-2 border rounded border-green-600"
               type="email"
               id="email"
               name="email"
@@ -88,12 +88,12 @@ const Profile = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4 w-2/4">
             <label className="block mb-2" htmlFor="phoneNumber">
               Phone Number:
             </label>
             <input
-              className="w-full px-4 py-2 border rounded"
+              className="w-full px-4 py-2 border rounded border-green-600"
               type="text"
               id="phoneNumber"
               name="phoneNumber"
@@ -101,12 +101,12 @@ const Profile = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4 w-2/4">
             <label className="block mb-2" htmlFor="idNumber">
               ID Number:
             </label>
             <input
-              className="w-full px-4 py-2 border rounded"
+              className="w-full px-4 py-2 border rounded border-green-600"
               type="text"
               id="idNumber"
               name="idNumber"
@@ -114,13 +114,15 @@ const Profile = () => {
               onChange={handleInputChange}
             />
           </div>
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-            type="button"
-            onClick={handleSaveChanges}
-          >
-            Save Changes
-          </button>
+          <div className="mb-4">
+            <button
+              className="px-4 py-2 bg-red-800 text-white rounded"
+              type="button"
+              onClick={handleSaveChanges}
+            >
+              Save Changes
+            </button>
+          </div>
         </form>
       ) : (
         <p>Error fetching user details.</p>
