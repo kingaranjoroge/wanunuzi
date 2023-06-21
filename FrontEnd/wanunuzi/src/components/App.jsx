@@ -11,18 +11,19 @@ import Savings from './Savings.jsx';
 import VerificationSuccess from './auth/VerificationSuccess.jsx';
 import VerificationFailure from './auth/VerificationFailure.jsx';
 import VerifyGuarantor from "./guarantors/VerifyGuarantor.jsx";
+import Savings from "./Savings.jsx";
+import Profile from "./Profile.jsx";
 
-const ProtectedRoute = ({children}) => {
-    const token = localStorage.getItem('token');
-    const expirationTime = localStorage.getItem('expirationTime');
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  const expirationTime = localStorage.getItem("expirationTime");
 
-    if (token && Date.now() <= expirationTime) {
-        return children;
-    } else {
-        return <Navigate to="/login" />;
-    }
-}
-
+  if (token && Date.now() <= expirationTime) {
+    return children;
+  } else {
+    return <Navigate to="/login" />;
+  }
+};
 
 function App() {
     return (
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/verification-success" element={<VerificationSuccess />} />
                 <Route path="/verification-failure" element={<VerificationFailure />} />
 
+                <Route path="profile" element={<Profile />} />
                 <Route path="*" element={<Navigate to="/login" />} />
             </Route>
         </Routes>
@@ -47,4 +49,3 @@ function App() {
 }
 
 export default App;
-
