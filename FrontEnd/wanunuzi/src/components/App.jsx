@@ -11,7 +11,6 @@ import Savings from './Savings.jsx';
 import VerificationSuccess from './auth/VerificationSuccess.jsx';
 import VerificationFailure from './auth/VerificationFailure.jsx';
 import VerifyGuarantor from "./guarantors/VerifyGuarantor.jsx";
-import Savings from "./Savings.jsx";
 import Profile from "./Profile.jsx";
 
 const ProtectedRoute = ({ children }) => {

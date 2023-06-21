@@ -20,7 +20,7 @@ const SignIn = () => {
       // Store the token and its expiration time in local storage
       const decoded = jwt_decode(token);
       localStorage.setItem('token', token);
-      localStorage.setItem('expirationTime', decoded.exp * 1000); // Convert expiration time to milliseconds
+      localStorage.setItem('expirationTime', decoded.exp * 3000); // Convert expiration time to milliseconds
 
       // Redirect to the home page if the token is valid
       if (token && Date.now() <= localStorage.getItem('expirationTime')) {
