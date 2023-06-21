@@ -14,6 +14,7 @@ import VerifyGuarantor from "./components/guarantors/VerifyGuarantor.jsx";
 import Profile from "./components/user/Profile.jsx";
 import About from "./components/about/About.jsx";
 import ManageLoans from "./components/loans/ManageLoans.jsx";
+import SavingsDashboard from "./components/savings/SavingsDashboard"
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -45,6 +46,7 @@ function App() {
                 <Route path="/verification-failure" element={<VerificationFailure />} />
 
                 <Route path="profile" element={<Profile />} />
+                <Route path="savings-dashboard" element={<SavingsDashboard />} />
                 <Route path="*" element={<Navigate to="/login" />} />
             </Route>
         </Routes>

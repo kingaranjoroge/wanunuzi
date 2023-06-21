@@ -22,6 +22,7 @@ app.use('/user', require('./routes/getUserRoute'))
 app.use('/profile', require('./routes/profileRoute'))
 app.use('/loan', require('./routes/getLoanRoute'))
 app.use('/guarantor-decision', require('./routes/guarantorDecisionRoute'));
+app.use('/savings-dashboard', require('./routes/savingsDashBoardRoute'));
 
 
 const port = process.env.SERVERPORT || 3000;
