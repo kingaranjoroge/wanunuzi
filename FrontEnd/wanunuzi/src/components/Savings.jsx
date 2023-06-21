@@ -11,7 +11,11 @@ const Savings = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const response = await axios.get(`${config.BASE_API_URL}/savingsBalance`);
+        const token = localStorage.getItem("token");
+        const decoded = jwt_decode(token);
+        const decodedUserId = decoded.userId;
+
+        const response = await axios.get(`${config.BASE_API_URL}/savingsBalance/${decodedUserId}`);
         setSavingsBalance(response.data.balance);
       } catch (error) {
         console.error('Error retrieving savings balance:', error);
