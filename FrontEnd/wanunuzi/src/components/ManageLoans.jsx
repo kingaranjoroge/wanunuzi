@@ -16,8 +16,7 @@ const ManageLoans = () => {
 
             const fetchLoans = async () => {
                 try {
-                    const response = await axios.get(`${config.BASE_API_URL}/
-getLoans/${decoded.userId}`);
+                    const response = await axios.get(`${config.BASE_API_URL}/loan/user/${decoded.userId}`);
                     setLoans(response.data);
                     setLoading(false);
                 } catch (error) {
