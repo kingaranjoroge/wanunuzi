@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
-import config from '../../config';
+import config from '../../../Config.js';
 
 const ManageLoans = () => {
     const [loans, setLoans] = useState([]);
@@ -46,6 +46,8 @@ const ManageLoans = () => {
                     <th>Start Date</th>
                     <th>Due Date</th>
                     <th>Status</th>
+                    <th>Guarantors</th>
+                    <th>Guarantor Decisions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,6 +55,8 @@ const ManageLoans = () => {
                     const months = moment(loan.dueDate).diff(moment(), 'months');
                     const interest = (loan.amount * (loan.interestRate/100)) * months;
                     const amountToBePaid = parseFloat(loan.amount) + interest;
+
+                    console.log(loan);
 
                     return (
                         <tr key={loan.id}>
@@ -63,6 +67,29 @@ const ManageLoans = () => {
                             <td>{new Date(loan.startDate).toLocaleDateString()}</td>
                             <td>{new Date(loan.dueDate).toLocaleDateString()}</td>
                             <td>{loan.status}</td>
+                            <td>
+                                {loan.guarantors && loan.guarantors.length > 0 ? (
+                                    loan.guarantors.map((guarantor) => (
+                                        <p key={guarantor.id}>Guarantor ID: {guarantor.userId}</p>
+                                    ))
+                                ) : (
+                                    <p>No guarantors for this loan</p>
+                                )}
+                            </td>
+                            <td>
+                                {loan.guarantors && loan.guarantors.length > 0 ? loan.guarantors.map((guarantor) => (
+                                    guarantor.guarantorDecision ? (
+                                        <div key={guarantor.guarantorDecision.id}>
+                                            <p>Guarantor ID: {guarantor.userId}</p>
+                                            <p>Decision: {guarantor.guarantorDecision.decision}</p>
+                                        </div>
+                                    ) : (
+                                        <p>No decision from Guarantor ID: {guarantor.userId}</p>
+                                    )
+                                )) : (
+                                    <p>No guarantor decisions for this loan</p>
+                                )}
+                            </td>
                         </tr>
                     )
                 })}

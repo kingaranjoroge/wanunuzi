@@ -3,8 +3,8 @@ import axios from 'axios';
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
 import Modal from 'react-modal';
-import TestNav from "./testNav.jsx";
-import config from '../../config';
+import TestNav from "../navbar/testNav.jsx";
+import config from '../../../Config.js';
 
 function navigateToLogin() {
     window.location.href = '/login';

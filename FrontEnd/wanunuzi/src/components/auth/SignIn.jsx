@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import jwt_decode from 'jwt-decode';
-import config from '../../config';
+import config from '../../../Config.js';
 
 const SignIn = () => {
   const [username, setUsername] = useState("");

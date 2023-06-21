@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import NavRight from "./SideBar.jsx";
-import NavBar from "./NavBar.jsx";
-import TestNav from "./testNav.jsx";
+import NavRight from "../navbar/SideBar.jsx";
+import NavBar from "../navbar/NavBar.jsx";
+import TestNav from "../navbar/testNav.jsx";
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import {useNavigate} from "react-router-dom";
-import config from '../../config';
+import config from '../../../Config.js';
 const Homepage = () => {
 
     const [balance, setBalance] = useState(null);

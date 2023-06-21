@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import jwt_decode from "jwt-decode";
-import config from '../../config';
+import config from '../../../Config.js';
 function navigateToLogin() {
   window.location.href = '/login';
 }

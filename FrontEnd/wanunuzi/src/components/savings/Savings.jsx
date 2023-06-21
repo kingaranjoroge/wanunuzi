@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import config from "../../Config.js";
+import config from "../../../Config.js";
 
 const Savings = () => {
   const [savingsBalance, setSavingsBalance] = useState(0);

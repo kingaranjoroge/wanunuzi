@@ -32,11 +32,9 @@ GuarantorDecision.init({
 });
 
 GuarantorDecision.associateModels = () => {
-    const Loan = require('./Loan');
-    const User = require('./User')
+    const Guarantor = require('./Guarantor');
 
-    GuarantorDecision.belongsTo(Loan, { foreignKey: 'loanId' });
-    GuarantorDecision.belongsTo(User, { foreignKey: 'guarantorId' });
+    GuarantorDecision.belongsTo(Guarantor, { foreignKey: 'guarantorId' });
 }
 
 module.exports = GuarantorDecision;
