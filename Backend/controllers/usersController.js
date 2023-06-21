@@ -73,7 +73,7 @@ const createUser = async (req, res) => {
                   <a href="${SERVER_URL}/verify-email?token=${token}&email=${encodeURIComponent(req.body.email)}" style="background-color: #007BFF; color: white; padding: 10px 15px; text-decoration: none;">Verify Email</a>
                 </div>
                 <p>If you can't click the button above, please copy and paste the following link into your browser:</p>
-                <p><strong>https://wanunuzi.com/verify/${encodeURIComponent(req.body.email)}/${encodeURIComponent(token)}</strong></p>
+                <p><strong>${SERVER_URL}/verify/${encodeURIComponent(req.body.email)}/${encodeURIComponent(token)}</strong></p>
                 <p>Best Regards,</p>
                 <p>The Wanunuzi Sacco Team</p>
             </div>
