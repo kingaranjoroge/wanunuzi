@@ -19,6 +19,9 @@ app.use('/payment/callback', require('./routes/paymentCallbackRoute'))
 app.use('/savingsBalance', require('./routes/savingsBalanceRoute'))
 app.use('/deposit', require('./routes/depositRoute'))
 app.use('/user', require('./routes/getUserRoute'))
+app.use('/loan', require('./routes/getLoanRoute'))
+app.use('/guarantor-decision', require('./routes/guarantorDecisionRoute'));
+
 
 const port = process.env.SERVERPORT || 3000;
 

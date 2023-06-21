@@ -1,8 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const getUserContoller = require('../controllers/getUserController')
+const { getUser, getUserByEmail } = require('../controllers/getUserController')
 
 router.route('/:id')
-    .get(getUserContoller.getUser)  
+    .get(getUser)
+
+router.route('/email/:email')
+    .get(getUserByEmail)
 
 module.exports = router

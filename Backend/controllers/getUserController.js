@@ -3,15 +3,29 @@ const User = require('../models/User');
 const getUser = async (req, res) => {
     const { id } = req.params
     try {
-      const user = await User.findByPk(id.toString());
-      if (user) {
-        res.json(user);
-      } else {
-        res.status(404).json({ message: "User not found" });
-      }
+        const user = await User.findByPk(id.toString());
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
     } catch (err) {
-      res.status(500).json({ message: "An error occurred" });
-    }  
+        res.status(500).json({ message: "An error occurred" });
+    }
 }
 
-module.exports = { getUser }
+const getUserByEmail = async (req, res) => {
+    const { email } = req.params
+    try {
+        const user = await User.findOne({ where: { email }});
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
+    } catch (err) {
+        res.status(500).json({ message: "An error occurred" });
+    }
+}
+
+module.exports = { getUser, getUserByEmail }

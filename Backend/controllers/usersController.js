@@ -59,27 +59,28 @@ const createUser = async (req, res) => {
           amount: 0.0
         });
     
-    // send an email with the verification token
+        // send an email with the verification token
+        let SERVER_URL = process.env.SERVER_URL || 'http://localhost:3000';
         const mailOptions = {
-          from: '"Wanunuzi Sacco" <admin@wanunuzi.com>', // sender address
-          to: req.body.email, // receiver address
-          subject: 'Welcome to Wanunuzi Sacco! Please Verify Your Email', // Subject line
-          html: `
+            from: '"Wanunuzi Sacco" <admin@wanunuzi.com>',
+            to: req.body.email,
+            subject: 'Welcome to Wanunuzi Sacco! Please Verify Your Email',
+            html: `
             <div style="background-color: #f4f4f4; padding: 20px; font-family: Arial, sans-serif;">
                 <h2 style="color: #007BFF;">Welcome to Wanunuzi Sacco!</h2>
                 <p>Thank you for registering. As the last step of your registration, we need to verify your email address. Please click the button below to confirm your email address.</p>
                 <div style="margin: 20px 0;">
-                    <a href="https://wanunuzi.com/verify/${token}" style="background-color: #007BFF; color: white; padding: 10px 15px; text-decoration: none;">Verify Email</a>
+                  <a href="${SERVER_URL}/verify-email?token=${token}&email=${encodeURIComponent(req.body.email)}" style="background-color: #007BFF; color: white; padding: 10px 15px; text-decoration: none;">Verify Email</a>
                 </div>
-                <p>If you can't click the button above, please copy and paste the following token into the verification field on our website:</p>
-                <p><strong>${token}</strong></p>
+                <p>If you can't click the button above, please copy and paste the following link into your browser:</p>
+                <p><strong>https://wanunuzi.com/verify/${encodeURIComponent(req.body.email)}/${encodeURIComponent(token)}</strong></p>
                 <p>Best Regards,</p>
                 <p>The Wanunuzi Sacco Team</p>
             </div>
-        `, // HTML body
+        `,
         };
-    
-    
+
+
         await transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
             console.error(error);

@@ -90,13 +90,14 @@ const CreateLoanForm = () => {
                 }
             }
             const response = await axios.post(`${config.BASE_API_URL}/createLoan`, { userId: user.userId, amount, interestRate, dueDate });
-            setLoanId(response.data.loanId);
+            const newLoanId = response.data.loanId;
+            setLoanId(newLoanId);
             setServerResponse(response.data.message);
             setIsModalOpen(false);
 
             // Call addGuarantorsToLoan after creating the loan
             if (useGuarantor){
-                await addGuarantorsToLoan(loanId);
+                await addGuarantorsToLoan(newLoanId);
             }
 
         } catch (error) {
@@ -198,14 +199,11 @@ const CreateLoanForm = () => {
 
             const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, { userId: user.userId, guarantorID });
 
-            if (response.data.message === 'Email sent successfully') {
-                setGuarantors([...guarantors, guarantorID]);
-                // Include guarantor's full name
-                setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true }]);
-                setServerResponse(response.data.message);
-            } else {
-                setServerResponse('Failed to add the Guarantor');
-            }
+            // Add the guarantor to the state variables
+            setGuarantors([...guarantors, guarantorID]);
+            setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true }]);
+            setServerResponse('Guarantor added successfully.');
+
         } catch (error) {
             console.error(error);
             setServerResponse('An error occurred while adding a Guarantor.');
@@ -213,6 +211,7 @@ const CreateLoanForm = () => {
 
         setGuarantorID(''); // Reset the input field after adding the guarantor
     }
+
 
 
     const removeGuarantor = (id) => {

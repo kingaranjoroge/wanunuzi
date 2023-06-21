@@ -8,6 +8,9 @@ import Payment from './Payment.jsx';
 import 'tailwindcss/tailwind.css';
 import Loan from "./Loan.jsx";
 import Savings from './Savings.jsx';
+import VerificationSuccess from './auth/VerificationSuccess.jsx';
+import VerificationFailure from './auth/VerificationFailure.jsx';
+import VerifyGuarantor from "./guarantors/VerifyGuarantor.jsx";
 
 const ProtectedRoute = ({children}) => {
     const token = localStorage.getItem('token');
@@ -26,16 +29,22 @@ function App() {
         <Routes>
             <Route path="/" element={<Layout />} >
                 <Route index element={<SignIn />} />
+                <Route path="/verify-guarantor" element={<VerifyGuarantor />} />
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/login" element={<SignIn />} />
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/home" element={<ProtectedRoute><Homepage /></ProtectedRoute>} />
+                <Route path="/loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
+                <Route path="/savings" element={<Savings/>} />
+
+                <Route path="/verification-success" element={<VerificationSuccess />} />
+                <Route path="/verification-failure" element={<VerificationFailure />} />
+
                 <Route path="*" element={<Navigate to="/login" />} />
-                <Route path="loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
-                <Route path="savings" element={<Savings/>} />
             </Route>
         </Routes>
     );
 }
 
 export default App;
+
