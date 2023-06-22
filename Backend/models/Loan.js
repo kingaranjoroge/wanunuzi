@@ -40,10 +40,8 @@ class Loan extends Model {}
     });
 Loan.associateModels = () => {
     const User = require('./User');
-    const Guarantor = require('./Guarantor');
 
     Loan.belongsTo(User, { foreignKey: 'userId' });
-    Loan.hasMany(Guarantor, { foreignKey: 'loanId' });
 }
 
 module.exports = Loan;

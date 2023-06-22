@@ -21,28 +21,33 @@ const getLoans = async (req, res) => {
     try {
         const loans = await Loan.findAll({
             where: { userId: userId },
-            include: [
-                {
-                    model: Guarantor,
-                    include: [
-                        {
-                            model: GuarantorDecision
-                        }
-                    ]
-                },
-            ]
         });
 
-        if (loans) {
-            res.json(loans);
+        if (loans && loans.length) {
+            const loanList = [];
+
+            for (let i = 0; i < loans.length; i++) {
+                let loanJSON = loans[i].toJSON();
+
+                loanJSON.guarantor = await Guarantor.findOne({
+                    where: { loanId: loanJSON.id },
+                });
+
+                loanJSON.guarantorDecisions = await GuarantorDecision.findAll({
+                    where: { loanId: loanJSON.id },
+                });
+
+                loanList.push(loanJSON);
+            }
+            res.json(loanList);
         } else {
             res.status(404).json({ message: "No loans found for this user" });
         }
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: "An error occurred" });
     }
 }
+
 
 
 module.exports = { getLoan, getLoans }

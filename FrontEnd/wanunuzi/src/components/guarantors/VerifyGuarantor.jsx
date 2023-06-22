@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import Modal from 'react-modal';
 import config from '../../../config.js';
+
+Modal.setAppElement('#root');
 
 function VerifyGuarantor() {
     const location = useLocation();
@@ -14,6 +17,8 @@ function VerifyGuarantor() {
     const [loanData, setLoanData] = useState({});
     const [guarantorData, setGuarantorData] = useState({});
     const [loanUserData, setLoanUserData] = useState({});
+    const [modalIsOpen, setIsOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
 
     useEffect(() => {
         axios.get(`${config.BASE_API_URL}/loan/${loanId}`)
@@ -21,7 +26,7 @@ function VerifyGuarantor() {
                 setLoanData(response.data);
             })
             .catch(error => {
-                console.error('There was an error!', error);
+                //console.error('There was an error!', error);
             });
 
         axios.get(`${config.BASE_API_URL}/user/email/${encodeURIComponent(guarantor)}`)
@@ -48,11 +53,14 @@ function VerifyGuarantor() {
             decision: 'accepted'
         })
             .then(response => {
-                console.log(response.data);
-                // Add some sort of success message or redirection
+                //console.log(response.data);
+                setModalMessage('You have accepted the guarantor role for this loan.');
+                setIsOpen(true);
             })
             .catch(error => {
-                console.error('There was an error!', error);
+                //console.error('There was an error!', error);
+                setModalMessage(error.response.data.message);
+                setIsOpen(true);
             });
     };
 
@@ -63,13 +71,21 @@ function VerifyGuarantor() {
             decision: 'rejected'
         })
             .then(response => {
-                console.log(response.data);
-                // Add some sort of success message or redirection
+                //console.log(response.data);
+                setModalMessage('You have rejected the guarantor role for this loan.');
+                setIsOpen(true);
             })
             .catch(error => {
-                console.error('There was an error!', error);
+                //console.error('There was an error!', error);
+                setModalMessage(error.response.data.message);
+                setIsOpen(true);
             });
     };
+
+
+    const closeModal = () => {
+        setIsOpen(false);
+    }
 
     return (
         <div className="container mx-auto py-4 px-4">
@@ -104,6 +120,32 @@ function VerifyGuarantor() {
                     Reject
                 </button>
             </div>
+
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                style={{
+                    overlay: {
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    },
+                    content: {
+                        position: 'relative',
+                        top: 'auto',
+                        left: 'auto',
+                        right: 'auto',
+                        bottom: 'auto',
+                    }
+                }}
+                contentLabel="Example Modal"
+            >
+                <h2>Message</h2>
+                <p>{modalMessage}</p>
+                <button className="btn btn-circle btn-outline" onClick={closeModal}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </Modal>
         </div>
     );
 }

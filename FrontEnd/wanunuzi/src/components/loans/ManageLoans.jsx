@@ -12,7 +12,6 @@ const ManageLoans = () => {
         const token = localStorage.getItem('token');
         if (token) {
             const decoded = jwt_decode(token);
-            console.log(decoded);
 
             const fetchLoans = async () => {
                 try {
@@ -56,8 +55,6 @@ const ManageLoans = () => {
                     const interest = (loan.amount * (loan.interestRate/100)) * months;
                     const amountToBePaid = parseFloat(loan.amount) + interest;
 
-                    console.log(loan);
-
                     return (
                         <tr key={loan.id}>
                             <th>{loan.id}</th>
@@ -68,24 +65,22 @@ const ManageLoans = () => {
                             <td>{new Date(loan.dueDate).toLocaleDateString()}</td>
                             <td>{loan.status}</td>
                             <td>
-                                {loan.guarantors && loan.guarantors.length > 0 ? (
-                                    loan.guarantors.map((guarantor) => (
-                                        <p key={guarantor.id}>Guarantor ID: {guarantor.userId}</p>
-                                    ))
+                                {loan.guarantor ? (
+                                    <div>
+                                        <p>Guarantor 1: {loan.guarantor.guarantor1}</p>
+                                        <p>Guarantor 2: {loan.guarantor.guarantor2}</p>
+                                        <p>Guarantor 3: {loan.guarantor.guarantor3}</p>
+                                    </div>
                                 ) : (
                                     <p>No guarantors for this loan</p>
                                 )}
                             </td>
                             <td>
-                                {loan.guarantors && loan.guarantors.length > 0 ? loan.guarantors.map((guarantor) => (
-                                    guarantor.guarantorDecision ? (
-                                        <div key={guarantor.guarantorDecision.id}>
-                                            <p>Guarantor ID: {guarantor.userId}</p>
-                                            <p>Decision: {guarantor.guarantorDecision.decision}</p>
-                                        </div>
-                                    ) : (
-                                        <p>No decision from Guarantor ID: {guarantor.userId}</p>
-                                    )
+                                {loan.guarantorDecisions && loan.guarantorDecisions.length > 0 ? loan.guarantorDecisions.map((decision) => (
+                                    <div key={decision.id}>
+                                        <p>Guarantor ID: {decision.guarantorId}</p>
+                                        <p>Decision: {decision.decision}</p>
+                                    </div>
                                 )) : (
                                     <p>No guarantor decisions for this loan</p>
                                 )}

@@ -58,8 +58,8 @@ const CreateLoanForm = () => {
         // check if user chose to use a guarantor
         if (useGuarantor) {
             // set loan limit to user balance
-            if (amount > balance) {
-                setServerResponse('You can apply for up to 100% of your balance when using a guarantor.');
+            if (amount > (balance * 3)) {
+                setServerResponse('You can apply for up to 300% of your balance when using a guarantor.');
                 return;
             }
         } else {
