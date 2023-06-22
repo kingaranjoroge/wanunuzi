@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 import config from "../../../Config.js";
 
 const Savings = () => {
   const [savingsBalance, setSavingsBalance] = useState(0);
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -16,7 +18,8 @@ const Savings = () => {
         const decodedUserId = decoded.userId;
 
         const response = await axios.get(`${config.BASE_API_URL}/savingsBalance/${decodedUserId}`);
-        setSavingsBalance(response.data.balance);
+        const balance = response.data.balance;
+        setSavingsBalance(balance);
       } catch (error) {
         console.error('Error retrieving savings balance:', error);
       }
@@ -38,14 +41,20 @@ const Savings = () => {
       };
   
       const response = await axios.post('http://localhost:3000/deposit', depositData);
-      setSavingsBalance(response.data.newBalance);
+      const newBalance = response.data.newBalance;
+      setSavingsBalance(newBalance);
       setAmount('');
       setPhoneNumber('');
     } catch (error) {
       console.error('Error making savings deposit:', error);
     }
   };
-  
+
+  const handleSavingsDashboard = () => {
+    navigate('/savings-dashboard');
+  };
+
+  const isAmountValid = parseFloat(amount) > 0;
 
   return (
     <div className="w-full flex flex-col place-items-center h-[90vh] justify-center">
@@ -71,11 +80,19 @@ const Savings = () => {
         />
         <br />
         <button
-          className="btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800"
+          className={`btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800 mb-6 ${!isAmountValid ? 'opacity-50 cursor-not-allowed' : ''}`}
           type="button"
           onClick={handleDeposit}
+          disabled={!isAmountValid}
         >
           Deposit
+        </button>
+        <button
+          className="btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800"
+          type="button"
+          onClick={handleSavingsDashboard}
+        >
+          My Savings
         </button>
       </form>
     </div>

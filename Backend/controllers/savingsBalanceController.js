@@ -1,17 +1,29 @@
-const Savings = require('../models/Savings')
+const Savings = require('../models/Savings');
 
 const savingsBalance = async (req, res) => {
   try {
     const { userId } = req.params;
-    // Retrieve the savings balance from the database
-    const savings = await Savings.findOne({ where: { userId } }); // Assuming you have a table/collection named "savings" in your database
-    const balance = savings ? savings.balance : 0; // Assuming you have a "balance" field in your "savings" table/collection
+
+    // Retrieve the latest savings record for the user
+    const latestSavingsRecord = await Savings.findOne({
+      where: { userId },
+      order: [['date', 'DESC']], // Get the record with the latest date
+    });
+
+    let balance = 0;
+
+    if (latestSavingsRecord) {
+      balance = latestSavingsRecord.balance; // Set the balance to the balance of the latest savings record
+    } else {
+      // If there are no savings records for the user, set the balance to 0 or handle it according to your requirements
+      balance = 0;
+    }
 
     res.json({ balance });
   } catch (error) {
     console.error('Error retrieving savings balance:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}
+};
 
-module.exports = { savingsBalance }
+module.exports = { savingsBalance };
