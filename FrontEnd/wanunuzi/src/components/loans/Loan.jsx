@@ -28,6 +28,7 @@ const CreateLoanForm = () => {
     const [guarantorID, setGuarantorID] = useState('');
     const [guaranteeAmount, setGuaranteeAmount] = useState('');
     const [verifiedGuarantors, setVerifiedGuarantors] = useState([]);
+    const [isGuarantorModalOpen, setIsGuarantorModalOpen] = useState(false);
 
 
     const handleSubmit = async (e) => {
@@ -198,7 +199,13 @@ const CreateLoanForm = () => {
         }
     };
 
-
+    const handleModalSubmit = (e) => {
+        e.preventDefault();
+        // Handle the submitted amount here
+        console.log('amount:', guaranteeAmount)
+        setGuaranteeAmount(guaranteeAmount);
+        setIsGuarantorModalOpen(false);
+    };
 
     const addGuarantor = async (e) => {
         e.preventDefault();
@@ -222,17 +229,21 @@ const CreateLoanForm = () => {
             const guarantorName = guarantorRes.data.fullName;
 
             // Prompt the user to enter the guarantee amount
-            const amount = prompt(`Enter the guarantee amount for ${guarantorName}:`);
+            //use react-modal to prompt the user to enter the guarantee amount
+            setIsGuarantorModalOpen(true);
+            //const amount = guaranteeAmount;
+            //const amount = prompt(`Enter the guarantee amount for ${guarantorName}:`);
+            console.log('amount:',guaranteeAmount);
 
             const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, {
                 userId: user.userId,
                 guarantorID,
-                guaranteeAmount: amount,
+                guaranteeAmount: guaranteeAmount,
             });
 
             // Add the guarantor to the state variables
             setGuarantors([...guarantors, guarantorID]);
-            setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true, guaranteeAmount: amount }]);
+            setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true, guaranteeAmount: guaranteeAmount }]);
             setServerResponse('Guarantor added successfully.');
         } catch (error) {
             console.error(error);
@@ -300,13 +311,7 @@ const CreateLoanForm = () => {
                                         value={guarantorID}
                                         onChange={e => setGuarantorID(e.target.value)}
                                     />
-                                    <input
-                                        type = "number"
-                                        value = {guaranteeAmount}
-                                        onChange = {e => setGuaranteeAmount(e.target.value)}
-                                        className="input input-bordered input-accent w-[100px] border-2 py-2 px-4 rounded-md"
-                                        placeholder="Amount"
-                                    />
+
                                     <button
                                         className={"btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white text-2xl ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-700"}
                                         type={"submit"}
@@ -386,6 +391,20 @@ const CreateLoanForm = () => {
                         </div>
                     </Modal>
 
+                    <Modal isOpen={isGuarantorModalOpen}>
+                        <form onSubmit={handleModalSubmit}>
+                            <label>
+                                Amount:
+                                <input
+                                    type="number"
+                                    value={guaranteeAmount}
+                                    onChange={(e) => setGuaranteeAmount(e.target.value)}
+                                />
+                            </label>
+                            <button type="submit">Submit</button>
+                        </form>
+                    </Modal>
+
                     <Modal
                         isOpen={showChooseGuarantorModal}
                         onRequestClose={() => setShowChooseGuarantorModal(false)}
@@ -420,8 +439,6 @@ const CreateLoanForm = () => {
                             </button>
                         </div>
                     </Modal>
-
-
                 </div>
             </div>
         </div>
