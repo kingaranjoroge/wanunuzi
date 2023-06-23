@@ -27,6 +27,27 @@ User.init(
             allowNull: false,
             unique: true,
         },
+        kraPin: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
+        DOB: {
+            type: DataTypes.DATE,
+            allowNull: false,            
+        },
+        Gender: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        Status: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        Address: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         emailVerificationToken: {
             type: DataTypes.STRING,
         },
