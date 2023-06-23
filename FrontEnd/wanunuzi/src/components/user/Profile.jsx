@@ -56,13 +56,13 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-lightgreen">
+    <div className="flex items-center justify-center min-h-screen bg-lightgreen">
       {isLoading ? (
         <p>Loading user details...</p>
       ) : userDetails ? (
-        <form className="bg-white p-6 rounded shadow-lg w-2/4 flex flex-col items-center">
+        <form className="bg-white p-6 rounded shadow-lg sm:w-3/4 md:w-2/4 lg:w-1/2 xl:w-1/3">
           <h2 className="text-2xl mb-6 text-green-700 font-bold">User Details</h2>
-          <div className="mb-4 w-2/4">
+          <div className="mb-4">
             <label className="block mb-2" htmlFor="name">
               Name:
             </label>
@@ -75,7 +75,7 @@ const Profile = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="mb-4 w-2/4">
+          <div className="mb-4">
             <label className="block mb-2" htmlFor="email">
               Email:
             </label>
@@ -88,7 +88,7 @@ const Profile = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="mb-4 w-2/4">
+          <div className="mb-4">
             <label className="block mb-2" htmlFor="phoneNumber">
               Phone Number:
             </label>
@@ -101,7 +101,7 @@ const Profile = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="mb-4 w-2/4">
+          <div className="mb-4">
             <label className="block mb-2" htmlFor="idNumber">
               ID Number:
             </label>

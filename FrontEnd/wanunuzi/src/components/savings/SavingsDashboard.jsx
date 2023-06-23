@@ -24,9 +24,9 @@ const SavingsDashboard = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <h2 className="text-3xl font-bold mt-8 mb-4 text-green-800">Savings Dashboard</h2>
-      <div className="w-1/2">
+      <div className="w-full sm:w-3/4 md:w-2/4 lg:w-1/2 xl:w-1/3">
         <table className="w-full border-collapse">
           <thead>
             <tr>
