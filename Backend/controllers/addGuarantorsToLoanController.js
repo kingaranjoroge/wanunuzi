@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const Guarantor = require("../models/Guarantor");
+const Guarantor = require('../models/Guarantor');
 const nodemailer = require('nodemailer');
 
 let transporter = nodemailer.createTransport({
@@ -8,7 +8,7 @@ let transporter = nodemailer.createTransport({
   secure: true, // true for 465, false for other ports
   auth: {
     user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
+    pass: process.env.SMTP_PASS,
   },
 });
 
@@ -31,16 +31,21 @@ const addGuarantorsToLoan = async (req, res) => {
   }
 
   try {
-    await Guarantor.create({
-      loanId,
-      guarantor1: guarantors[0],
-      guarantor2: guarantors[1],
-      guarantor3: guarantors[2]
-    });
-
-    // Send email to each guarantor
+    // Create the guarantors and associate them with the loan
     for (let i = 0; i < guarantors.length; i++) {
-      const guarantor = await User.findOne({ where: { id: guarantors[i] } });
+      const guarantorId = guarantors[i];
+      const guarantor = await User.findOne({ where: { id: guarantorId } });
+
+      if (!guarantor) {
+        res.status(400).json({ error: `Guarantor with ID ${guarantorId} not found.` });
+        return;
+      }
+
+      await Guarantor.create({
+        userId: guarantorId,
+        loanId,
+        guaranteeAmount: 0, // Set the initial guarantee amount to 0
+      });
 
       let SERVER_URL = process.env.FRONTEND_URL;
       const mailOptions = {
@@ -56,11 +61,10 @@ const addGuarantorsToLoan = async (req, res) => {
     }
 
     res.json({ message: 'Guarantors added and notified successfully.' });
-
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'An error occurred while creating the guarantors.' });
   }
-}
+};
 
-module.exports = { addGuarantorsToLoan }
+module.exports = { addGuarantorsToLoan };

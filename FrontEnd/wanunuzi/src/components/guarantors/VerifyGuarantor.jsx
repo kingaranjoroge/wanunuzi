@@ -20,13 +20,15 @@ function VerifyGuarantor() {
     const [modalIsOpen, setIsOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
 
+    const [newAmount, setNewAmount] = useState('');
+
     useEffect(() => {
         axios.get(`${config.BASE_API_URL}/loan/${loanId}`)
             .then(response => {
                 setLoanData(response.data);
             })
             .catch(error => {
-                //console.error('There was an error!', error);
+                console.error('There was an error!', error);
             });
 
         axios.get(`${config.BASE_API_URL}/user/email/${encodeURIComponent(guarantor)}`)
@@ -50,15 +52,14 @@ function VerifyGuarantor() {
         axios.post(`${config.BASE_API_URL}/guarantor-decision`, {
             loanId,
             guarantorId: guarantorData.id,
-            decision: 'accepted'
+            decision: 'accepted',
+            guaranteeAmount: newAmount,
         })
             .then(response => {
-                //console.log(response.data);
                 setModalMessage('You have accepted the guarantor role for this loan.');
                 setIsOpen(true);
             })
             .catch(error => {
-                //console.error('There was an error!', error);
                 setModalMessage(error.response.data.message);
                 setIsOpen(true);
             });
@@ -68,24 +69,21 @@ function VerifyGuarantor() {
         axios.post(`${config.BASE_API_URL}/guarantor-decision`, {
             loanId,
             guarantorId: guarantorData.id,
-            decision: 'rejected'
+            decision: 'rejected',
         })
             .then(response => {
-                //console.log(response.data);
                 setModalMessage('You have rejected the guarantor role for this loan.');
                 setIsOpen(true);
             })
             .catch(error => {
-                //console.error('There was an error!', error);
                 setModalMessage(error.response.data.message);
                 setIsOpen(true);
             });
     };
 
-
     const closeModal = () => {
         setIsOpen(false);
-    }
+    };
 
     return (
         <div className="container mx-auto py-4 px-4">
@@ -110,13 +108,32 @@ function VerifyGuarantor() {
                     <p>Name: {guarantorData.fullName}</p>
                     <p>Email: {guarantorData.email}</p>
                     <p>Phone Number: {guarantorData.phoneNumber}</p>
+                    <div className="mt-4">
+                        <label htmlFor="newAmount" className="block text-sm font-medium text-gray-700">
+                            New Guarantee Amount:
+                        </label>
+                        <input
+                            type="number"
+                            id="newAmount"
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            placeholder="Enter the new guarantee amount"
+                            value={newAmount}
+                            onChange={e => setNewAmount(e.target.value)}
+                        />
+                    </div>
                 </div>
             </div>
             <div className="mt-4">
-                <button className="bg-green-500 text-white py-2 px-4 rounded mr-2" onClick={handleAccept}>
+                <button
+                    className="bg-green-500 text-white py-2 px-4 rounded mr-2"
+                    onClick={handleAccept}
+                >
                     Accept
                 </button>
-                <button className="bg-red-500 text-white py-2 px-4 rounded" onClick={handleReject}>
+                <button
+                    className="bg-red-500 text-white py-2 px-4 rounded"
+                    onClick={handleReject}
+                >
                     Reject
                 </button>
             </div>
@@ -136,14 +153,27 @@ function VerifyGuarantor() {
                         left: 'auto',
                         right: 'auto',
                         bottom: 'auto',
-                    }
+                    },
                 }}
                 contentLabel="Example Modal"
             >
                 <h2>Message</h2>
                 <p>{modalMessage}</p>
                 <button className="btn btn-circle btn-outline" onClick={closeModal}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
                 </button>
             </Modal>
         </div>
