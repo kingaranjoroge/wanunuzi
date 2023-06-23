@@ -26,10 +26,8 @@ const CreateLoanForm = () => {
     const [loanId, setLoanId] = useState('');
     const [guarantors, setGuarantors] = useState([]);
     const [guarantorID, setGuarantorID] = useState('');
+    const [guaranteeAmount, setGuaranteeAmount] = useState('');
     const [verifiedGuarantors, setVerifiedGuarantors] = useState([]);
-
-
-
 
 
     const handleSubmit = async (e) => {
@@ -165,9 +163,33 @@ const CreateLoanForm = () => {
             return;
         }
 
+        // Map guarantors to their guarantee amounts
+        const guarantorsWithAmounts = guarantors.map(guarantorId => {
+            const guarantor = verifiedGuarantors.find(g => g.id === guarantorId);
+            if (!guarantor) {
+                return null; // Guarantor not found
+            }
+            return {
+                userId: guarantorId,
+                guaranteeAmount: guarantor.guaranteeAmount, // Use the guarantee amount for each guarantor
+            };
+        });
+
+        // Check if any guarantor was not found
+        if (guarantorsWithAmounts.includes(null)) {
+            setServerResponse('An error occurred while adding the guarantors to the loan.');
+            return;
+        }
+
+        console.log('guarantorsWithAmounts:', guarantorsWithAmounts)
+
         // Post request to add guarantors to loan
         try {
-            const response = await axios.post(`${config.BASE_API_URL}/addGuarantorsToLoan`, { userId: user.userId, loanId, guarantors });
+            const response = await axios.post(`${config.BASE_API_URL}/addGuarantorsToLoan`, {
+                userId: user.userId,
+                loanId,
+                guarantors: guarantorsWithAmounts.filter(Boolean), // Filter out any null values
+            });
             setServerResponse(response.data.message);
             setIsModalOpen(false);
         } catch (error) {
@@ -175,6 +197,8 @@ const CreateLoanForm = () => {
             setServerResponse('An error occurred while adding the guarantors to the loan.');
         }
     };
+
+
 
     const addGuarantor = async (e) => {
         e.preventDefault();
@@ -186,7 +210,7 @@ const CreateLoanForm = () => {
         }
 
         //if the id is of the current user then return
-        if (guarantorID == user.userId) {
+        if (guarantorID === user.userId) {
             setServerResponse('You cannot add yourself as a Guarantor.');
             setGuarantorID(''); // Reset the input field
             return;
@@ -197,22 +221,26 @@ const CreateLoanForm = () => {
             const guarantorRes = await axios.get(`${config.BASE_API_URL}/user/${guarantorID}`);
             const guarantorName = guarantorRes.data.fullName;
 
-            const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, { userId: user.userId, guarantorID });
+            // Prompt the user to enter the guarantee amount
+            const amount = prompt(`Enter the guarantee amount for ${guarantorName}:`);
+
+            const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, {
+                userId: user.userId,
+                guarantorID,
+                guaranteeAmount: amount,
+            });
 
             // Add the guarantor to the state variables
             setGuarantors([...guarantors, guarantorID]);
-            setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true }]);
+            setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true, guaranteeAmount: amount }]);
             setServerResponse('Guarantor added successfully.');
-
         } catch (error) {
             console.error(error);
             setServerResponse('An error occurred while adding a Guarantor.');
         }
 
         setGuarantorID(''); // Reset the input field after adding the guarantor
-    }
-
-
+    };
 
     const removeGuarantor = (id) => {
         // Remove from guarantors array
@@ -246,7 +274,7 @@ const CreateLoanForm = () => {
                                         <li className={"flex gap-3 w-full mb-3 items-center justify-between"} key={guarantor.id}>
                                             <input
                                                 type="text"
-                                                value={`${guarantor.name}` + "     " + `${guarantor.id}` + " " + `${guarantor.isVerified ? '⚡  🕛' : '❌'}`}
+                                                value={`${guarantor.name}` + "     " + `${guarantor.id}` + " " + `${guarantor.isVerified ? '⚡  🕛' : '❌'}` + " " + `${guarantor.guaranteeAmount ? guarantor.guaranteeAmount : ''}`}
                                                 readOnly
                                                 className="input input-bordered input-accent w-full cursor-not-allowed py-2 px-4 rounded-md"
                                             />
@@ -271,6 +299,13 @@ const CreateLoanForm = () => {
                                         placeholder={"ID Number"}
                                         value={guarantorID}
                                         onChange={e => setGuarantorID(e.target.value)}
+                                    />
+                                    <input
+                                        type = "number"
+                                        value = {guaranteeAmount}
+                                        onChange = {e => setGuaranteeAmount(e.target.value)}
+                                        className="input input-bordered input-accent w-[100px] border-2 py-2 px-4 rounded-md"
+                                        placeholder="Amount"
                                     />
                                     <button
                                         className={"btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white text-2xl ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-700"}

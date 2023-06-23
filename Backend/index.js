@@ -21,8 +21,10 @@ app.use('/deposit', require('./routes/depositRoute'))
 app.use('/user', require('./routes/getUserRoute'))
 app.use('/profile', require('./routes/profileRoute'))
 app.use('/loan', require('./routes/getLoanRoute'))
-app.use('/guarantor-decision', require('./routes/guarantorDecisionRoute'));
 app.use('/savings-dashboard', require('./routes/savingsDashBoardRoute'));
+app.use('/getGuarantors', require('./routes/getLoanGuarantorsRoute'));
+app.use('/all', require('./routes/getAllGuarantorsForLoanRoute'));
+app.use('/guarantor-decision', require('./routes/guarantorDecisionRoute'));
 
 
 const port = process.env.SERVERPORT || 3000;
