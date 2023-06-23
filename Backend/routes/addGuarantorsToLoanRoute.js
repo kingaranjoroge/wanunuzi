@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const addGuarantorsToLoanContoller = require('../controllers/addGuarantorsToLoanController')
+const addGuarantorsToLoanController = require('../controllers/addGuarantorsToLoanController')
 
 router.route('/')
-    .post(addGuarantorsToLoanContoller.addGuarantorsToLoan)  
+    .post(addGuarantorsToLoanController.addGuarantorsToLoan)
 
 module.exports = router

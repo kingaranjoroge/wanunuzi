@@ -1,53 +1,52 @@
+const {Sequelize} = require("sequelize");
 const { sequelize, DataTypes, Model } = require('./sequel');
-
 class Guarantor extends Model {}
 
-Guarantor.init({
-    loanId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'loans',
-            key: 'id'
-        }
+Guarantor.init(
+    {
+        userId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'users',
+                key: 'id',
+            },
+        },
+        loanId: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: 'loans',
+                key: 'id',
+            },
+        },
+        guaranteeAmount: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+        },
+        decision: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: 'pending',
+        },
+        creationDate: {
+            type: DataTypes.DATE,
+            defaultValue: Sequelize.NOW,
+        },
+        modificationDate: {
+            type: DataTypes.DATE,
+        },
     },
-    guarantor1: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id'
-        }
-    },
-    guarantor2: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id'
-        }
-    },
-    guarantor3: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'users',
-            key: 'id'
-        }
+    {
+        sequelize,
+        modelName: 'Guarantor',
     }
-}, {
-    sequelize,
-    modelName: 'Guarantor'
-});
+);
 
 Guarantor.associateModels = () => {
+    const User = require('./User');
     const Loan = require('./Loan');
-    const User = require('./User')
 
+    Guarantor.belongsTo(User, { foreignKey: 'userId' });
     Guarantor.belongsTo(Loan, { foreignKey: 'loanId' });
-    Guarantor.belongsTo(User, { foreignKey: 'guarantor1' });
-    Guarantor.belongsTo(User, { foreignKey: 'guarantor2' });
-    Guarantor.belongsTo(User, { foreignKey: 'guarantor3' });
-}
+};
 
-module.exports = Guarantor
+module.exports = Guarantor;

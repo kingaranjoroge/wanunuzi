@@ -1,16 +1,16 @@
-const { Sequelize }  = require('sequelize');
-
+const { Sequelize } = require('sequelize');
 const { sequelize, DataTypes, Model } = require('./sequel');
 
 class Loan extends Model {}
 
-    Loan.init({
+Loan.init(
+    {
         userId: {
             type: DataTypes.INTEGER,
             references: {
                 model: 'users',
-                key: 'id'
-            }
+                key: 'id',
+            },
         },
         amount: {
             type: DataTypes.FLOAT,
@@ -33,15 +33,20 @@ class Loan extends Model {}
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: 'pending',
-        }
-    }, {
+        },
+    },
+    {
         sequelize,
-        modelName: 'Loan'
-    });
+        modelName: 'Loan',
+    }
+);
+
 Loan.associateModels = () => {
     const User = require('./User');
+    const Guarantor = require('./Guarantor');
 
     Loan.belongsTo(User, { foreignKey: 'userId' });
-}
+    Loan.hasMany(Guarantor, { foreignKey: 'loanId' });
+};
 
 module.exports = Loan;
