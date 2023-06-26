@@ -27,6 +27,8 @@ app.use('/getGuarantors', require('./routes/getLoanGuarantorsRoute'));
 app.use('/all', require('./routes/getAllGuarantorsForLoanRoute'));
 app.use('/guarantor-decision', require('./routes/guarantorDecisionRoute'));
 app.use('/guarantor-data', require('./routes/guarantorDataRoute'));
+app.use('/nextOfKin', require('./routes/nextOfKinRoute'));
+
 
 
 const port = process.env.SERVERPORT || 3000;

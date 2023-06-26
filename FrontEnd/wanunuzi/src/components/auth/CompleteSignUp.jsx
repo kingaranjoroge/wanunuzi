@@ -4,6 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import config from '../../../Config.js';
+import jwt_decode from 'jwt-decode';
 
 
 const CompleteSignUp = () => {
@@ -84,6 +85,14 @@ const CompleteSignUp = () => {
       const res = await axios.post(`${config.BASE_API_URL}/complete-registration`, userData);
   
       console.log('UserData sent successfully!');
+
+      const token = localStorage.getItem('token');
+      const decoded = jwt_decode(token);
+      const userId = decoded.userId;
+
+      const response = await axios.post(`${config.BASE_API_URL}/nextOfKin`, {nextOfKin, userId});
+      console.log('Next of Kin data sent successfully!');
+
       navigate('/payment');
     } catch (error) {
       console.error('Error sending UserData:', error);
