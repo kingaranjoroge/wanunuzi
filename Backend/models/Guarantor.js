@@ -1,5 +1,6 @@
-const {Sequelize} = require("sequelize");
+const { Sequelize } = require("sequelize");
 const { sequelize, DataTypes, Model } = require('./sequel');
+
 class Guarantor extends Model {}
 
 Guarantor.init(

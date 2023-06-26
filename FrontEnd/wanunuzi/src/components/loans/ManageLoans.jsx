@@ -16,7 +16,33 @@ const ManageLoans = () => {
             const fetchLoans = async () => {
                 try {
                     const response = await axios.get(`${config.BASE_API_URL}/loan/user/${decoded.userId}`);
-                    setLoans(response.data);
+                    const mappedLoans = await Promise.all(response.data.map(async (loan) => {
+                        const months = moment(loan.dueDate).diff(moment(), 'months');
+                        const interest = (loan.amount * (loan.interestRate / 100)) * months;
+                        const amountToBePaid = parseFloat(loan.amount) + interest;
+                        const guarantors = await Promise.all(loan.guarantorDecisions.map(async (decision) => {
+                            const guarantorResponse = await axios.get(`${config.BASE_API_URL}/user/${decision.userId}`);
+                            const guarantorUsername = guarantorResponse.data.fullName;
+                            return {
+                                guarantorId: decision.userId,
+                                guarantorUsername: guarantorUsername,
+                                decision: decision.decision,
+                            };
+                        }));
+
+                        return {
+                            id: loan.id,
+                            amount: loan.amount,
+                            interestRate: loan.interestRate,
+                            startDate: loan.startDate,
+                            dueDate: loan.dueDate,
+                            status: loan.status,
+                            guarantors: guarantors,
+                            amountToBePaid: amountToBePaid.toFixed(2),
+                        };
+                    }));
+
+                    setLoans(mappedLoans);
                     setLoading(false);
                 } catch (error) {
                     console.error("Failed to fetch loans: ", error);
@@ -50,44 +76,55 @@ const ManageLoans = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {loans.map((loan) => {
-                    const months = moment(loan.dueDate).diff(moment(), 'months');
-                    const interest = (loan.amount * (loan.interestRate/100)) * months;
-                    const amountToBePaid = parseFloat(loan.amount) + interest;
-
-                    return (
-                        <tr key={loan.id}>
-                            <th>{loan.id}</th>
-                            <td>{loan.amount}</td>
-                            <td>{loan.interestRate}%</td>
-                            <td>{amountToBePaid.toFixed(2)}</td>
-                            <td>{new Date(loan.startDate).toLocaleDateString()}</td>
-                            <td>{new Date(loan.dueDate).toLocaleDateString()}</td>
-                            <td>{loan.status}</td>
-                            <td>
-                                {loan.guarantor ? (
-                                    <div>
-                                        <p>Guarantor 1: {loan.guarantor.guarantor1}</p>
-                                        <p>Guarantor 2: {loan.guarantor.guarantor2}</p>
-                                        <p>Guarantor 3: {loan.guarantor.guarantor3}</p>
-                                    </div>
-                                ) : (
-                                    <p>No guarantors for this loan</p>
-                                )}
-                            </td>
-                            <td>
-                                {loan.guarantorDecisions && loan.guarantorDecisions.length > 0 ? loan.guarantorDecisions.map((decision) => (
-                                    <div key={decision.id}>
-                                        <p>Guarantor ID: {decision.guarantorId}</p>
-                                        <p>Decision: {decision.decision}</p>
-                                    </div>
-                                )) : (
-                                    <p>No guarantor decisions for this loan</p>
-                                )}
-                            </td>
-                        </tr>
-                    )
-                })}
+                {loans.map((loan) => (
+                    <tr key={loan.id}>
+                        <th>{loan.id}</th>
+                        <td>{loan.amount}</td>
+                        <td>{loan.interestRate}%</td>
+                        <td>{loan.amountToBePaid}</td>
+                        <td>{new Date(loan.startDate).toLocaleDateString()}</td>
+                        <td>{new Date(loan.dueDate).toLocaleDateString()}</td>
+                        <td>{loan.status}</td>
+                        <td>
+                            {loan.guarantors.length > 0 ? (
+                                <div>
+                                    {loan.guarantors.map((guarantor, index) => (
+                                        <div className={'flex gap-1 my-3 border-y-2 border-gray-400 py-2'} key={index}>
+                                            <div className="avatar">
+                                                <div className="w-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
+                                                    <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
+                                                </div>
+                                            </div>
+                                            {/*<p>Name {index + 1}: {guarantor.guarantorUsername}</p>*/}
+                                            <p> {guarantor.guarantorUsername}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No guarantors for this loan</p>
+                            )}
+                        </td>
+                        <td>
+                            {loan.guarantors.length > 0 ? (
+                                <div>
+                                    {loan.guarantors.map((guarantor, index) => (
+                                        <div className={'flex gap-3 my-3 border-y-2 border-gray-400 py-2'} key={index}>
+                                            {/*<p>: {guarantor.guarantorUsername}</p>*/}
+                                            <div className="avatar">
+                                                <div className="w-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
+                                                    <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
+                                                </div>
+                                            </div>
+                                            <p>{guarantor.decision}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No guarantor decisions for this loan</p>
+                            )}
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
         </div>
