@@ -13,7 +13,7 @@ module.exports = {
     await queryInterface.addColumn('Users', 'DOB', {
       type: Sequelize.DATE,
       allowNull: true,
-      after: 'kraPin' // Add after phoneNumber column
+      after: 'kraPin' // Add after kraPin column
     });
 
     // Add Gender column

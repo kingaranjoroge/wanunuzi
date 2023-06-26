@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+import config from '../../../Config.js';
+
 
 const CompleteSignUp = () => {
   const navigate = useNavigate();
@@ -72,11 +75,19 @@ const CompleteSignUp = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
-    navigate("/payment");
+  
+    const { nextOfKin, ...userData } = formData;
+  
+    try {
+      const res = await axios.post(`${config.BASE_API_URL}/complete-registration`, userData);
+  
+      console.log('UserData sent successfully!');
+      navigate('/payment');
+    } catch (error) {
+      console.error('Error sending UserData:', error);
+    }
   };
 
   return (
@@ -91,7 +102,7 @@ const CompleteSignUp = () => {
                   DOB<span className="text-red-500">*</span>:
                 </label>
                 <DatePicker
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   selected={formData.dob}
                   onChange={handleDOBChange}
                   dateFormat="yyyy-MM-dd"
@@ -104,7 +115,7 @@ const CompleteSignUp = () => {
                   Gender:
                 </label>
                 <select
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   id="gender"
                   name="gender"
                   value={formData.gender}
@@ -120,7 +131,7 @@ const CompleteSignUp = () => {
                   Status:
                 </label>
                 <select
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   id="status"
                   name="status"
                   value={formData.status}
@@ -136,7 +147,7 @@ const CompleteSignUp = () => {
                   Address:
                 </label>
                 <input
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   type="text"
                   id="address"
                   name="address"
@@ -149,7 +160,7 @@ const CompleteSignUp = () => {
                   KRA Pin<span className="text-red-500">*</span>:
                 </label>
                 <input
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   type="text"
                   id="kraPin"
                   name="kraPin"
@@ -166,7 +177,7 @@ const CompleteSignUp = () => {
                   Name<span className="text-red-500">*</span>:
                 </label>
                 <input
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   type="text"
                   id="name"
                   name="name"
@@ -180,7 +191,7 @@ const CompleteSignUp = () => {
                   DOB<span className="text-red-500">*</span>:
                 </label>
                 <DatePicker
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   selected={formData.dob}
                   onChange={handleDOBChange}
                   dateFormat="yyyy-MM-dd"
@@ -193,7 +204,7 @@ const CompleteSignUp = () => {
                   ID/Birth Certificate<span className="text-red-500">*</span>:
                 </label>
                 <input
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   type="text"
                   id="id"
                   name="id"
@@ -207,7 +218,7 @@ const CompleteSignUp = () => {
                   Phone<span className="text-red-500">*</span>:
                 </label>
                 <input
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   type="text"
                   id="phone"
                   name="phone"
@@ -221,7 +232,7 @@ const CompleteSignUp = () => {
                   Email<span className="text-red-500">*</span>:
                 </label>
                 <input
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   type="email"
                   id="email"
                   name="email"
@@ -235,7 +246,7 @@ const CompleteSignUp = () => {
                   KRA Pin<span className="text-red-500">*</span>:
                 </label>
                 <input
-                  className="w-full px-4 py-2 border rounded border-green-400 focus:border-green-500"
+                  className="input input-bordered input-success w-full max-w-xs"
                   type="text"
                   id="nextOfKinKraPin"
                   name="kraPin"
@@ -260,4 +271,4 @@ const CompleteSignUp = () => {
   );
 };
 
-export default CompleteSignUp;
+export default CompleteSignUp

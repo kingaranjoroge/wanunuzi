@@ -1,6 +1,6 @@
 const Loan = require('../models/Loan');
 const Guarantor = require('../models/Guarantor');
-const GuarantorDecision = require('../models/GuarantorDecision');
+
 
 const getLoan = async (req, res) => {
     const { id } = req.params;

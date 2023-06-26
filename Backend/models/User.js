@@ -29,24 +29,24 @@ User.init(
         },
         kraPin: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             unique: true,
         },
         DOB: {
             type: DataTypes.DATE,
-            allowNull: false,            
+            allowNull: true,            
         },
         Gender: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         Status: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         Address: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         emailVerificationToken: {
             type: DataTypes.STRING,

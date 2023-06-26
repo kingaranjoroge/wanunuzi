@@ -51,8 +51,8 @@ const SignUp = () => {
                 phoneNumber,
                 idNumber,
             });
+            setFormStep(2);
             navigate('/complete-registration');
-            //setFormStep(2);
         } catch (error) {
             setResponse(error.response.data.message);
         }
