@@ -30,6 +30,8 @@ const CreateLoanForm = () => {
     const [verifiedGuarantors, setVerifiedGuarantors] = useState([]);
     const [isGuarantorModalOpen, setIsGuarantorModalOpen] = useState(false);
     const [guarantorName, setGuarantorName] = useState('');
+    const [modalMessage, setModalMessage] = useState("");
+    const [modalIsErrorOpen, setIsErrorOpen] = useState(false);
 
 
 
@@ -193,7 +195,7 @@ const CreateLoanForm = () => {
             return;
         }
 
-        console.log('guarantorsWithAmounts:', guarantorsWithAmounts)
+        //console.log('guarantorsWithAmounts:', guarantorsWithAmounts)
 
         // Post request to add guarantors to loan
         try {
@@ -210,19 +212,12 @@ const CreateLoanForm = () => {
         }
     };
 
-<<<<<<< HEAD
-    const handleModalSubmit = (e) => {
-        e.preventDefault();
-        // Handle the submitted amount here
-        console.log('amount:', guaranteeAmount)
-=======
     /*
     TODO: DEPRECATED
     const handleModalSubmit = (e) => {
         e.preventDefault();
         // Handle the submitted amount here
         console.log('amount:', guaranteeAmount);
->>>>>>> dab14552e3d4cc4743b34915263e9d3cfc80f848
         setGuaranteeAmount(guaranteeAmount);
         setIsGuarantorModalOpen(false);
     };
@@ -251,15 +246,9 @@ const CreateLoanForm = () => {
             // Prompt the user to enter the guarantee amount
             //use react-modal to prompt the user to enter the guarantee amount
             setIsGuarantorModalOpen(true);
-<<<<<<< HEAD
-            //const amount = guaranteeAmount;
-            //const amount = prompt(`Enter the guarantee amount for ${guarantorName}:`);
-            console.log('amount:',guaranteeAmount);
-=======
             setGuarantorName(guarantorName)
             //const amount = guaranteeAmount;
             //const amount = prompt(`Enter the guarantee amount for ${guarantorName}:`);
->>>>>>> dab14552e3d4cc4743b34915263e9d3cfc80f848
 
             const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, {
                 userId: user.userId,
@@ -268,11 +257,7 @@ const CreateLoanForm = () => {
             });
 
             // Add the guarantor to the state variables
-<<<<<<< HEAD
-            setGuarantors([...guarantors, guarantorID]);
-=======
             setGuarantors([...guarantors, guarantorID, guaranteeAmount]);
->>>>>>> dab14552e3d4cc4743b34915263e9d3cfc80f848
             setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true, guaranteeAmount: guaranteeAmount }]);
             setServerResponse('Guarantor added successfully.');
         } catch (error) {
@@ -281,9 +266,6 @@ const CreateLoanForm = () => {
         }
 
         setGuarantorID(''); // Reset the input field after adding the guarantor
-<<<<<<< HEAD
-    };
-=======
     };*/
 
     const addGuarantor = async (e) => {
@@ -292,13 +274,19 @@ const CreateLoanForm = () => {
         if (guarantors.includes(guarantorID)) {
             setServerResponse('This Guarantor is already added.');
             setGuarantorID(''); // Reset the input field
+            setModalMessage('This Guarantor is already added.')
+            setIsErrorOpen(true)
             return;
         }
 
         // if the id is of the current user then return
-        if (guarantorID === user.userId) {
+        //convert guarantorID to integer
+        const guarantorIDInt = parseInt(guarantorID);
+        if (guarantorIDInt === user.userId) {
             setServerResponse('You cannot add yourself as a Guarantor.');
             setGuarantorID(''); // Reset the input field
+            setModalMessage('You cannot add yourself as a Guarantor.')
+            setIsErrorOpen(true)
             return;
         }
 
@@ -311,8 +299,15 @@ const CreateLoanForm = () => {
             setIsGuarantorModalOpen(true);
             setGuarantorName(guarantorName);
         } catch (error) {
-            console.error(error);
-            setServerResponse('An error occurred while adding a Guarantor.');
+            //console.error(error);
+            //if the error is 404 then the user does not exist
+            if (error.response.status === 404) {
+                setServerResponse('User ID does not exist.');
+                setModalMessage('User ID does not exist.');
+                setIsErrorOpen(true);
+            }else{
+                setServerResponse('An error occurred while adding a Guarantor.');
+            }
         }
     };
 
@@ -328,7 +323,7 @@ const CreateLoanForm = () => {
 
             // Add the guarantor to the state variables
             setGuarantors([...guarantors, guarantorID]);
-            console.log('guarantors:', guarantors);
+            //console.log('guarantors:', guarantors);
             setVerifiedGuarantors([
                 ...verifiedGuarantors,
                 {
@@ -349,8 +344,6 @@ const CreateLoanForm = () => {
     };
 
 
->>>>>>> dab14552e3d4cc4743b34915263e9d3cfc80f848
-
     const removeGuarantor = (id) => {
         // Remove from guarantors array
         const newGuarantors = guarantors.filter(guarantor => guarantor !== id);
@@ -361,7 +354,9 @@ const CreateLoanForm = () => {
         setVerifiedGuarantors(newVerifiedGuarantors);
     }
 
-
+    const closeErrorModal = () => {
+        setIsErrorOpen(false);
+    };
 
 
     return (
@@ -370,8 +365,9 @@ const CreateLoanForm = () => {
             <div className={"flex flex-wrap"}>
 
                 {
+
                     useGuarantor ? <>
-                        <div className={"w-full flex flex-col justify-center items-center md:w-1/3 lg:w-1/3"}>
+                        <div className={"w-full flex flex-col p-4 items-end md:w-1/2 lg:w-1/2"}>
                             <div className="flex justify-center items-center m-4 gap-2">
                                 <h2 className={"font-bold text-2xl text-gray-600 text-center"}>Add Guarantors</h2>
                             </div>
@@ -426,7 +422,7 @@ const CreateLoanForm = () => {
                 }
 
 
-                <div className={ useGuarantor ?  "w-full md:w-2/3 lg:w-2/3 flex flex-col justify-center items-center" : "w-full flex flex-col justify-center items-center" }>
+                <div className={ useGuarantor ?  "w-full p-4 md:w-1/2 lg:w-1/2 flex flex-col justify-center items-start" : "w-full flex flex-col justify-center items-center" }>
 
 
                     <div className="flex w-full justify-between max-w-xs m-4 pt-5 gap-2">
@@ -447,20 +443,20 @@ const CreateLoanForm = () => {
                         </div>
                     </div>
 
-
-                    <form className="w-full justify-center h-full pt-7 items-center flex flex-col gap-2" onSubmit={handleSubmit}>
-                        <input className="input input-bordered w-full max-w-xs" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount" required />
-                        <input className="input input-bordered w-full max-w-xs" type="text" value={`${interestRate}%`} disabled />
-                        <input className="input input-bordered w-full max-w-xs" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} placeholder="Due Date" required />
+                    <form className="flex w-full justify-between max-w-xs m-4 pt-5 gap-2 flex-col" onSubmit={handleSubmit}>
+                        <input className="input input-bordered w-full" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount" required />
+                        <input className="input input-bordered w-full" type="text" value={`${interestRate}%`} disabled />
+                        <input className="input input-bordered w-full" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} placeholder="Due Date" required />
                         {totalAmount && <p className="mt-4 text-green-500">Total amount to be paid: {totalAmount}</p>}
-                        <button className="btn max-w-xs w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800" type="submit">Create Loan</button>
+
+                        <button className="btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800" type="submit">Create Loan</button>
                     </form>
                     {serverResponse && <div className="mt-4 text-green-500">{serverResponse}</div>}
                     <Modal
                         isOpen={isModalOpen}
                         onRequestClose={() => setIsModalOpen(false)}
                         contentLabel="Loan Confirmation Modal"
-                        className="w-fit h-fit bg-white rounded-lg shadow-lg p-4 flex flex-col gap-4 justify-center items-center text-center"
+                        className="w-fit h-fit bg-white border-0 ring-customGreen ring-2 ring-offset-1 rounded shadow-sm p-4 flex flex-col gap-4 justify-center items-center text-center"
                         style={{
                             overlay: {
                                 display: 'flex',
@@ -489,19 +485,6 @@ const CreateLoanForm = () => {
                         </div>
                     </Modal>
 
-<<<<<<< HEAD
-                    <Modal isOpen={isGuarantorModalOpen}>
-                        <form onSubmit={handleModalSubmit}>
-                            <label>
-                                Amount:
-                                <input
-                                    type="number"
-                                    value={guaranteeAmount}
-                                    onChange={(e) => setGuaranteeAmount(e.target.value)}
-                                />
-                            </label>
-                            <button type="submit">Submit</button>
-=======
                     <Modal isOpen={isGuarantorModalOpen}
                            style={{
                                overlay: {
@@ -517,6 +500,7 @@ const CreateLoanForm = () => {
                                    bottom: 'auto',
                                }
                            }}
+                           className="rounded ring-2 ring-offset-1 ring-customGreen border-0 shadow-sm bg-white p-4"
                     >
                         <form className={'flex items-center'} onSubmit={handleModalSubmit}>
                             <label>
@@ -533,7 +517,6 @@ const CreateLoanForm = () => {
                                     <button className="btn btn-circle ring-2 ring-offset-1 text-2xl" type="submit"> <i className={'fa-solid fa-check'}> < /i></button>
                                 </section>
                             </label>
->>>>>>> dab14552e3d4cc4743b34915263e9d3cfc80f848
                         </form>
                     </Modal>
 
@@ -541,7 +524,8 @@ const CreateLoanForm = () => {
                         isOpen={showChooseGuarantorModal}
                         onRequestClose={() => setShowChooseGuarantorModal(false)}
                         contentLabel="Choose Guarantor Modal"
-                        className="w-fit h-fit bg-white rounded-lg shadow-lg p-4 flex flex-col gap-4 justify-center items-center text-center"
+                        //className="rounded ring-2 ring-offset-1 ring-customGreen border-0 shadow-sm bg-white p-4"
+                        //className="w-fit ring-1 ring-offset-1 ring-customGreen h-fit bg-white border-0 rounded shadow-sm p-4 flex flex-col gap-1 justify-center items-center text-center"
                         style={{
                             overlay: {
                                 display: 'flex',
@@ -554,14 +538,20 @@ const CreateLoanForm = () => {
                                 left: 'auto',
                                 right: 'auto',
                                 bottom: 'auto',
+                                border: 'none',
                             }
                         }}
+
                     >
-                        <h2>Use Guarantor?</h2>
-                        <p>Do you want to use a guarantor for this loan?</p>
-                        <p>Your current balance is: {balance}</p>
-                        <p>With guarantor you can loan up to: {balance * 3}</p>
-                        <p>Without a guarantor, you can loan up to: {balance * 0.9}</p>
+                        <div className="rounded ring-2 ring-offset-1 ring-customGreen border-0 flex flex-col justify-center place-items-center shadow-sm bg-white p-4">
+                            <h1 className={'text-2xl text-customGreen mb-2 font-bold'}>Use Guarantor?</h1>
+                            <section className="flex flex-col gap-1">
+                                <p>Do you want to use a guarantor for this loan?</p>
+                                <p>Your current balance is: {balance}</p>
+                                <p>With guarantor you can loan up to: {balance * 3}</p>
+                                <p>Without a guarantor, you can loan up to: {balance * 0.9}</p>
+                            </section>
+
                         <div className="flex flex-row gap-4">
                             <button className="btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white text-2xl ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-70" onClick={() => { setUseGuarantor(true); setShowChooseGuarantorModal(false); }}>
                                 <i className="fas fa-check"></i>
@@ -570,7 +560,39 @@ const CreateLoanForm = () => {
                                 <i className="fas fa-times"></i>
                             </button>
                         </div>
+                        </ div>
                     </Modal>
+
+                {/* Modal to handle ERRORS */}
+
+                    <Modal
+                        isOpen={modalIsErrorOpen}
+                        onRequestClose={closeErrorModal}
+                        style={{
+                            overlay: {
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            },
+                            content: {
+                                position: 'relative',
+                                top: 'auto',
+                                left: 'auto',
+                                right: 'auto',
+                                bottom: 'auto',
+                            },
+                        }}
+                        contentLabel="Example Modal"
+                        className="rounded ring-2 ring-offset-1 ring-customGreen border-0 shadow-sm bg-white p-4 min-w-[300px]"
+                    >
+                        <h2>Message</h2>
+                        <p>{modalMessage}</p>
+                        <div className="btn flex items-center place-items-center justify-center rounded w-8 text-2xl min-h-8 max-h-8 m-0 p-0 btn-outline absolute top-0 right-0" onClick={closeErrorModal}>
+                            <i className={"fas fa-times m-0"}></i>
+                        </div>
+                    </Modal>
+
+
                 </div>
             </div>
         </div>
