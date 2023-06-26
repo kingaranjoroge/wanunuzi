@@ -259,6 +259,18 @@ const CreateLoanForm = () => {
         e.preventDefault();
 
         try {
+            //GET THE GUARANTOR'S BALANCE FROM THE ENDPOINT /user/:id/balance and compare it to the guarantee amount
+            const { data } = await axios.get(`${config.BASE_API_URL}/balance/${guarantorID}`);
+            const guarantorBalance = data.balance;
+            //console.log('guarantorBalance:', guarantorBalance);
+
+            if (guaranteeAmount > (0.9*guarantorBalance)) {
+                setServerResponse('Guarantee amount cannot be greater than the Guarantor\'s balance.');
+                setModalMessage('Guarantee amount cannot be greater than the Guarantor\'s balance.');
+                setIsErrorOpen(true);
+                return;
+            }
+
             const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, {
                 userId: user.userId,
                 guarantorID,
