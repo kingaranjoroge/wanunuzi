@@ -26,10 +26,9 @@ const CreateLoanForm = () => {
     const [loanId, setLoanId] = useState('');
     const [guarantors, setGuarantors] = useState([]);
     const [guarantorID, setGuarantorID] = useState('');
+    const [guaranteeAmount, setGuaranteeAmount] = useState('');
     const [verifiedGuarantors, setVerifiedGuarantors] = useState([]);
-
-
-
+    const [isGuarantorModalOpen, setIsGuarantorModalOpen] = useState(false);
 
 
     const handleSubmit = async (e) => {
@@ -165,15 +164,47 @@ const CreateLoanForm = () => {
             return;
         }
 
+        // Map guarantors to their guarantee amounts
+        const guarantorsWithAmounts = guarantors.map(guarantorId => {
+            const guarantor = verifiedGuarantors.find(g => g.id === guarantorId);
+            if (!guarantor) {
+                return null; // Guarantor not found
+            }
+            return {
+                userId: guarantorId,
+                guaranteeAmount: guarantor.guaranteeAmount, // Use the guarantee amount for each guarantor
+            };
+        });
+
+        // Check if any guarantor was not found
+        if (guarantorsWithAmounts.includes(null)) {
+            setServerResponse('An error occurred while adding the guarantors to the loan.');
+            return;
+        }
+
+        console.log('guarantorsWithAmounts:', guarantorsWithAmounts)
+
         // Post request to add guarantors to loan
         try {
-            const response = await axios.post(`${config.BASE_API_URL}/addGuarantorsToLoan`, { userId: user.userId, loanId, guarantors });
+            const response = await axios.post(`${config.BASE_API_URL}/addGuarantorsToLoan`, {
+                userId: user.userId,
+                loanId,
+                guarantors: guarantorsWithAmounts.filter(Boolean), // Filter out any null values
+            });
             setServerResponse(response.data.message);
             setIsModalOpen(false);
         } catch (error) {
             console.error(error);
             setServerResponse('An error occurred while adding the guarantors to the loan.');
         }
+    };
+
+    const handleModalSubmit = (e) => {
+        e.preventDefault();
+        // Handle the submitted amount here
+        console.log('amount:', guaranteeAmount)
+        setGuaranteeAmount(guaranteeAmount);
+        setIsGuarantorModalOpen(false);
     };
 
     const addGuarantor = async (e) => {
@@ -186,7 +217,7 @@ const CreateLoanForm = () => {
         }
 
         //if the id is of the current user then return
-        if (guarantorID == user.userId) {
+        if (guarantorID === user.userId) {
             setServerResponse('You cannot add yourself as a Guarantor.');
             setGuarantorID(''); // Reset the input field
             return;
@@ -197,22 +228,30 @@ const CreateLoanForm = () => {
             const guarantorRes = await axios.get(`${config.BASE_API_URL}/user/${guarantorID}`);
             const guarantorName = guarantorRes.data.fullName;
 
-            const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, { userId: user.userId, guarantorID });
+            // Prompt the user to enter the guarantee amount
+            //use react-modal to prompt the user to enter the guarantee amount
+            setIsGuarantorModalOpen(true);
+            //const amount = guaranteeAmount;
+            //const amount = prompt(`Enter the guarantee amount for ${guarantorName}:`);
+            console.log('amount:',guaranteeAmount);
+
+            const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, {
+                userId: user.userId,
+                guarantorID,
+                guaranteeAmount: guaranteeAmount,
+            });
 
             // Add the guarantor to the state variables
             setGuarantors([...guarantors, guarantorID]);
-            setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true }]);
+            setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true, guaranteeAmount: guaranteeAmount }]);
             setServerResponse('Guarantor added successfully.');
-
         } catch (error) {
             console.error(error);
             setServerResponse('An error occurred while adding a Guarantor.');
         }
 
         setGuarantorID(''); // Reset the input field after adding the guarantor
-    }
-
-
+    };
 
     const removeGuarantor = (id) => {
         // Remove from guarantors array
@@ -246,7 +285,7 @@ const CreateLoanForm = () => {
                                         <li className={"flex gap-3 w-full mb-3 items-center justify-between"} key={guarantor.id}>
                                             <input
                                                 type="text"
-                                                value={`${guarantor.name}` + "     " + `${guarantor.id}` + " " + `${guarantor.isVerified ? '⚡  🕛' : '❌'}`}
+                                                value={`${guarantor.name}` + "     " + `${guarantor.id}` + " " + `${guarantor.isVerified ? '⚡  🕛' : '❌'}` + " " + `${guarantor.guaranteeAmount ? guarantor.guaranteeAmount : ''}`}
                                                 readOnly
                                                 className="input input-bordered input-accent w-full cursor-not-allowed py-2 px-4 rounded-md"
                                             />
@@ -272,6 +311,7 @@ const CreateLoanForm = () => {
                                         value={guarantorID}
                                         onChange={e => setGuarantorID(e.target.value)}
                                     />
+
                                     <button
                                         className={"btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white text-2xl ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-700"}
                                         type={"submit"}
@@ -351,6 +391,20 @@ const CreateLoanForm = () => {
                         </div>
                     </Modal>
 
+                    <Modal isOpen={isGuarantorModalOpen}>
+                        <form onSubmit={handleModalSubmit}>
+                            <label>
+                                Amount:
+                                <input
+                                    type="number"
+                                    value={guaranteeAmount}
+                                    onChange={(e) => setGuaranteeAmount(e.target.value)}
+                                />
+                            </label>
+                            <button type="submit">Submit</button>
+                        </form>
+                    </Modal>
+
                     <Modal
                         isOpen={showChooseGuarantorModal}
                         onRequestClose={() => setShowChooseGuarantorModal(false)}
@@ -385,8 +439,6 @@ const CreateLoanForm = () => {
                             </button>
                         </div>
                     </Modal>
-
-
                 </div>
             </div>
         </div>

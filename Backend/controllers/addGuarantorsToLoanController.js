@@ -16,36 +16,38 @@ const addGuarantorsToLoan = async (req, res) => {
   const { userId, loanId, guarantors } = req.body;
 
   if (!guarantors || !Array.isArray(guarantors)) {
-    res.status(400).json({ error: 'Invalid guarantors array.' });
-    return;
+    return res.status(400).json({ error: 'Invalid guarantors array.' });
   }
 
   if (!loanId) {
-    res.status(400).json({ error: 'Invalid loan ID.' });
-    return;
+    return res.status(400).json({ error: 'Invalid loan ID.' });
   }
 
   if (guarantors.length !== 3) {
-    res.status(400).json({ error: 'Exactly three guarantors must be provided.' });
-    return;
+    return res.status(400).json({ error: 'Exactly three guarantors must be provided.' });
   }
 
   try {
     // Create the guarantors and associate them with the loan
     for (let i = 0; i < guarantors.length; i++) {
-      const guarantorId = guarantors[i];
+      const guarantorId = guarantors[i].userId;
+      const guaranteeAmount = guarantors[i].guaranteeAmount;
+
       const guarantor = await User.findOne({ where: { id: guarantorId } });
 
       if (!guarantor) {
-        res.status(400).json({ error: `Guarantor with ID ${guarantorId} not found.` });
-        return;
+        return res.status(400).json({ error: `Guarantor with ID ${guarantorId} not found.` });
       }
 
-      await Guarantor.create({
+      const createdGuarantor = await Guarantor.create({
         userId: guarantorId,
         loanId,
-        guaranteeAmount: 0, // Set the initial guarantee amount to 0
+        guaranteeAmount, // Set the initial guarantee amount
       });
+
+      if (!createdGuarantor) {
+        return res.status(500).json({ error: 'Failed to create guarantor.' });
+      }
 
       let SERVER_URL = process.env.FRONTEND_URL;
       const mailOptions = {

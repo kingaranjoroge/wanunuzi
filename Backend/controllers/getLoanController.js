@@ -1,6 +1,9 @@
 const Loan = require('../models/Loan');
 const Guarantor = require('../models/Guarantor');
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4427ac76a698feb0a96798b1826e5619bcf09bf8
 
 const getLoan = async (req, res) => {
     const { id } = req.params;
@@ -14,7 +17,7 @@ const getLoan = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: "An error occurred" });
     }
-}
+};
 
 const getLoans = async (req, res) => {
     const { userId } = req.params;
@@ -29,16 +32,22 @@ const getLoans = async (req, res) => {
             for (let i = 0; i < loans.length; i++) {
                 let loanJSON = loans[i].toJSON();
 
-                loanJSON.guarantor = await Guarantor.findOne({
+                const guarantor = await Guarantor.findOne({
                     where: { loanId: loanJSON.id },
                 });
 
-                loanJSON.guarantorDecisions = await GuarantorDecision.findAll({
-                    where: { loanId: loanJSON.id },
-                });
+                if (guarantor) {
+                    const guarantorDecisions = await Guarantor.findAll({
+                        where: { loanId: loanJSON.id },
+                    });
+                    loanJSON.guarantorDecisions = guarantorDecisions;
+                } else {
+                    loanJSON.guarantorDecisions = [];
+                }
 
                 loanList.push(loanJSON);
             }
+
             res.json(loanList);
         } else {
             res.status(404).json({ message: "No loans found for this user" });
@@ -46,8 +55,6 @@ const getLoans = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: "An error occurred" });
     }
-}
+};
 
-
-
-module.exports = { getLoan, getLoans }
+module.exports = { getLoan, getLoans };
