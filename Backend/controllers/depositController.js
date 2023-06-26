@@ -26,14 +26,19 @@ const deposit = async (req, res) => {
       balance += latestSavingsRecord.balance;
     }
 
-    // Create a new savings record for the user
+    // Get the current date in East African Time (EAT)
+    const currentDate = new Date().toLocaleString('en-US', {
+      timeZone: 'Africa/Nairobi',
+    });
+
+    // Create a new savings record for the user with the current East African Time
     const newSavingsRecord = await Savings.create({
       userId: user.id,
-      date: new Date(), // Set the current date
+      date: currentDate,
       amount: parseFloat(amount),
       balance,
-      createdAt: new Date(), // Set the created timestamp
-      updatedAt: new Date(), // Set the updated timestamp
+      createdAt: currentDate,
+      updatedAt: currentDate,
     });
 
     res.json({ newBalance: newSavingsRecord.balance });

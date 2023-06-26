@@ -22,6 +22,7 @@ const SignUp = () => {
     const [emailToken, setEmailToken] = useState("");
     // Add a new state variable for the modal visibility
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     const verifyEmail = async (event) => {
         event.preventDefault();
 
@@ -32,7 +33,7 @@ const SignUp = () => {
             });
 
             if (res.status === 200 && res.data.message === 'Email verified successfully') {
-                navigate('/payment');
+                navigate('/complete-registration'); // remember to navigate to payment in complete-registration
             } else {
                 setResponse(res.data.message);
             }
@@ -51,6 +52,7 @@ const SignUp = () => {
                 idNumber,
             });
             setFormStep(2);
+            navigate('/complete-registration');
         } catch (error) {
             setResponse(error.response.data.message);
         }

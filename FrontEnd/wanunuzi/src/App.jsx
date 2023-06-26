@@ -15,6 +15,7 @@ import Profile from "./components/user/Profile.jsx";
 import About from "./components/about/About.jsx";
 import ManageLoans from "./components/loans/ManageLoans.jsx";
 import SavingsDashboard from "./components/savings/SavingsDashboard"
+import CompleteSignUp from './components/auth/CompleteSignUp.jsx';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -31,9 +32,9 @@ function App() {
     return (
         <Routes>
             <Route path="/" element={<Layout />} >
+                <Route index element={<SignIn />} />
                 <Route path="/manage-loans" element={<ManageLoans />} />
                 <Route path="/about" element={<About />} />
-                <Route index element={<SignIn />} />
                 <Route path="/verify-guarantor" element={<VerifyGuarantor />} />
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/login" element={<SignIn />} />
@@ -41,12 +42,11 @@ function App() {
                 <Route path="/home" element={<ProtectedRoute><Homepage /></ProtectedRoute>} />
                 <Route path="/loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
                 <Route path="/savings" element={<Savings/>} />
-
                 <Route path="/verification-success" element={<VerificationSuccess />} />
                 <Route path="/verification-failure" element={<VerificationFailure />} />
-
                 <Route path="profile" element={<Profile />} />
                 <Route path="savings-dashboard" element={<SavingsDashboard />} />
+                <Route path="complete-registration" element={<CompleteSignUp />} />
                 <Route path="*" element={<Navigate to="/login" />} />
             </Route>
         </Routes>

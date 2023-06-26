@@ -14,7 +14,8 @@ const SavingsDashboard = () => {
         const decodedUserId = decoded.userId;
 
         const response = await axios.get(`${config.BASE_API_URL}/savings-dashboard/${decodedUserId}`);
-        setSavingsData(response.data);
+        const convertedData = convertDatesToEAT(response.data);
+        setSavingsData(convertedData);
       } catch (error) {
         console.error('Error retrieving savings data:', error);
       }
@@ -22,6 +23,17 @@ const SavingsDashboard = () => {
 
     fetchData();
   }, []);
+
+  // Function to convert dates to East African Time (EAT)
+  const convertDatesToEAT = (data) => {
+    return data.map((item) => {
+      const date = new Date(item.date);
+      const convertedDate = date.toLocaleString('en-US', {
+        timeZone: 'Africa/Nairobi',
+      });
+      return { ...item, date: convertedDate };
+    });
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
