@@ -29,11 +29,8 @@ const CreateLoanForm = () => {
     const [guaranteeAmount, setGuaranteeAmount] = useState('');
     const [verifiedGuarantors, setVerifiedGuarantors] = useState([]);
     const [isGuarantorModalOpen, setIsGuarantorModalOpen] = useState(false);
-<<<<<<< HEAD
-=======
     const [guarantorName, setGuarantorName] = useState('');
 
->>>>>>> dab14552e3d4cc4743b34915263e9d3cfc80f848
 
 
     const handleSubmit = async (e) => {
