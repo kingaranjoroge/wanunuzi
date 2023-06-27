@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Modal from 'react-modal';
+import moment from 'moment';
 import config from '../../../config.js';
 
 Modal.setAppElement('#root');
@@ -22,6 +23,8 @@ function VerifyGuarantor() {
     const [newAmount, setNewAmount] = useState('');
     const [guaranteeData, setGuaranteeData] = useState({});
 
+    const [relativeTime, setRelativeTime] = useState('');
+
     useEffect(() => {
         axios.get(`${config.BASE_API_URL}/guarantor-data/${guarantor}/${loanId}`)
             .then(response => {
@@ -38,7 +41,7 @@ function VerifyGuarantor() {
             .then(response => {
                 setLoanData(response.data);
                 //console.log('Loan', response.data);
-                console.log ('loan amount', response.data.amount);
+                //console.log ('loan amount', response.data.amount);
             })
             .catch(error => {
                 console.error('There was an error!', error);
@@ -109,6 +112,44 @@ function VerifyGuarantor() {
         setIsOpen(false);
     };
 
+    useEffect(() => {
+        // Update relative time every second
+        const interval = setInterval(() => {
+            setRelativeTime(formatRelativeTime(loanData.createdAt));
+        }, 1000);
+
+        return () => {
+            // Clear the interval when the component is unmounted
+            clearInterval(interval);
+        };
+    }, [loanData.createdAt]);
+
+    const formatRelativeTime = (date) => {
+        const duration = moment.duration(moment().diff(date));
+        const hours = duration.hours();
+        const minutes = duration.minutes();
+        const seconds = duration.seconds();
+
+        let formattedTime = '';
+
+        if (hours > 0) {
+            formattedTime += `${hours} h `;
+        }
+        if (minutes > 0) {
+            formattedTime += `${minutes} m `;
+        }
+        if (seconds > 0) {
+            formattedTime += `${seconds} s `;
+        }
+
+        formattedTime += 'ago';
+
+        return formattedTime;
+    };
+
+    const formattedCreatedAt = formatRelativeTime(loanData.createdAt);
+    const formattedUpdatedAt = formatRelativeTime(loanData.updatedAt);
+
     return (
         <div className="container mx-auto py-4 px-4">
             <h1 className="text-2xl font-bold mb-4">Verify Guarantor</h1>
@@ -123,7 +164,27 @@ function VerifyGuarantor() {
                 </div>
                 <div className="p-4 border rounded shadow">
                     <h2 className="text-xl font-bold mb-2">Loan Data:</h2>
-                    {Object.entries(loanData).map(([field, value]) => (
+                    {Object.entries(loanData).map(([field, value]) => {
+                        if (field === 'createdAt' || (field === 'updatedAt' && formattedCreatedAt !== formattedUpdatedAt)) {
+                            return (
+                                <p key={field}>{`${field}: ${formatRelativeTime(value)}`}</p>
+                            );
+                        } else if (field === 'startDate') {
+                            return (
+                                <p key={field}>{`${field}: ${formatRelativeTime(value)}`}</p>
+                            );
+                        }else if (field === 'updatedAt') {
+                            return null;
+                        } else {
+                            return (
+                                <p key={field}>{`${field}: ${value}`}</p>
+                            );
+                        }
+                    })}
+
+                    <br></br>
+                    <h2 className="text-xl font-bold mb-2">Loan Guarantor Data:</h2>
+                    {Object.entries(guaranteeData).map(([field, value]) => (
                         <p key={field}>
                             {field}: {value}
                         </p>

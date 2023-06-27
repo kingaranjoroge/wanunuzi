@@ -27,7 +27,7 @@ const Homepage = () => {
             }
         };
 
-        fetchBalance();
+        fetchBalance().then(r => console.log('Balance fetched'));
     }, []);
 
 
@@ -77,6 +77,7 @@ const Homepage = () => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
+
     const token = localStorage.getItem('token');
     if (token) {
       const decoded = jwt_decode(token);
@@ -100,7 +101,7 @@ const Homepage = () => {
       </div>
       */}
 
-      {/* 
+      {/*
       <div className="px-4 mb-6">
         <div className="flex flex-wrap justify-between">
           <div className="w-full md:w-1/2 lg:w-1/3 text-center border-r border-b pb-4">
