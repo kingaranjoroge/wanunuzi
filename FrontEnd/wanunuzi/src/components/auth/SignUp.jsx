@@ -52,7 +52,7 @@ const SignUp = () => {
                 idNumber,
             });
             setFormStep(2);
-            navigate('/complete-registration');
+            navigate('/login');
         } catch (error) {
             setResponse(error.response.data.message);
         }

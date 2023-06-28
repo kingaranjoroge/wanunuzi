@@ -25,4 +25,4 @@ const addNextOfKin = async (req, res) => {
   }
 };
 
-module.exports = { addNextOfKin };
+module.exports = { addNextOfKin }

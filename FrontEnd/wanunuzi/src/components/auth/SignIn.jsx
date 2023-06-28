@@ -24,7 +24,7 @@ const SignIn = () => {
 
       // Redirect to the home page if the token is valid
       if (token && Date.now() <= localStorage.getItem('expirationTime')) {
-        navigate("/home");
+        navigate("/complete-registration");
       } else {
         setResponse("Session expired. Please log in again.");
       }

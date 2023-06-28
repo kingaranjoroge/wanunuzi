@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios'
@@ -24,7 +24,48 @@ const CompleteSignUp = () => {
       email: '',
       kraPin: '',
     },
-  });
+  })
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [userDetails, setUserDetails] = useState(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const decoded = jwt_decode(token);
+        const userId = decoded.userId;
+
+        const response1 = await axios.get(`${config.BASE_API_URL}/compare-user-details/${userId}`);
+        const userDetails = response1.data.data.user;
+        setUserDetails(userDetails);
+
+        console.log(userDetails);
+
+        // Check if any of the nextOfKin details match the user's own details
+        if (
+          formData.nextOfKin.email === userDetails.email ||
+          formData.nextOfKin.phone === userDetails.phoneNumber ||
+          formData.nextOfKin.kraPin === userDetails.kraPin ||
+          formData.nextOfKin.id === userDetails.idNumber
+        ) {
+          // Show an error message and disable the submit button
+          setErrorMessage('Next of kin details cannot be the same as your own details.');
+          setIsButtonDisabled(true);
+        } else {
+          // Reset the error message and enable the submit button
+          setErrorMessage('');
+          setIsButtonDisabled(false);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,14 +91,33 @@ const CompleteSignUp = () => {
 
   const handleNextOfKinChange = (e) => {
     const { name, value } = e.target;
+    const updatedNextOfKin = {
+      ...formData.nextOfKin,
+      [name]: value,
+    };
+
+    // Check if any of the nextOfKin details match the user's own details
+    if (
+      updatedNextOfKin.email === userDetails.email ||
+      updatedNextOfKin.phone === userDetails.phoneNumber ||
+      updatedNextOfKin.kraPin === userDetails.kraPin ||
+      updatedNextOfKin.id === userDetails.idNumber
+    ) {
+      // Show an error message and disable the submit button
+      setErrorMessage('Next of kin details cannot be the same as your own details.');
+      setIsButtonDisabled(true);
+    } else {
+      // Reset the error message and enable the submit button
+      setErrorMessage('');
+      setIsButtonDisabled(false);
+    }
+
     setFormData((prevData) => ({
       ...prevData,
-      nextOfKin: {
-        ...prevData.nextOfKin,
-        [name]: value,
-      },
+      nextOfKin: updatedNextOfKin,
     }));
   };
+
 
   const handleDOBChange = (date) => {
     setFormData((prevData) => ({
@@ -82,22 +142,24 @@ const CompleteSignUp = () => {
     const { nextOfKin, ...userData } = formData;
   
     try {
+
       const res = await axios.post(`${config.BASE_API_URL}/complete-registration`, userData);
   
       console.log('UserData sent successfully!');
-
+  
       const token = localStorage.getItem('token');
       const decoded = jwt_decode(token);
       const userId = decoded.userId;
-
-      const response = await axios.post(`${config.BASE_API_URL}/nextOfKin`, {nextOfKin, userId});
+  
+      const response = await axios.post(`${config.BASE_API_URL}/nextOfKin`, { nextOfKin, userId });
       console.log('Next of Kin data sent successfully!');
-
+  
       navigate('/payment');
     } catch (error) {
       console.error('Error sending UserData:', error);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center h-full w-full">
@@ -115,7 +177,7 @@ const CompleteSignUp = () => {
                   selected={formData.dob}
                   onChange={handleDOBChange}
                   dateFormat="yyyy-MM-dd"
-                  placeholderText="dd/mm/yy" // Set the placeholder text
+                  placeholderText="yyyy-MM-dd" // Set the placeholder text
                   required
                 />
               </div>
@@ -201,10 +263,10 @@ const CompleteSignUp = () => {
                 </label>
                 <DatePicker
                   className="input input-bordered input-success w-full max-w-xs"
-                  selected={formData.dob}
-                  onChange={handleDOBChange}
+                  selected={formData.nextOfKin.dob}
+                  onChange={handleNextOfKinDOBChange}
                   dateFormat="yyyy-MM-dd"
-                  placeholderText="dd/mm/yy" // Set the placeholder text
+                  placeholderText="yyyy-MM-dd"
                   required
                 />
               </div>
@@ -267,9 +329,11 @@ const CompleteSignUp = () => {
             </div>
           </div>
           <div className="text-center">
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             <button
               className="btn w-full md:w-1/2 mt-0.5 bg-green-400 ring-red-500 ring-offset-2 ring-2"
               type="submit"
+              disabled={isButtonDisabled} // Disable the button based on the state
             >
               Submit
             </button>

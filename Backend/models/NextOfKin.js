@@ -13,31 +13,27 @@ NextOfKin.init(
     },
     Name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     DOB: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: false
     },
     ID_BirthCertificate: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+      allowNull: false
     },
     Phone: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+      allowNull: false
     },
     Email: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+      allowNull: false
     },
     kraPin: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+      allowNull: false
     },
     createdAt: {
       allowNull: false,
