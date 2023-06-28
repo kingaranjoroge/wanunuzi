@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Modal from 'react-modal';
+import moment from 'moment';
 import config from '../../../config.js';
 
 Modal.setAppElement('#root');
@@ -19,13 +20,28 @@ function VerifyGuarantor() {
     const [loanUserData, setLoanUserData] = useState({});
     const [modalIsOpen, setIsOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
-
     const [newAmount, setNewAmount] = useState('');
+    const [guaranteeData, setGuaranteeData] = useState({});
+
+    const [relativeTime, setRelativeTime] = useState('');
+
+    useEffect(() => {
+        axios.get(`${config.BASE_API_URL}/guarantor-data/${guarantor}/${loanId}`)
+            .then(response => {
+                setGuaranteeData(response.data);
+                //console.log('GuaranteeData', response.data);
+            })
+            .catch(error => {
+                console.error('There was an error!', error);
+            });
+    },[]);
 
     useEffect(() => {
         axios.get(`${config.BASE_API_URL}/loan/${loanId}`)
             .then(response => {
                 setLoanData(response.data);
+                //console.log('Loan', response.data);
+                //console.log ('loan amount', response.data.amount);
             })
             .catch(error => {
                 console.error('There was an error!', error);
@@ -34,6 +50,7 @@ function VerifyGuarantor() {
         axios.get(`${config.BASE_API_URL}/user/email/${encodeURIComponent(guarantor)}`)
             .then(response => {
                 setGuarantorData(response.data);
+                //console.log('Guarantor', response.data);
             })
             .catch(error => {
                 console.error('There was an error!', error);
@@ -42,6 +59,7 @@ function VerifyGuarantor() {
         axios.get(`${config.BASE_API_URL}/user/${loanUser}`)
             .then(response => {
                 setLoanUserData(response.data);
+                //console.log('LoanUser', response.data);
             })
             .catch(error => {
                 console.error('There was an error!', error);
@@ -49,11 +67,20 @@ function VerifyGuarantor() {
     }, [loanId, guarantor, loanUser]);
 
     const handleAccept = () => {
+
+        if (newAmount > loanData.amount) {
+            setModalMessage('The amount you have entered is greater than the loan amount.')
+            setIsOpen(true);
+            return;
+        }
+
+        const guaranteeAmount = newAmount !== '' ? newAmount : guaranteeData.guaranteeAmount;
+
         axios.post(`${config.BASE_API_URL}/guarantor-decision`, {
             loanId,
             guarantorId: guarantorData.id,
             decision: 'accepted',
-            guaranteeAmount: newAmount,
+            guaranteeAmount,
         })
             .then(response => {
                 setModalMessage('You have accepted the guarantor role for this loan.');
@@ -85,29 +112,91 @@ function VerifyGuarantor() {
         setIsOpen(false);
     };
 
+    useEffect(() => {
+        // Update relative time every second
+        const interval = setInterval(() => {
+            setRelativeTime(formatRelativeTime(loanData.createdAt));
+        }, 1000);
+
+        return () => {
+            // Clear the interval when the component is unmounted
+            clearInterval(interval);
+        };
+    }, [loanData.createdAt]);
+
+    const formatRelativeTime = (date) => {
+        const duration = moment.duration(moment().diff(date));
+        const hours = duration.hours();
+        const minutes = duration.minutes();
+        const seconds = duration.seconds();
+
+        let formattedTime = '';
+
+        if (hours > 0) {
+            formattedTime += `${hours} h `;
+        }
+        if (minutes > 0) {
+            formattedTime += `${minutes} m `;
+        }
+        if (seconds > 0) {
+            formattedTime += `${seconds} s `;
+        }
+
+        formattedTime += 'ago';
+
+        return formattedTime;
+    };
+
+    const formattedCreatedAt = formatRelativeTime(loanData.createdAt);
+    const formattedUpdatedAt = formatRelativeTime(loanData.updatedAt);
+
     return (
         <div className="container mx-auto py-4 px-4">
             <h1 className="text-2xl font-bold mb-4">Verify Guarantor</h1>
             <div className="grid grid-cols-3 gap-4">
-                <div className="p-4 border rounded shadow">
+                <div className="p-4 border rounded shadow overflow-clip">
                     <h2 className="text-xl font-bold mb-2">Loan User Data:</h2>
-                    <p>Name: {loanUserData.fullName}</p>
-                    <p>Email: {loanUserData.email}</p>
-                    <p>Phone Number: {loanUserData.phoneNumber}</p>
+                    {Object.entries(loanUserData).map(([field, value]) => (
+                        <p key={field}>
+                            {field}: {value}
+                        </p>
+                    ))}
                 </div>
                 <div className="p-4 border rounded shadow">
                     <h2 className="text-xl font-bold mb-2">Loan Data:</h2>
-                    <p>Amount: {loanData.amount}</p>
-                    <p>Interest Rate: {loanData.interestRate}</p>
-                    <p>Start Date: {loanData.startDate}</p>
-                    <p>Due Date: {loanData.dueDate}</p>
-                    <p>Status: {loanData.status}</p>
+                    {Object.entries(loanData).map(([field, value]) => {
+                        if (field === 'createdAt' || (field === 'updatedAt' && formattedCreatedAt !== formattedUpdatedAt)) {
+                            return (
+                                <p key={field}>{`${field}: ${formatRelativeTime(value)}`}</p>
+                            );
+                        } else if (field === 'startDate') {
+                            return (
+                                <p key={field}>{`${field}: ${formatRelativeTime(value)}`}</p>
+                            );
+                        }else if (field === 'updatedAt') {
+                            return null;
+                        } else {
+                            return (
+                                <p key={field}>{`${field}: ${value}`}</p>
+                            );
+                        }
+                    })}
+
+                    <br></br>
+                    <h2 className="text-xl font-bold mb-2">Loan Guarantor Data:</h2>
+                    {Object.entries(guaranteeData).map(([field, value]) => (
+                        <p key={field}>
+                            {field}: {value}
+                        </p>
+                    ))}
                 </div>
-                <div className="p-4 border rounded shadow">
+                <div className="p-4 border rounded shadow overflow-clip">
                     <h2 className="text-xl font-bold mb-2">Guarantor Data:</h2>
-                    <p>Name: {guarantorData.fullName}</p>
-                    <p>Email: {guarantorData.email}</p>
-                    <p>Phone Number: {guarantorData.phoneNumber}</p>
+                    {Object.entries(guarantorData).map(([field, value]) => (
+                        <p key={field}>
+                            {field}: {value}
+                        </p>
+                    ))}
                     <div className="mt-4">
                         <label htmlFor="newAmount" className="block text-sm font-medium text-gray-700">
                             New Guarantee Amount:
@@ -115,7 +204,7 @@ function VerifyGuarantor() {
                         <input
                             type="number"
                             id="newAmount"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            className="input input-bordered input-warning w-full max-w-xs"
                             placeholder="Enter the new guarantee amount"
                             value={newAmount}
                             onChange={e => setNewAmount(e.target.value)}
@@ -156,25 +245,13 @@ function VerifyGuarantor() {
                     },
                 }}
                 contentLabel="Example Modal"
+                className="rounded ring-2 ring-offset-1 ring-customGreen border-0 shadow-sm bg-white p-4"
             >
                 <h2>Message</h2>
                 <p>{modalMessage}</p>
-                <button className="btn btn-circle btn-outline" onClick={closeModal}>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M6 18L18 6M6 6l12 12"
-                        />
-                    </svg>
-                </button>
+                <div className="btn flex items-center place-items-center justify-center rounded w-8 text-2xl min-h-8 max-h-8 m-0 p-0 btn-outline absolute top-0 right-0" onClick={closeModal}>
+                    <i className={"fas fa-times m-0"}></i>
+                </div>
             </Modal>
         </div>
     );

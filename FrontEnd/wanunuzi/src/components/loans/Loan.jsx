@@ -212,62 +212,6 @@ const CreateLoanForm = () => {
         }
     };
 
-    /*
-    TODO: DEPRECATED
-    const handleModalSubmit = (e) => {
-        e.preventDefault();
-        // Handle the submitted amount here
-        console.log('amount:', guaranteeAmount);
-        setGuaranteeAmount(guaranteeAmount);
-        setIsGuarantorModalOpen(false);
-    };
-
-    const addGuarantor = async (e) => {
-        e.preventDefault();
-
-        if (guarantors.includes(guarantorID)) {
-            setServerResponse('This Guarantor is already added.');
-            setGuarantorID(''); // Reset the input field
-            return;
-        }
-
-        //if the id is of the current user then return
-        if (guarantorID === user.userId) {
-            setServerResponse('You cannot add yourself as a Guarantor.');
-            setGuarantorID(''); // Reset the input field
-            return;
-        }
-
-        try {
-            // Fetch the guarantor's full name
-            const guarantorRes = await axios.get(`${config.BASE_API_URL}/user/${guarantorID}`);
-            const guarantorName = guarantorRes.data.fullName;
-
-            // Prompt the user to enter the guarantee amount
-            //use react-modal to prompt the user to enter the guarantee amount
-            setIsGuarantorModalOpen(true);
-            setGuarantorName(guarantorName)
-            //const amount = guaranteeAmount;
-            //const amount = prompt(`Enter the guarantee amount for ${guarantorName}:`);
-
-            const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, {
-                userId: user.userId,
-                guarantorID,
-                guaranteeAmount: guaranteeAmount,
-            });
-
-            // Add the guarantor to the state variables
-            setGuarantors([...guarantors, guarantorID, guaranteeAmount]);
-            setVerifiedGuarantors([...verifiedGuarantors, { id: guarantorID, name: guarantorName, isVerified: true, guaranteeAmount: guaranteeAmount }]);
-            setServerResponse('Guarantor added successfully.');
-        } catch (error) {
-            console.error(error);
-            setServerResponse('An error occurred while adding a Guarantor.');
-        }
-
-        setGuarantorID(''); // Reset the input field after adding the guarantor
-    };*/
-
     const addGuarantor = async (e) => {
         e.preventDefault();
 
@@ -315,6 +259,18 @@ const CreateLoanForm = () => {
         e.preventDefault();
 
         try {
+            //GET THE GUARANTOR'S BALANCE FROM THE ENDPOINT /user/:id/balance and compare it to the guarantee amount
+            const { data } = await axios.get(`${config.BASE_API_URL}/balance/${guarantorID}`);
+            const guarantorBalance = data.balance;
+            //console.log('guarantorBalance:', guarantorBalance);
+
+            if (guaranteeAmount > (0.9*guarantorBalance)) {
+                setServerResponse('Guarantee amount cannot be greater than the Guarantor\'s balance.');
+                setModalMessage('Guarantee amount cannot be greater than the Guarantor\'s balance.');
+                setIsErrorOpen(true);
+                return;
+            }
+
             const response = await axios.post(`${config.BASE_API_URL}/addGuarantor`, {
                 userId: user.userId,
                 guarantorID,
@@ -367,8 +323,8 @@ const CreateLoanForm = () => {
                 {
 
                     useGuarantor ? <>
-                        <div className={"w-full flex flex-col p-4 items-end md:w-1/2 lg:w-1/2"}>
-                            <div className="flex justify-center items-center m-4 gap-2">
+                        <div className={"w-full flex flex-col p-8 items-end md:w-1/2 lg:w-1/2"}>
+                            <div className="flex justify-center w-full max-w-xs items-center m-4 gap-2">
                                 <h2 className={"font-bold text-2xl text-gray-600 text-center"}>Add Guarantors</h2>
                             </div>
 
@@ -422,10 +378,10 @@ const CreateLoanForm = () => {
                 }
 
 
-                <div className={ useGuarantor ?  "w-full p-4 md:w-1/2 lg:w-1/2 flex flex-col justify-center items-start" : "w-full flex flex-col justify-center items-center" }>
+                <div className={ useGuarantor ?  "w-full p-8 md:w-1/2 lg:w-1/2 flex flex-col justify-center items-start" : "w-full flex flex-col justify-center items-center" }>
 
 
-                    <div className="flex w-full justify-between max-w-xs m-4 pt-5 gap-2">
+                    <div className="flex w-full justify-between max-w-xs m-4 mt-0 pt-5 gap-2">
                         <div className="w-24 h-24 flex flex-col items-center justify-center bg-green-600 text-white rounded-lg shadow-md p-2 transition-transform duration-300 ease-in-out transform hover:scale-110">
                             <i className="fas fa-wallet text-2xl"></i>
                             <span>{balance}</span>
@@ -547,9 +503,9 @@ const CreateLoanForm = () => {
                             <h1 className={'text-2xl text-customGreen mb-2 font-bold'}>Use Guarantor?</h1>
                             <section className="flex flex-col gap-1">
                                 <p>Do you want to use a guarantor for this loan?</p>
-                                <p>Your current balance is: {balance}</p>
-                                <p>With guarantor you can loan up to: {balance * 3}</p>
-                                <p>Without a guarantor, you can loan up to: {balance * 0.9}</p>
+                                <p>Your current balance is: {balance} /=</p>
+                                <p>With guarantor you can loan up to: {balance * 3} /=</p>
+                                <p>Without a guarantor, you can loan up to: {balance * 0.9} /=</p>
                             </section>
 
                         <div className="flex flex-row gap-4">
