@@ -29,6 +29,7 @@ app.use('/all', require('./routes/getAllGuarantorsForLoanRoute'));
 app.use('/guarantor-decision', require('./routes/guarantorDecisionRoute'));
 app.use('/guarantor-data', require('./routes/guarantorDataRoute'));
 app.use('/nextOfKin', require('./routes/nextOfKinRoute'));
+app.use('/compare-user-details', require('./routes/compareUserDetailsRoute'));
 
 
 
