@@ -21,4 +21,18 @@ const getGuarantorDataByEmail = async (req, res) => {
     }
 };
 
-module.exports = { getGuarantorDataByEmail };
+const getGuaranteeAmountById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const guarantor = await Guarantor.findOne({ where: { userId: id } });
+        if (guarantor) {
+            res.json(guarantor.guaranteeAmount);
+        } else {
+            res.status(404).json({ message: "Guarantor not found" });
+        }
+    } catch (err) {
+        res.status(500).json({ message: "An error occurred" });
+    }
+}
+
+module.exports = { getGuarantorDataByEmail, getGuaranteeAmountById };

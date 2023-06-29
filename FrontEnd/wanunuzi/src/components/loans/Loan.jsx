@@ -400,14 +400,16 @@ const CreateLoanForm = () => {
                     </div>
 
                     <form className="flex w-full justify-between max-w-xs m-4 pt-5 gap-2 flex-col" onSubmit={handleSubmit}>
-                        <input className="input input-bordered w-full" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount" required />
-                        <input className="input input-bordered w-full" type="text" value={`${interestRate}%`} disabled />
-                        <input className="input input-bordered w-full" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} placeholder="Due Date" required />
+                        <input className="input input-bordered w-full ring-2" type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount" required />
+                        <input className="input input-bordered w-full ring-2" type="text" value={`${interestRate}%`} disabled />
+                        <input className="input input-bordered w-full ring-2" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} placeholder="Due Date" required />
                         {totalAmount && <p className="mt-4 text-green-500">Total amount to be paid: {totalAmount}</p>}
 
                         <button className="btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800" type="submit">Create Loan</button>
                     </form>
-                    {serverResponse && <div className="mt-4 text-green-500">{serverResponse}</div>}
+                    <div className={'flex w-full justify-center items-center max-w-xs m-4 pt-5 gap-2 flex-col'}>
+                        {serverResponse && <div className="text-green-500 server-response">{serverResponse}</div>}
+                    </div>
                     <Modal
                         isOpen={isModalOpen}
                         onRequestClose={() => setIsModalOpen(false)}

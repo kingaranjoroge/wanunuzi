@@ -3,10 +3,22 @@ import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
 import config from '../../../Config.js';
+import TestNav from "../navbar/testNav.jsx";
 
 const ManageLoans = () => {
     const [loans, setLoans] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState({});
+    const [amount, setAmount] = useState('');
+
+    useEffect(() => {
+
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decoded = jwt_decode(token);
+            setUser(decoded);
+        }
+    }, []);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -20,6 +32,7 @@ const ManageLoans = () => {
                         const months = moment(loan.dueDate).diff(moment(), 'months');
                         const interest = (loan.amount * (loan.interestRate / 100)) * months;
                         const amountToBePaid = parseFloat(loan.amount) + interest;
+
                         const guarantors = await Promise.all(loan.guarantorDecisions.map(async (decision) => {
                             const guarantorResponse = await axios.get(`${config.BASE_API_URL}/user/${decision.userId}`);
                             const guarantorUsername = guarantorResponse.data.fullName;
@@ -27,8 +40,10 @@ const ManageLoans = () => {
                                 guarantorId: decision.userId,
                                 guarantorUsername: guarantorUsername,
                                 decision: decision.decision,
+                                amount: decision.guaranteeAmount,
                             };
                         }));
+                        console.log('guarantorResponse', guarantors)
 
                         return {
                             id: loan.id,
@@ -41,7 +56,6 @@ const ManageLoans = () => {
                             amountToBePaid: amountToBePaid.toFixed(2),
                         };
                     }));
-
                     setLoans(mappedLoans);
                     setLoading(false);
                 } catch (error) {
@@ -58,9 +72,43 @@ const ManageLoans = () => {
         return <div>Loading...</div>
     }
 
+    function handleAddGuarantor(id, guarantorId) {
+        console.log('Add guarantor for loan with id:', id);
+    }
+
+    async function handleReAddGuarantor(id, guarantorId) {
+        const loanId = id;
+        const userId = user.userId;
+        //const guarantorId = guarantorId;
+
+        try {
+            const response = await axios.post(`${config.BASE_API_URL}/addOne`, {
+                loanId,
+                userId,
+                guarantorId,
+            });
+        }
+        catch (error) {
+            console.error('Failed to re-add guarantor:', error);
+        }
+    }
+
     return (
-        <div className="overflow-x-auto">
-            <h1 className="text-2xl font-bold mb-4">Your Loans</h1>
+            <div className="flex flex-col overflow-x-auto w-full h-full">
+                <TestNav />
+                <div className="flex flex-col items-center justify-center w-full h-full">
+            {/*if no loans are available*/}
+
+            {loans.length === 0 ? (
+                <div className={'flex flex-col items-center h-full max-w-xs my-[100px]'}>
+                    <h1 className="text-2xl font-bold mb-4 mt-4">You have no loans</h1>
+                     <a className={'py-1 w-full my-2'} href="/loan"><button className="btn w-full text-sm my-2 btn-outline btn-warning ring-2 ring-offset-1 ring-customGreen py-1">Apply Now <i
+                         className="fa-solid fa-arrow-right"></i></button></a>
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center w-full h-fit">
+                    <h1 className="text-3xl font-bold mb-4 mt-4">Your Loans</h1>
+
             <table className="table w-full">
                 <thead>
                 <tr>
@@ -78,25 +126,42 @@ const ManageLoans = () => {
                 <tbody>
                 {loans.map((loan) => (
                     <tr key={loan.id}>
-                        <th>{loan.id}</th>
-                        <td>{loan.amount}</td>
-                        <td>{loan.interestRate}%</td>
-                        <td>{loan.amountToBePaid}</td>
-                        <td>{new Date(loan.startDate).toLocaleDateString()}</td>
+                        <th className={'w-1'}>{loan.id}</th>
+                        <td className={'w-1'}>{loan.amount}</td>
+                        <td className={'w-1'}>{loan.interestRate}%</td>
+                        <td className={'w-1'}>{loan.amountToBePaid}</td>
+                        <td className={'w-1'}>{new Date(loan.startDate).toLocaleDateString()}</td>
                         <td>{new Date(loan.dueDate).toLocaleDateString()}</td>
                         <td>{loan.status}</td>
                         <td>
                             {loan.guarantors.length > 0 ? (
                                 <div>
                                     {loan.guarantors.map((guarantor, index) => (
-                                        <div className={'flex gap-1 my-3 border-y-2 border-gray-400 py-2'} key={index}>
-                                            <div className="avatar">
-                                                <div className="w-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
-                                                    <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
-                                                </div>
-                                            </div>
+                                        <div className={'flex gap-3 my-3 border-y-2 border-gray-400 py-2'} key={index}>
+                                            {
+                                                guarantor.decision === 'pending' ? (
+                                                    <div className="avatar">
+                                                        <div className="w-6 max-h-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
+                                                            <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
+                                                        </div>
+                                                    </div>
+                                                ) : guarantor.decision === 'accepted' ? (
+                                                    <div className="avatar online">
+                                                        <div className="w-6 max-h-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
+                                                            <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
+                                                        </div>
+                                                    </div>
+                                                ) : guarantor.decision === 'rejected' ? (
+                                                    <div className="avatar offline">
+                                                        <div className="w-6 max-h-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
+                                                            <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
+                                                        </div>
+                                                    </div>
+                                                ) : null
+                                            }
                                             {/*<p>Name {index + 1}: {guarantor.guarantorUsername}</p>*/}
                                             <p> {guarantor.guarantorUsername}</p>
+                                            <p>{guarantor.amount}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -108,14 +173,40 @@ const ManageLoans = () => {
                             {loan.guarantors.length > 0 ? (
                                 <div>
                                     {loan.guarantors.map((guarantor, index) => (
-                                        <div className={'flex gap-3 my-3 border-y-2 border-gray-400 py-2'} key={index}>
+                                        <div className={'flex gap-3 items-center my-3 border-y-2 border-gray-400 py-2'} key={index}>
                                             {/*<p>: {guarantor.guarantorUsername}</p>*/}
-                                            <div className="avatar">
-                                                <div className="w-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
-                                                    <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
-                                                </div>
-                                            </div>
+                                            {
+                                                guarantor.decision === 'pending' ? (
+                                                    <div className="avatar">
+                                                        <div className="w-6 max-h-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
+                                                            <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
+                                                        </div>
+                                                    </div>
+                                                ) : guarantor.decision === 'accepted' ? (
+                                                    <div className="avatar online">
+                                                        <div className="w-6 max-h-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
+                                                            <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
+                                                        </div>
+                                                    </div>
+                                                ) : guarantor.decision === 'rejected' ? (
+                                                    <div className="avatar offline">
+                                                        <div className="w-6 max-h-6 rounded-full ring-1 ring-primary ring-offset-base-100 ring-offset-2">
+                                                            <img src={`https://api.dicebear.com/6.x/shapes/svg?seed=${guarantor.guarantorUsername}`} alt={''} />
+                                                        </div>
+                                                    </div>
+                                                ) : null
+                                            }
+
                                             <p>{guarantor.decision}</p>
+                                            {/* if guarantor rejected show button to add new guarantor*/}
+                                            {guarantor.decision === 'rejected' ? (
+                                                <section className={'flex gap-2'}>
+                                                    <button title={`Add a new guarantor to replace ${guarantor.guarantorUsername}`} className="btn text-1xl btn-sm btn-outline btn-warning py-0" onClick={() => handleAddGuarantor(loan.id, guarantor.guarantorId)}>
+                                                        <i className="fa-solid fa-shuffle"></i></button>
+                                                    <button title={`Reapply ${guarantor.guarantorUsername} to guarantee the loan `} className="btn text-1xl btn-sm btn-outline btn-danger py-0" onClick={() => handleReAddGuarantor(loan.id, guarantor.guarantorId)}>
+                                                        <i className="fa-solid fa-rotate"></i></button>
+                                                </section>
+                                            ) : null}
                                         </div>
                                     ))}
                                 </div>
@@ -127,7 +218,10 @@ const ManageLoans = () => {
                 ))}
                 </tbody>
             </table>
+                </div>
+                )}
         </div>
+                </div>
     );
 };
 

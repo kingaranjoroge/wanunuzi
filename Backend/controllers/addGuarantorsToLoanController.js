@@ -12,6 +12,11 @@ let transporter = nodemailer.createTransport({
   },
 });
 
+const addOneGuarantorToLoan = async (req, res) => {
+  const { userId, loanId, guarantorId } = req.body;
+  console.log(req.body);
+}
+
 const addGuarantorsToLoan = async (req, res) => {
   const { userId, loanId, guarantors } = req.body;
 
@@ -69,4 +74,4 @@ const addGuarantorsToLoan = async (req, res) => {
   }
 };
 
-module.exports = { addGuarantorsToLoan };
+module.exports = { addGuarantorsToLoan, addOneGuarantorToLoan };
