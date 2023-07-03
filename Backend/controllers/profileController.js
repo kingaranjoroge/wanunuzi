@@ -15,6 +15,11 @@ const userProfile = async (req, res) => {
         // Extract the required user details
         const userDetails = {
             name: user.fullName,
+            dob: user.DOB,
+            gender: user.Gender,
+            status: user.Status,
+            address: user.Address,
+            kraPin: user.kraPin,
             email: user.email,
             phoneNumber: user.phoneNumber,
             idNumber: user.idNumber
@@ -31,7 +36,7 @@ const userProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const { name, email, phoneNumber, idNumber } = req.body;
+        const { name, email, phoneNumber, idNumber, dob, gender, status, address, kraPin } = req.body;
         const { userId } = req.params;
 
         // Retrieve user details from the database
@@ -44,6 +49,11 @@ const updateProfile = async (req, res) => {
 
         // Update the user details
         user.fullName = name;
+        user.DOB = dob,
+        user.Gender = gender,
+        user.Status = status,
+        user.Address = address,
+        user.kraPin = kraPin,
         user.email = email;
         user.phoneNumber = phoneNumber;
         user.idNumber = idNumber;
