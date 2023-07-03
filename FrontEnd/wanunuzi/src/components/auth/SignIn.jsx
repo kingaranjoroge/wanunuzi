@@ -38,14 +38,14 @@ const SignIn = () => {
         <video
             className="absolute z-0 w-auto min-w-full min-h-full max-w-none"
             type="video/mp4"
-            src="../../../wanunuzi.mp4"
+            src="../../../saccocut.mp4"
             autoPlay
             loop
             muted
         />
-        <div className="absolute z-10 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+        <div className="absolute z-10 w-full h-full flex items-center justify-center bg-black bg-opacity-70">
           <form className="w-80 flex flex-col gap-3 justify-center place-content-center place-items-center" onSubmit={handleSubmit}>
-            <h2 className="text-3xl font-bold text-green-900">Login</h2>
+            <h2 className="text-3xl font-bold text-white">Login</h2>
             <input className="input input-bordered w-full max-w-xs"
                    type="email"
                    placeholder="Enter Email"
