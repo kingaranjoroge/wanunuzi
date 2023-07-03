@@ -76,17 +76,20 @@ const ManageLoans = () => {
         console.log('Add guarantor for loan with id:', id);
     }
 
-    async function handleReAddGuarantor(id, guarantorId) {
+    async function handleReAddGuarantor(id, guarantorId, guaranteeAmount) {
         const loanId = id;
         const userId = user.userId;
         //const guarantorId = guarantorId;
+        const guarantorAmount = guaranteeAmount;
 
         try {
-            const response = await axios.post(`${config.BASE_API_URL}/addOne`, {
+            const response = await axios.post(`${config.BASE_API_URL}/addOneGuarantorToLoan`, {
                 loanId,
                 userId,
                 guarantorId,
+                guarantorAmount,
             });
+
         }
         catch (error) {
             console.error('Failed to re-add guarantor:', error);
@@ -203,7 +206,7 @@ const ManageLoans = () => {
                                                 <section className={'flex gap-2'}>
                                                     <button title={`Add a new guarantor to replace ${guarantor.guarantorUsername}`} className="btn text-1xl btn-sm btn-outline btn-warning py-0" onClick={() => handleAddGuarantor(loan.id, guarantor.guarantorId)}>
                                                         <i className="fa-solid fa-shuffle"></i></button>
-                                                    <button title={`Reapply ${guarantor.guarantorUsername} to guarantee the loan `} className="btn text-1xl btn-sm btn-outline btn-danger py-0" onClick={() => handleReAddGuarantor(loan.id, guarantor.guarantorId)}>
+                                                    <button title={`Reapply ${guarantor.guarantorUsername} to guarantee the loan `} className="btn text-1xl btn-sm btn-outline btn-danger py-0" onClick={() => handleReAddGuarantor(loan.id, guarantor.guarantorId, guarantor.amount)}>
                                                         <i className="fa-solid fa-rotate"></i></button>
                                                 </section>
                                             ) : null}

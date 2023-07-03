@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import jwt_decode from 'jwt-decode';
@@ -34,31 +34,40 @@ const SignIn = () => {
   };
 
   return (
-    <div className="w-full flex flex-col place-items-center h-[90vh] justify-center">
-      <form className="w-80 flex flex-col gap-3 justify-center place-content-center place-items-center" onSubmit={handleSubmit}>
-        <h2 className="text-3xl font-bold text-green-900">Login</h2>
-        <input className="input input-bordered w-full max-w-xs"
-          type="email"
-          placeholder="Enter Email"
-          required={true}
-          value={username}
-          aria-autocomplete="both"
-               autoComplete="email"
-          onChange={(e) => setUsername(e.target.value)}
+      <div className="relative w-full h-screen overflow-hidden">
+        <video
+            className="absolute z-0 w-auto min-w-full min-h-full max-w-none"
+            type="video/mp4"
+            src="../../../wanunuzi.mp4"
+            autoPlay
+            loop
+            muted
         />
-        <input className="input input-bordered w-full max-w-xs"
-          type="password"
-          placeholder="Password"
-          value={password}
-          required={true}
-
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800" type="submit">Sign In</button>
-        <p>{response}</p>
-        <p>Don't have an account? <a className="hover:text-green-900 hover:font-bold" href="/register">Sign Up</a></p>
-      </form>
-    </div>
+        <div className="absolute z-10 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+          <form className="w-80 flex flex-col gap-3 justify-center place-content-center place-items-center" onSubmit={handleSubmit}>
+            <h2 className="text-3xl font-bold text-green-900">Login</h2>
+            <input className="input input-bordered w-full max-w-xs"
+                   type="email"
+                   placeholder="Enter Email"
+                   required={true}
+                   value={username}
+                   aria-autocomplete="both"
+                   autoComplete="email"
+                   onChange={(e) => setUsername(e.target.value)}
+            />
+            <input className="input input-bordered w-full max-w-xs"
+                   type="password"
+                   placeholder="Password"
+                   value={password}
+                   required={true}
+                   onChange={(e) => setPassword(e.target.value)}
+            />
+            <button className="btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800" type="submit">Sign In</button>
+            <p>{response}</p>
+            <p>Don't have an account? <a className="hover:text-green-900 hover:font-bold" href="/register">Sign Up</a></p>
+          </form>
+        </div>
+      </div>
   );
 };
 
