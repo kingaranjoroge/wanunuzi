@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Guarantor = require('../models/Guarantor');
 const nodemailer = require('nodemailer');
+const mailGenerator = require('../mailer/mailgenerator');
 
 let transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -34,16 +35,18 @@ const addOneGuarantorToLoan = async (req, res) => {
                     //return res.status(200).json({ message: 'Guarantor updated successfully.' });
                     //TODO: send email to guarantor
                     let SERVER_URL = process.env.FRONTEND_URL;
-                    const mailOptions = {
-                        from: '"Wanunuzi Sacco" <admin@wanunuzi.com>',
-                        to: guarantee.email,
-                        subject: 'You have been added as a guarantor Again',
-                        html: `<p>Hello, ${guarantor.fullName}. You have been added as a guarantor by ${loanApplier.fullName} for the loan with ID: ${loanId}. Please confirm using the link below to proceed.</p>
-        <a href="${SERVER_URL}/verify-guarantor?loanUser=${userId}&loanId=${loanId}&guarantor=${guarantee.email}" style="background-color: #007BFF; color: white; padding: 10px 15px; text-decoration: none;">Verify Email</a>
-        `,
-                    };
+                    let from = '"Wanunuzi Sacco" <admin@wanunuzi.com>';
+                    let to = guarantee.email;
+                    let subject = 'You have been added as a guarantor';
+                    let text = `Hello, ${guarantor.fullName}. You have been added as a guarantor by ${loanApplier.fullName} for the loan with ID: ${loanId}. Please confirm using the link below to proceed.`;
+                    let links = [
+                        {
+                            url: `${SERVER_URL}/verify-guarantor?loanUser=${userId}&loanId=${loanId}&guarantor=${guarantee.email}`,
+                            text: 'Verify Email'
+                        }
+                    ];
 
-                    await transporter.sendMail(mailOptions);
+                    await mailGenerator.sendMail(from, to, subject, text, links);
 
                     const mailOptions2 = {
                         from: '"Wanunuzi Sacco" <admin@wanunuzi.com>',
@@ -53,6 +56,20 @@ const addOneGuarantorToLoan = async (req, res) => {
         `,
                     };
                     await transporter.sendMail(mailOptions2);
+
+                    let from2 = '"Wanunuzi Sacco" <admin@wanunuzi.or.ke>';
+                    let to2 = loanApplier.email;
+                    let subject2 = 'You have added a guarantor';
+                    let text2 = `Hello, ${loanApplier.fullName}. You have added ${guarantee.fullName} as a guarantor for the loan with ID: ${loanId}. Please wait for the guarantor to confirm.`;
+                    let links2 = [
+                        {
+                            url: `${SERVER_URL}/verify-guarantor?loanUser=${userId}&loanId=${loanId}&guarantor=${guarantee.email}`,
+                            text: 'Verify customer email'
+                        }
+                    ];
+
+                    await mailGenerator.sendMail(from2, to2, subject2, text2, links2);
+
 
                     return res.status(200).json({ message: 'Guarantor updated successfully.' });
                 } else {
@@ -67,16 +84,19 @@ const addOneGuarantorToLoan = async (req, res) => {
                     }
                     //TODO: send email to guarantor
                     let SERVER_URL = process.env.FRONTEND_URL;
-                    const mailOptions = {
-                        from: '"Wanunuzi Sacco" <noreply@wanunuzi.com>',
-                        to: guarantee.email,
-                        subject: 'You have been added as a guarantor',
-                        html: `<p>Hello, ${guarantor.fullName}. You have been added as a guarantor by ${loanApplier.fullName} for the loan with ID: ${loanId}. Please confirm using the link below to proceed.</p>
-        <a href="${SERVER_URL}/verify-guarantor?loanUser=${userId}&loanId=${loanId}&guarantor=${guarantee.email}" style="background-color: #007BFF; color: white; padding: 10px 15px; text-decoration: none;">Verify Email</a>
-        `,
-                    };
+                    let from = '"Wanunuzi Sacco" <admin@wanunuzi.com>';
+                    let to = guarantee.email;
+                    let subject = 'You have been added as a guarantor';
+                    let text = `Hello, ${guarantor.fullName}. You have been added as a guarantor by ${loanApplier.fullName} for the loan with ID: ${loanId}. Please confirm using the link below to proceed.`;
+                    let links = [
+                        {
+                            url: `${SERVER_URL}/verify-guarantor?loanUser=${userId}&loanId=${loanId}&guarantor=${guarantee.email}`,
+                            text: 'Verify Email'
+                        }
+                    ];
 
-                    await transporter.sendMail(mailOptions);
+                    await mailGenerator.sendMail(from, to, subject, text, links);
+
                     res.status(200).json({ message: 'Guarantor added successfully.' });
 
                     const mailOptions2 = {

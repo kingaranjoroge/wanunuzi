@@ -64,7 +64,7 @@ const SignIn = () => {
             />
             <button className="btn w-full bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800" type="submit">Sign In</button>
             <p>{response}</p>
-            <p>Don't have an account? <a className="hover:text-green-900 hover:font-bold" href="/register">Sign Up</a></p>
+            <p className={'text-white text-sm'}>Don't have an account? <a className="hover:text-blue-300 text-white text-sm hover:font-bold" href="/register">Sign Up</a></p>
           </form>
         </div>
       </div>
