@@ -1,5 +1,4 @@
  import React from 'react';
-import React from 'react';
 import 'tailwindcss/tailwind.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout.jsx';
