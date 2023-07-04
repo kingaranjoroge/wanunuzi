@@ -1,11 +1,12 @@
  import React from 'react';
+import React from 'react';
+import 'tailwindcss/tailwind.css';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout.jsx';
 import SignIn from './components/auth/SignIn.jsx';
 import SignUp from './components/auth/SignUp.jsx';
 import Homepage from './components/home/Homepage.jsx';
 import Payment from './components/payments/Payment.jsx';
-import 'tailwindcss/tailwind.css';
 import Loan from "./components/loans/Loan.jsx";
 import Savings from './components/savings/Savings.jsx';
 import VerificationSuccess from './components/auth/VerificationSuccess.jsx';
@@ -16,6 +17,7 @@ import About from "./components/about/About.jsx";
 import ManageLoans from "./components/loans/ManageLoans.jsx";
 import SavingsDashboard from "./components/savings/SavingsDashboard"
 import CompleteSignUp from './components/auth/CompleteSignUp.jsx';
+import NextOfKinProfile from './components/user/NextOfKinProfile.jsx';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -52,6 +54,7 @@ function App() {
                 <Route path="profile" element={<Profile />} />
                 <Route path="savings-dashboard" element={<SavingsDashboard />} />
                 <Route path="complete-registration" element={<CompleteSignUp />} />
+                <Route path="profile/nextOfKin" element={<NextOfKinProfile />} />
                 <Route path="*" element={<Navigate to="/login" />} />
             </Route>
         </Routes>

@@ -56,13 +56,13 @@ export default function Example() {
                                 <div className="flex flex-shrink-0 items-center">
                                     <img
                                         className="block h-8 w-auto lg:hidden"
-                                        src="https://www.wanunuzisacco.or.ke/wp-content/uploads/2019/09/wsacco-logo-design.png"
-                                        alt="Your Company"
+                                        src="../../../saccologo.png"
+                                        alt="Wanunuzi Sacco"
                                     />
                                     <img
                                         className="hidden h-8 w-auto lg:block"
-                                        src="https://www.wanunuzisacco.or.ke/wp-content/uploads/2019/09/wsacco-logo-design.png"
-                                        alt="Your Company"
+                                        src="../../../saccologo.png"
+                                        alt="Wanunuzi Sacco"
                                     />
                                 </div>
                                 <div className="hidden sm:ml-6 sm:block">
