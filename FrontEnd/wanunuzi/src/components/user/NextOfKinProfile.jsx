@@ -1,35 +1,32 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { useNavigate } from 'react-router-dom';
 
-const Profile = () => {
-  const navigate = useNavigate();
-
-  const [userDetails, setUserDetails] = useState(null);
+const NextOfKinProfile = () => {
+  const [nextOfKinDetails, setNextOfKinDetails] = useState(null);
   const [editedDetails, setEditedDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    const fetchNextOfKinDetails = async () => {
       try {
         const token = localStorage.getItem("token");
         const decoded = jwt_decode(token);
-        const decodedUserId = decoded.userId;
+        const decodedUserId = decoded.userId; // Implement this function to extract userId from the URL params
 
         const response = await axios.get(
-          `http://localhost:3000/profile/${decodedUserId}`
+          `http://localhost:3000/nextOfKin/${decodedUserId}`
         );
-        setUserDetails(response.data);
+        setNextOfKinDetails(response.data);
         setEditedDetails(response.data); // Initialize edited details with the fetched data
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        console.error("Error fetching Next of Kin details:", error);
         setIsLoading(false);
       }
     };
 
-    fetchUserDetails();
+    fetchNextOfKinDetails();
   }, []);
 
   const handleInputChange = (event) => {
@@ -42,33 +39,29 @@ const Profile = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const decoded = jwt_decode(token);
-      const decodedUserId = decoded.userId;
+        const token = localStorage.getItem("token");
+        const decoded = jwt_decode(token);
+        const decodedUserId = decoded.userId; // Implement this function to extract userId from the URL params
 
       await axios.put(
-        `http://localhost:3000/profile/${decodedUserId}`,
+        `http://localhost:3000/nextOfKin/${decodedUserId}`,
         editedDetails
       );
-      setUserDetails(editedDetails); // Update the displayed details with the edited details
-      alert("User details updated successfully!");
+      setNextOfKinDetails(editedDetails); // Update the displayed details with the edited details
+      alert("Next of Kin details updated successfully!");
     } catch (error) {
-      console.error("Error updating user details:", error);
-      alert("Error updating user details. Please try again.");
+      console.error("Error updating Next of Kin details:", error);
+      alert("Error updating Next of Kin details. Please try again.");
     }
-  };
-
-  const handleViewNextOfKin = () => {
-    navigate('/profile/nextOfKin');
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-lightgreen">
       {isLoading ? (
-        <p>Loading user details...</p>
-      ) : userDetails ? (
+        <p>Loading Next of Kin details...</p>
+      ) : nextOfKinDetails ? (
         <form className="bg-white p-6 rounded shadow-lg sm:w-3/4 md:w-2/4 lg:w-1/2 xl:w-3/5">
-          <h2 className="text-2xl mb-6 text-green-700 font-bold">User Details</h2>
+          <h2 className="text-2xl mb-6 text-green-700 font-bold">Next of Kin Details</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="mb-4">
               <label className="block mb-2" htmlFor="name">
@@ -136,45 +129,6 @@ const Profile = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block mb-2" htmlFor="gender">
-                Gender:
-              </label>
-              <input
-                className="w-full px-4 py-2 border rounded border-green-600"
-                type="text"
-                id="gender"
-                name="gender"
-                value={editedDetails.gender}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2" htmlFor="status">
-                Status:
-              </label>
-              <input
-                className="w-full px-4 py-2 border rounded border-green-600"
-                type="text"
-                id="status"
-                name="status"
-                value={editedDetails.status}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-2" htmlFor="address">
-                Address:
-              </label>
-              <input
-                className="w-full px-4 py-2 border rounded border-green-600"
-                type="text"
-                id="address"
-                name="address"
-                value={editedDetails.address}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="mb-4">
               <label className="block mb-2" htmlFor="kraPin">
                 KRA PIN:
               </label>
@@ -188,32 +142,21 @@ const Profile = () => {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4 justify-between">
-            <div className="mb-4 col-span-1 w-full">
-              <button
-                className="px-4 py-2 bg-red-800 text-white rounded w-full"
+          <div className="flex justify-center items-center mb-4 col-span-1 w-full">
+            <button
+                className="px-4 py-2 bg-red-800 text-white rounded w-50%"
                 type="button"
                 onClick={handleSaveChanges}
-              >
+            >
                 Save Changes
-              </button>
-            </div>
-            <div className="mb-4 col-span-1 w-full">
-              <button
-                className="px-4 py-2 bg-red-800 text-white rounded w-full"
-                type="button"
-                onClick={handleViewNextOfKin}
-              >
-                View Next of Kin
-              </button>
-            </div>
+            </button>
           </div>
         </form>
       ) : (
-        <p>Error fetching user details.</p>
+        <p>Error fetching Next of Kin details.</p>
       )}
     </div>
   );
 };
 
-export default Profile;
+export default NextOfKinProfile;
