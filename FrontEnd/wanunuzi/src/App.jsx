@@ -1,4 +1,4 @@
-import React from 'react';
+ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout.jsx';
 import SignIn from './components/auth/SignIn.jsx';
@@ -27,6 +27,11 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" />;
   }
 };
+
+const isAdministrator = () => {
+    //
+    return false;
+}
 
 function App() {
     return (
