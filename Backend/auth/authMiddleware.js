@@ -10,7 +10,7 @@ module.exports = function(req, res, next) {
     try {
         const decoded = jwt.decode(token, process.env.JWT_SECRET)
         req.userId = decoded.userId;
-        console.log('Decoded Id:', decoded.userId);
+        //console.log('Decoded Id:', decoded.userId);
         next();
     }catch(err) {
             console.log('Error while verifying token:', err);

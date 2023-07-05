@@ -31,7 +31,7 @@ const Homepage = () => {
                     });
 
                     const data2 = await response.json();
-                    console.log('data',data2);
+                    //console.log('data',data2);
                 } catch (error) {
                     console.error('Error fetching balance:', error);
                 }
