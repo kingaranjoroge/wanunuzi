@@ -30,7 +30,10 @@ const ProtectedRoute = ({ children }) => {
 };
 
 const isAdministrator = () => {
-    //
+    const token = localStorage.getItem('token');
+    if (token) {
+
+    }
     return false;
 }
 
