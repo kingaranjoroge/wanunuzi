@@ -17,10 +17,21 @@ const Homepage = () => {
                 const decoded = jwt_decode(token);
                 setUser(decoded);
 
+
                 try {
                     // Fetch the user's balance
                     const { data } = await axios.get(`${config.BASE_API_URL}/balance/${decoded.userId}`);
                     setBalance(data.balance);
+                    const response = await fetch('http://localhost:3000/admin/someAdminAction', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': token,
+                        },
+                    });
+
+                    const data2 = await response.json();
+                    console.log('data',data2);
                 } catch (error) {
                     console.error('Error fetching balance:', error);
                 }
@@ -74,7 +85,8 @@ const Homepage = () => {
     navigateToLoans('/loan');
   };
 
-  const [user, setUser] = useState({});
+
+    const [user, setUser] = useState({});
 
   useEffect(() => {
 
@@ -92,7 +104,7 @@ const Homepage = () => {
         <p>Welcome {user.name}</p>
       </section>
 
-      {/* 
+      {/*
       <div className="px-4 mt-36 py-2 text-lg text-red-800 font-semibold">
         <p>Email: {user.email}</p>
         <p>Phone Number: {user.phoneNumber}</p>

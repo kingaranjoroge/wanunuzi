@@ -59,11 +59,24 @@ User.init(
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
+        roleId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: 'Roles',
+                key: 'id'
+            }
+        },
     },
     {
         sequelize,
         modelName: 'User',
     }
 );
+
+User.associateModels = () => {
+    const Role = require('./role');
+    User.belongsTo(Role, { foreignKey: 'roleId' });
+};
 
 module.exports = User;
