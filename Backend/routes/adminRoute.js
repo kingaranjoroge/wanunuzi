@@ -6,6 +6,9 @@ const auth = require('../auth/authMiddleware');
 router.use(auth); // use authentication middleware
 router.use(adminController.checkAdminRole); // use role check middleware
 
+// Route to check if the user is an admin
+router.get('/isAdmin', auth, adminController.isAdmin);
+
 router.get('/someAdminAction', adminController.someAdminAction);
 
 module.exports = router;

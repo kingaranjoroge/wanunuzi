@@ -35,6 +35,33 @@ adminController.checkAdminRole = async (req, res, next) => {
     }
 };
 
+// A method to check if the user is an admin
+adminController.isAdmin = async (req, res) => {
+    try {
+        const user = await User.findOne({
+            where: { id: req.userId },
+            include: Role,
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Instead of sending an error if the user is not an admin, we send a response
+        // indicating whether the user is an admin or not
+        const isAdmin = user.Role.name === 'admin';
+        res.json({ isAdmin });
+    } catch (error) {
+        console.error(error);
+        if (error instanceof Sequelize.ValidationError) {
+            res.status(500).json({ message: 'Some sequelize error occurred', error: error.message });
+        } else {
+            res.status(500).json({ message: 'An error occurred', error: error.message });
+        }
+    }
+};
+
+
 
 adminController.someAdminAction = (req, res) => {
     // Perform some action that only an admin can do
