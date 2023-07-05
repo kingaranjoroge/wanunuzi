@@ -11,10 +11,10 @@ const loginUser = async (req, res) => {
           email: user.email,
           idNumber: user.idNumber,  // Added field reference
           phoneNumber: user.phoneNumber,  // Added field reference
-          userId: user.id
+          userId: user.id,
           // Add other user details you might want to include
         }, process.env.JWT_SECRET, {
-          expiresIn: '5m' // Token expiration time (optional)
+          expiresIn: '2h' // Token expiration time (optional)
         });
         res.json({ message: 'Logged in successfully', token });
       } else {
