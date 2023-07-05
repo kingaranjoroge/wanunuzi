@@ -17,6 +17,7 @@ import ManageLoans from "./components/loans/ManageLoans.jsx";
 import SavingsDashboard from "./components/savings/SavingsDashboard"
 import CompleteSignUp from './components/auth/CompleteSignUp.jsx';
 import NextOfKinProfile from './components/user/NextOfKinProfile.jsx';
+import ManageUsers from './components/admin/ManageUsers.jsx';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -54,6 +55,7 @@ function App() {
                 <Route path="savings-dashboard" element={<SavingsDashboard />} />
                 <Route path="complete-registration" element={<CompleteSignUp />} />
                 <Route path="profile/nextOfKin" element={<NextOfKinProfile />} />
+                <Route path="manage-users" element={<ManageUsers />} />
                 <Route path="*" element={<Navigate to="/login" />} />
             </Route>
         </Routes>
