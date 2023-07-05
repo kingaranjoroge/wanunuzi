@@ -18,61 +18,299 @@ const ManageUsers = () => {
   };
 
   const handleEdit = (userId) => {
-    // Implement edit functionality
+    setUsers((prevUsers) => {
+      return prevUsers.map((user) => {
+        if (user.id === userId) {
+          return { ...user, isEditing: true };
+        }
+        return user;
+      });
+    });
   };
-
-  const handleDelete = (userId) => {
-    const shouldDelete = window.confirm('Are you sure you want to delete this user?');
-    if (shouldDelete) {
-      // Implement delete functionality
+  
+  const handleSave = async (userId) => {
+    try {
+      const updatedUser = users.find((user) => user.id === userId);
+  
+      // Send the updated user data to the server
+      await axios.put(`http://localhost:3000/signup/${userId}`, updatedUser);
+  
+      // Refresh the user list
+      fetchUsers();
+    } catch (error) {
+      console.error(error);
     }
   };
+  
+  const handleCancel = (userId) => {
+    setUsers((prevUsers) => {
+      return prevUsers.map((user) => {
+        if (user.id === userId) {
+          return { ...user, isEditing: false };
+        }
+        return user;
+      });
+    });
+  };
+  
+
+  const handleDelete = async (userId) => {
+    const shouldDelete = window.confirm('Are you sure you want to delete this user?');
+    if (shouldDelete) {
+      try {
+        // Send a delete request to the server
+        await axios.delete(`http://localhost:3000/signup/${userId}`);
+    
+        // Refresh the user list
+        fetchUsers();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+  
 
   return (
     <table className="min-w-full">
       <thead>
         <tr>
-          <th className="px-4 py-2">Full Name</th>
-          <th className="px-4 py-2">Email</th>
-          <th className="px-4 py-2">Phone Number</th>
-          <th className="px-4 py-2">ID Number</th>
-          <th className="px-4 py-2">KRA Pin</th>
-          <th className="px-4 py-2">DOB</th>
-          <th className="px-4 py-2">Gender</th>
-          <th className="px-4 py-2">Status</th>
-          <th className="px-4 py-2">Phone Adress</th>
-          <th className="px-4 py-2">Actions</th>
+          <th className="px-4 py-2 bg-green-600 text-white">#</th>
+          <th className="px-4 py-2 bg-green-600 text-white">Full Name</th>
+          <th className="px-4 py-2 bg-green-600 text-white">Email</th>
+          <th className="px-4 py-2 bg-green-600 text-white">Phone Number</th>
+          <th className="px-4 py-2 bg-green-600 text-white">ID Number</th>
+          <th className="px-4 py-2 bg-green-600 text-white">KRA Pin</th>
+          <th className="px-4 py-2 bg-green-600 text-white">DOB</th>
+          <th className="px-4 py-2 bg-green-600 text-white">Gender</th>
+          <th className="px-4 py-2 bg-green-600 text-white">Status</th>
+          <th className="px-4 py-2 bg-green-600 text-white">Phone Address</th>
+          <th className="px-4 py-2 bg-green-600 text-white">Actions</th>
         </tr>
       </thead>
       <tbody>
-        {users.map((user) => (
-          <tr key={user.id}>
-            <td className="border px-4 py-2">{user.fullName}</td>
-            <td className="border px-4 py-2">{user.email}</td>
-            <td className="border px-4 py-2">{user.phoneNumber}</td>
-            <td className="border px-4 py-2">{user.idNumber}</td>
-            <td className="border px-4 py-2">{user.kraPin}</td>
-            <td className="border px-4 py-2">{user.DOB}</td>
-            <td className="border px-4 py-2">{user.Gender}</td>
-            <td className="border px-4 py-2">{user.Status}</td>
-            <td className="border px-4 py-2">{user.Address}</td>
-            <td className="border px-4 py-2">
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                onClick={() => handleEdit(user.id)}
-              >
-                Edit
-              </button>
-              <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => handleDelete(user.id)}
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
+      {users.map((user, index) => (
+        <tr key={user.id}>
+          <td className="border px-4 py-2">{index + 1}</td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <input
+                className="border rounded px-2 py-1"
+                value={user.fullName}
+                onChange={(e) => {
+                  setUsers((prevUsers) => {
+                    return prevUsers.map((prevUser) => {
+                      if (prevUser.id === user.id) {
+                        return { ...prevUser, fullName: e.target.value };
+                      }
+                      return prevUser;
+                    });
+                  });
+                }}
+              />
+            ) : (
+              user.fullName
+            )}
+          </td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <input
+                className="border rounded px-2 py-1"
+                value={user.email}
+                onChange={(e) => {
+                  setUsers((prevUsers) => {
+                    return prevUsers.map((prevUser) => {
+                      if (prevUser.id === user.id) {
+                        return { ...prevUser, email: e.target.value };
+                      }
+                      return prevUser;
+                    });
+                  });
+                }}
+              />
+            ) : (
+              user.email
+            )}
+          </td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <input
+                className="border rounded px-2 py-1"
+                value={user.phoneNumber}
+                onChange={(e) => {
+                  setUsers((prevUsers) => {
+                    return prevUsers.map((prevUser) => {
+                      if (prevUser.id === user.id) {
+                        return { ...prevUser, phoneNumber: e.target.value };
+                      }
+                      return prevUser;
+                    });
+                  });
+                }}
+              />
+            ) : (
+              user.phoneNumber
+            )}
+          </td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <input
+                className="border rounded px-2 py-1"
+                value={user.idNumber}
+                onChange={(e) => {
+                  setUsers((prevUsers) => {
+                    return prevUsers.map((prevUser) => {
+                      if (prevUser.id === user.id) {
+                        return { ...prevUser, idNumber: e.target.value };
+                      }
+                      return prevUser;
+                    });
+                  });
+                }}
+              />
+            ) : (
+              user.idNumber
+            )}
+          </td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <input
+                className="border rounded px-2 py-1"
+                value={user.kraPin}
+                onChange={(e) => {
+                  setUsers((prevUsers) => {
+                    return prevUsers.map((prevUser) => {
+                      if (prevUser.id === user.id) {
+                        return { ...prevUser, kraPin: e.target.value };
+                      }
+                      return prevUser;
+                    });
+                  });
+                }}
+              />
+            ) : (
+              user.kraPin
+            )}
+          </td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <input
+                className="border rounded px-2 py-1"
+                value={user.DOB}
+                onChange={(e) => {
+                  setUsers((prevUsers) => {
+                    return prevUsers.map((prevUser) => {
+                      if (prevUser.id === user.id) {
+                        return { ...prevUser, DOB: e.target.value };
+                      }
+                      return prevUser;
+                    });
+                  });
+                }}
+              />
+            ) : (
+              user.DOB
+            )}
+          </td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <input
+                className="border rounded px-2 py-1"
+                value={user.Gender}
+                onChange={(e) => {
+                  setUsers((prevUsers) => {
+                    return prevUsers.map((prevUser) => {
+                      if (prevUser.id === user.id) {
+                        return { ...prevUser, Gender: e.target.value };
+                      }
+                      return prevUser;
+                    });
+                  });
+                }}
+              />
+            ) : (
+              user.Gender
+            )}
+          </td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <input
+                className="border rounded px-2 py-1"
+                value={user.Status}
+                onChange={(e) => {
+                  setUsers((prevUsers) => {
+                    return prevUsers.map((prevUser) => {
+                      if (prevUser.id === user.id) {
+                        return { ...prevUser, Status: e.target.value };
+                      }
+                      return prevUser;
+                    });
+                  });
+                }}
+              />
+            ) : (
+              user.Status
+            )}
+          </td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <input
+                className="border rounded px-2 py-1"
+                value={user.Address}
+                onChange={(e) => {
+                  setUsers((prevUsers) => {
+                    return prevUsers.map((prevUser) => {
+                      if (prevUser.id === user.id) {
+                        return { ...prevUser, Address: e.target.value };
+                      }
+                      return prevUser;
+                    });
+                  });
+                }}
+              />
+            ) : (
+              user.Address
+            )}
+          </td>
+          <td className="border px-4 py-2">
+            {user.isEditing ? (
+              <>
+                <div className="flex">
+                  <button
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2 flex-1"
+                    onClick={() => handleSave(user.id)}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex-1"
+                    onClick={() => handleCancel(user.id)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>            
+            ) : (
+              <>
+                <div className="flex">
+                  <button
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2 w-24"
+                    onClick={() => handleEdit(user.id)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-24"
+                    onClick={() => handleDelete(user.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
     </table>
   );
 };
