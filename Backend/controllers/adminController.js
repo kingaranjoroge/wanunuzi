@@ -1,4 +1,4 @@
-const { User, Role } = require('../models/initialize');
+const { User, Role,Loan,Guarantor } = require('../models/initialize');
 const {Sequelize} = require("sequelize");
 
 const adminController = {};
@@ -61,7 +61,64 @@ adminController.isAdmin = async (req, res) => {
     }
 };
 
+// Function to get all loans and their associated user data
+adminController.getAllLoans = async (req, res) => {
+    try {
+        const loans = await Loan.findAll({
+            include: [
+                { model: User},
+                { model: Guarantor, include: { model: User }}
+            ],
+        });
 
+        res.json({ loans });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred', error: error.message });
+    }
+};
+
+adminController.getLoan = async (req, res) => {
+    try {
+        const loan = await Loan.findOne({
+            where: { id: req.params.id },
+            include: [
+                { model: User},
+                { model: Guarantor, include: { model: User } }
+            ],
+        });
+
+        if (!loan) {
+            return res.status(404).json({ message: 'Loan not found' });
+        }
+
+        res.json({ loan });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred', error: error.message });
+    }
+};
+
+// Function to update a loan by its ID
+adminController.updateLoan = async (req, res) => {
+    try {
+        const { amount, status } = req.body;
+
+        const loan = await Loan.update(
+            { amount, status },
+            {
+                where: { id: req.params.id },
+                returning: true,
+                plain: true,
+            }
+        );
+
+        res.json({ loan: loan[1] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred', error: error.message });
+    }
+};
 
 adminController.someAdminAction = (req, res) => {
     // Perform some action that only an admin can do

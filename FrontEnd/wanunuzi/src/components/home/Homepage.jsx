@@ -19,6 +19,7 @@ const Homepage = () => {
 
 
                 try {
+
                     // Fetch the user's balance
                     const { data } = await axios.get(`${config.BASE_API_URL}/balance/${decoded.userId}`);
                     setBalance(data.balance);

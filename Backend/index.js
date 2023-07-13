@@ -1,7 +1,8 @@
-require('dotenv').config(); // don't forget to install this: npm install dotenv
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const cors = require('cors'); // don't forget to install this: npm install cors
+const cors = require('cors');
+const path = require('path');
 
 
 app.use(cors());
@@ -31,6 +32,8 @@ app.use('/guarantor-data', require('./routes/guarantorDataRoute'));
 app.use('/nextOfKin', require('./routes/nextOfKinRoute'));
 app.use('/compare-user-details', require('./routes/compareUserDetailsRoute'));
 app.use('/admin', require('./routes/adminRoute'));
+app.use('/upload', require('./routes/documentRoute'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 

@@ -19,6 +19,14 @@ import CompleteSignUp from './components/auth/CompleteSignUp.jsx';
 import NextOfKinProfile from './components/user/NextOfKinProfile.jsx';
 import ManageUsers from './components/admin/ManageUsers.jsx';
 import NotAdmin from "./components/admin/NotAdmin.jsx";
+import ManageLoansAdmin from "./components/admin/ManageLoansAdmin.jsx";
+import LoanDetail from "./components/admin/LoanDetail.jsx";
+import ChooseLoan from "./components/loans/ChooseLoan.jsx";
+import ManageDocuments from "./components/admin/ManageDocuments.jsx";
+import AllDocuments from "./components/admin/AllDocuments.jsx";
+
+
+const UploadDocuments = React.lazy(() => import('./components/user/DocumentsUpload.jsx'));
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -82,8 +90,10 @@ function App() {
                 <Route path="/login" element={<SignIn />} />
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/home" element={<ProtectedRoute><Homepage /></ProtectedRoute>} />
-                <Route path="/loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
+                <Route path="/normal-loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
+                <Route path="/loan" element={<ProtectedRoute><ChooseLoan /></ProtectedRoute>} />
                 <Route path="/savings" element={<Savings/>} />
+                <Route path="/upload" element={<UploadDocuments />} />
                 <Route path="/verification-success" element={<VerificationSuccess />} />
                 <Route path="/verification-failure" element={<VerificationFailure />} />
                 <Route path="profile" element={<Profile />} />
@@ -91,8 +101,11 @@ function App() {
                 <Route path="complete-registration" element={<CompleteSignUp />} />
                 <Route path="profile/nextOfKin" element={<NextOfKinProfile />} />
                 <Route path="/manage-users" element={<ProtectedAdminRoute><ManageUsers /></ProtectedAdminRoute>} />
-                <Route path="*" element={<Navigate to="/login" />} />
+                <Route path="/all-documents" element={<ProtectedAdminRoute><AllDocuments /></ProtectedAdminRoute>} />
+                <Route path="/manage-documents/:id" element={<ProtectedAdminRoute><ManageDocuments /></ProtectedAdminRoute>} />
                 <Route path="not-admin" element={<NotAdmin />} />
+                <Route path="/loan-data/:id" element={<ProtectedAdminRoute><LoanDetail /></ProtectedAdminRoute>} />
+                <Route path="/manage-loans-admin" element={<ProtectedAdminRoute><ManageLoansAdmin /></ProtectedAdminRoute>} />
             </Route>
         </Routes>
     );
