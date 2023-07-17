@@ -42,7 +42,7 @@ const createUser = async (req, res) => {
         const buffer = crypto.randomBytes(10);
         const token = buffer.toString('hex');
     
-        const user = await User.create({
+        const userData = {
           fullName: req.body.fullName,
           email: req.body.email,
           phoneNumber: req.body.phoneNumber,
@@ -51,7 +51,27 @@ const createUser = async (req, res) => {
           emailVerificationToken: token,  // store the token in the user model
           emailVerified: false,  // flag to check if the email is verified
           accountActivated: false // flag to check if the account is activated
-        });
+        };
+    
+        // Check for additional fields and update the user data if provided
+        if (req.body.kraPin) {
+          userData.kraPin = req.body.kraPin;
+        }
+        if (req.body.DOB) {
+          userData.DOB = req.body.DOB;
+        }
+        if (req.body.Gender) {
+          userData.Gender = req.body.Gender;
+        }
+        if (req.body.Status) {
+          userData.Status = req.body.Status;
+        }
+        if (req.body.Address) {
+          userData.Address = req.body.Address;
+        }
+    
+        // Create the user with all the data
+        const user = await User.create(userData);
     
         // Create a balance record for the user
         const balance = await Balance.create({
