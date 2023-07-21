@@ -17,6 +17,7 @@ import ManageLoans from "./components/loans/ManageLoans.jsx";
 import SavingsDashboard from "./components/savings/SavingsDashboard"
 import CompleteSignUp from './components/auth/CompleteSignUp.jsx';
 import NextOfKinProfile from './components/user/NextOfKinProfile.jsx';
+import AddNewUser from './components/admin/AddNewUser'
 import ManageUsers from './components/admin/ManageUsers.jsx';
 import NotAdmin from "./components/admin/NotAdmin.jsx";
 import ManageLoansAdmin from "./components/admin/ManageLoansAdmin.jsx";
@@ -100,6 +101,7 @@ function App() {
                 <Route path="savings-dashboard" element={<SavingsDashboard />} />
                 <Route path="complete-registration" element={<CompleteSignUp />} />
                 <Route path="profile/nextOfKin" element={<NextOfKinProfile />} />
+                <Route path="add-user" element={<AddNewUser />} />
                 <Route path="/manage-users" element={<ProtectedAdminRoute><ManageUsers /></ProtectedAdminRoute>} />
                 <Route path="/all-documents" element={<ProtectedAdminRoute><AllDocuments /></ProtectedAdminRoute>} />
                 <Route path="/manage-documents/:id" element={<ProtectedAdminRoute><ManageDocuments /></ProtectedAdminRoute>} />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import config from '../../../Config.js';
-import { Button, TextField } from '@material-ui/core';
+import { Button, TextField } from '@mui/material';
 
 const LoanDetail = () => {
     const { id } = useParams();

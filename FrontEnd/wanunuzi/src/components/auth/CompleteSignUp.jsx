@@ -30,6 +30,9 @@ const CompleteSignUp = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedLoanType, setSelectedLoanType] = useState('');
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -154,10 +157,42 @@ const CompleteSignUp = () => {
       const response = await axios.post(`${config.BASE_API_URL}/nextOfKin`, { nextOfKin, userId });
       console.log('Next of Kin data sent successfully!');
   
-      navigate('/payment');
+      setShowModal(true);
     } catch (error) {
       console.error('Error sending UserData:', error);
     }
+  };
+
+  const LoanCard = ({ loanType, onClick }) => (
+    <div className="p-4 rounded-md border cursor-pointer" onClick={() => onClick(loanType)}>
+      <h3 className="text-xl font-bold text-green-700">{loanType}</h3>
+      <p>Choose {loanType}</p>
+    </div>
+  );
+  
+  const LoanModal = ({ onClose, onSelectLoanType }) => (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded shadow-lg">
+        <h2 className="text-2xl font-bold mb-4 text-green-800">Select Loan Type</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <LoanCard loanType="normal-loan" onClick={onSelectLoanType} />
+          <LoanCard loanType="investment-loan" onClick={onSelectLoanType} />
+          <LoanCard loanType="emergency-loan" onClick={onSelectLoanType} />
+        </div>
+        <button className="btn w-full mt-4 bg-red-300" onClick={onClose}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+
+  
+  const handleSelectLoanType = (loanType) => {
+    setSelectedLoanType(loanType);
+    setShowModal(false);
+
+    // Now, navigate to the selected loan type
+    navigate(`/${loanType}`);
   };
   
 
@@ -340,6 +375,12 @@ const CompleteSignUp = () => {
           </div>
         </form>
       </div>
+      {showModal && (
+        <LoanModal
+          onClose={() => setShowModal(false)}
+          onSelectLoanType={handleSelectLoanType}
+        />
+      )}
     </div>
   );
 };
