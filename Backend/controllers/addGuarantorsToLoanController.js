@@ -23,8 +23,8 @@ const addGuarantorsToLoan = async (req, res) => {
     return res.status(400).json({ error: 'Invalid loan ID.' });
   }
 
-  if (guarantors.length !== 3) {
-    return res.status(400).json({ error: 'Exactly three guarantors must be provided.' });
+  if (guarantors.length < 2) {
+    return res.status(400).json({ error: 'You must add at least two guarantors.' });
   }
 
   try {

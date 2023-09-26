@@ -24,7 +24,7 @@ import LoanDetail from "./components/admin/LoanDetail.jsx";
 import ChooseLoan from "./components/loans/ChooseLoan.jsx";
 import ManageDocuments from "./components/admin/ManageDocuments.jsx";
 import AllDocuments from "./components/admin/AllDocuments.jsx";
-
+import LoanDetails from "./components/loans/LoanDetails.jsx";
 
 const UploadDocuments = React.lazy(() => import('./components/user/DocumentsUpload.jsx'));
 
@@ -60,7 +60,6 @@ const ProtectedRoute = ({ children }) => {
      return false;
  };
 
-
  // Create a new protected route for admin paths
  const ProtectedAdminRoute = ({ children }) => {
      const [admin, setAdmin] = React.useState(null);
@@ -91,6 +90,7 @@ function App() {
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/home" element={<ProtectedRoute><Homepage /></ProtectedRoute>} />
                 <Route path="/normal-loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
+                <Route path="/loan-data/:loanId" element={<ProtectedRoute><LoanDetails /></ProtectedRoute>} />
                 <Route path="/loan" element={<ProtectedRoute><ChooseLoan /></ProtectedRoute>} />
                 <Route path="/savings" element={<Savings/>} />
                 <Route path="/upload" element={<UploadDocuments />} />

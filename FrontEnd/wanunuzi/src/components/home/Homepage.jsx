@@ -39,7 +39,9 @@ const Homepage = () => {
             }
         };
 
-        fetchBalance().then(r => console.log('Balance fetched'));
+        fetchBalance().then(
+            //add anything here
+        );
     }, []);
 
 

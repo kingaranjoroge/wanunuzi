@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/usersController');
+const auth = require("../auth/authMiddleware");
+
+router.use(auth)
 
 router.route('/').post(usersController.createUser);
 router.route('/:id').get(usersController.getUserById);
