@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchUsers();
@@ -68,9 +70,53 @@ const ManageUsers = () => {
       }
     }
   };
+
+  // Function to filter the users based on the search query
+  // Function to filter the users based on the search query
+const filteredUsers = users.filter((user) => {
+  // Combine all fields except fullName for search
+  const searchableFields = [
+    user.fullName,
+    user.email,
+    user.phoneNumber,
+    user.idNumber,
+    user.kraPin,
+    user.DOB,
+    user.Gender,
+    user.Status,
+    user.Address
+  ];
+
+  // Check if any field contains the search query (non-null fields only)
+  return searchableFields.some((field) =>
+    field && field.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+});
   
 
   return (
+    <>
+    <div className="navbar bg-base-100">
+      <div className="flex-1">
+        <h1 className="btn btn-ghost normal-case text-xl text-green-700">Users</h1>
+      </div>
+      <div>
+        <Link to="/add-user">
+          <button className="btn btn-outline mr-4">Add User</button>
+        </Link>
+      </div>
+      <div className="flex-none gap-2">
+        <div className="form-control">
+          <input
+              type="text"
+              placeholder="Search"
+              className="input input-bordered w-24 md:w-auto"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+        </div>
+      </div>
+    </div>
     <table className="min-w-full">
       <thead>
         <tr>
@@ -83,12 +129,12 @@ const ManageUsers = () => {
           <th className="px-4 py-2 bg-green-600 text-white">DOB</th>
           <th className="px-4 py-2 bg-green-600 text-white">Gender</th>
           <th className="px-4 py-2 bg-green-600 text-white">Status</th>
-          <th className="px-4 py-2 bg-green-600 text-white">Phone Address</th>
+          <th className="px-4 py-2 bg-green-600 text-white">Address</th>
           <th className="px-4 py-2 bg-green-600 text-white">Actions</th>
         </tr>
       </thead>
       <tbody>
-      {users.map((user, index) => (
+      {filteredUsers.map((user, index) => (
         <tr key={user.id}>
           <td className="border px-4 py-2">{index + 1}</td>
           <td className="border px-4 py-2">
@@ -312,6 +358,7 @@ const ManageUsers = () => {
       ))}
     </tbody>
     </table>
+    </>
   );
 };
 

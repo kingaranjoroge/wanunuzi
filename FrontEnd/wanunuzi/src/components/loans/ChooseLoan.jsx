@@ -33,7 +33,7 @@ const ChooseLoan = () => {
                             </li>
                         </ul>
                         <div className="card-actions justify-center items-center">
-                            <a className={'w-full'} href={`${config.LIVE_URL}/normal-loan`}>
+                            <a className={'w-full'} href={`${config.LIVE_URL}/complete-registration`}>
                                 <button className="btn hover:bg-red-700 btn-outline rounded-3xl w-full ring-2 ring-customGreen ring-offset-2 ">Apply <i
                                     className="fa-solid fa-circle-check"></i></button>
                             </a>
@@ -66,7 +66,7 @@ const ChooseLoan = () => {
                             </li>
                         </ul>
                         <div className="card-actions justify-end">
-                            <a className={'w-full'} href={`${config.LIVE_URL}/emergency-loan`}>
+                            <a className={'w-full'} href={`${config.LIVE_URL}/complete-registration`}>
                                 <button className="btn hover:bg-red-700 btn-outline rounded-3xl w-full ring-2 ring-customGreen ring-offset-2 ">Apply <i
                                     className="fa-solid fa-circle-check"></i></button>
                             </a>
@@ -99,7 +99,7 @@ const ChooseLoan = () => {
                             </li>
                         </ul>
                         <div className="card-actions justify-end">
-                            <a className={'w-full'} href={`${config.LIVE_URL}/investment-loan`}>
+                            <a className={'w-full'} href={`${config.LIVE_URL}/complete-registration`}>
                                 <button className="btn hover:bg-red-700 btn-outline rounded-3xl w-full ring-2 ring-customGreen ring-offset-2 ">Apply <i
                                     className="fa-solid fa-circle-check"></i></button>
                             </a>
