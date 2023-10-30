@@ -1,10 +1,16 @@
-const Loan = require('../models/Loan');
-const Guarantor = require('../models/Guarantor');
+const { Loan , Guarantor, User } = require('../models/initialize');
 
 const getLoan = async (req, res) => {
     const { id } = req.params;
     try {
-        const loan = await Loan.findByPk(id.toString());
+        const loan = await Loan.findOne({
+            where: { id: id },
+            include: [{
+                model: Guarantor,
+                include: [User],
+            }],
+        });
+
         if (loan) {
             res.json(loan);
         } else {

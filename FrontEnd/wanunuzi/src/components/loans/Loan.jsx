@@ -10,7 +10,7 @@ function navigateToLogin() {
     window.location.href = '/login';
 }
 
-Modal.setAppElement('#root'); // Replace '#root' with the id of the root element of your application
+//Modal.setAppElement('#root'); // Replace '#root' with the id of the root element of your application
 
 const CreateLoanForm = () => {
     const [amount, setAmount] = useState('');
@@ -61,7 +61,7 @@ const CreateLoanForm = () => {
         // Calculate the total amount of guarantors
         const totalGuarantorsAmount = verifiedGuarantors.reduce((total, guarantor) => total + parseFloat(guarantor.guaranteeAmount), 0);
 
-        if (parseFloat(amount) > totalGuarantorsAmount) {
+        if (parseFloat(amount) > totalGuarantorsAmount && useGuarantor) {
             setServerResponse('The entered amount exceeds the total amounts of the guarantors.');
             //console.log(totalGuarantorsAmount);
             return;
@@ -95,8 +95,8 @@ const CreateLoanForm = () => {
         try {
             //check if user chose to use a guarantor and prevent submission if guarantors are not 3
             if (useGuarantor) {
-                if (guarantors.length !== 3) {
-                    setServerResponse('You must choose 3 guarantors.');
+                if (guarantors.length < 2) {
+                    setServerResponse('You must choose at least 2 guarantors.');
                     setIsModalOpen(false);
                     return;
                 }
@@ -167,8 +167,8 @@ const CreateLoanForm = () => {
     }, [])
 
     const addGuarantorsToLoan = async (loanId) => {
-        if (guarantors.length < 3) {
-            setServerResponse('You must add at least 3 guarantors.');
+        if (guarantors.length < 2) {
+            setServerResponse('You must add at least 2 guarantors.');
             return;
         }
 
@@ -339,11 +339,14 @@ const CreateLoanForm = () => {
                                                 readOnly
                                                 className="input input-bordered input-accent w-full cursor-not-allowed py-2 px-4 rounded-md"
                                             />
-                                            <button className="btn btn-circle ring-offset-1 border-2 border-customGreen bg-customGreen text-white text-2xl ring-2 ring-inset ring-white" onClick={() => removeGuarantor(guarantor.id)}>
+                                            <div data-tip={`Remove ${guarantor.name}`} className={"tooltip"}>
+                                                <button className="btn btn-circle ring-offset-1 border-2 border-customGreen bg-customGreen text-white ring-2 ring-inset ring-white" onClick={() => removeGuarantor(guarantor.id)}>
 
-                                                <i className="fa-solid fa-trash">
-                                                </i>
-                                            </button>
+                                                    <i className="fa-solid fa-trash">
+                                                    </i>
+                                                </button>
+                                            </div>
+
 
                                         </li>
                                     ))}
@@ -363,7 +366,7 @@ const CreateLoanForm = () => {
                                     />
 
                                     <button
-                                        className={"btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white text-2xl ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-700"}
+                                        className={"btn btn-circle ring-offset-1 border-2 border-warning bg-warning text-white ring-2 ring-inset ring-white hover:bg-red-700 hover:border-red-700"}
                                         type={"submit"}
                                     >
                                         <i className="fa-solid fa-plus"></i>

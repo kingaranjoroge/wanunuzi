@@ -73,7 +73,7 @@ const UserDocuments = ({ match }) => {
                 <tr>
                     <th>Type</th>
                     <th>Status</th>
-                    <th>Document</th>  {/* New column header for documents */}
+                    <th className={'w-[100px]'}>Document</th>  {/* New column header for documents */}
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -84,12 +84,12 @@ const UserDocuments = ({ match }) => {
                         <td>{doc.status}</td>
 
 
-                        <td>
+                        <td className={'w-[100px] bg-[url(\"${config.BASE_API_URL}/${doc.imagePath}\")]'}>
                             <div className={'w-full'}>
                                 <figure className={'w-full object-cover'}>
                                     <img src={`${config.BASE_API_URL}/${doc.imagePath}`}
                                          alt={doc.type}
-                                            className={'aspect-video w-30'}
+                                            className={'aspect-video w-[100px] h-full object-cover'}
                                          onClick={() => openModal(`${config.BASE_API_URL}/${doc.imagePath}`)} />
                                 </figure>
                             </div>
