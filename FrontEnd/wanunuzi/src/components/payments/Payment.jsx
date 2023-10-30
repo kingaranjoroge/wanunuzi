@@ -178,7 +178,7 @@ const Payment = () => {
           {isRedirecting && (
               <>
                 <h2 className={"prose text-2xl"}>Successful Payment</h2>
-                <p>You will be redirected your dashboard in 5 seconds. <br>< /br></p>
+                <p>You will be redirected your dashboard in 5 seconds. <br/> </p>
                 <button
                     className="btn w-1/2 bg-customGreen text-white ring-2 ring-customGreen hover:text-gray-800"
                     onClick={navigateToDashboard}
