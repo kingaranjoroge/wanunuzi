@@ -8,5 +8,6 @@ router.route('/').get(usersController.getAllUsers);
 router.route('/:id').put(usersController.updateUser);
 router.route('/:id').patch(usersController.updateUser);
 router.route('/:id').delete(usersController.deleteUser);
+router.route('/:id/paymentStatus').get(usersController.getPaymentStatus);
 
 module.exports = router;
