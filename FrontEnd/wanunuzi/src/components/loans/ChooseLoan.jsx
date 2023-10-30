@@ -1,8 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook to perform navigation
+import jwt_decode from 'jwt-decode';
 import TestNav from "../navbar/testNav.jsx";
+import { getPaymentStatus } from '../../api'; // Replace with the actual path to api.js
 import config from "../../../Config.js";
 
 const ChooseLoan = () => {
+    const [paymentStatus, setPaymentStatus] = useState(null);
+    const navigate = useNavigate();
+  
+    useEffect(() => {
+      // Function to get the payment status when the component mounts
+      const fetchPaymentStatus = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const decoded = jwt_decode(token);
+            const userId = decoded.userId;
+
+            const status = await getPaymentStatus(userId); // Replace `userId` with the actual user ID
+            setPaymentStatus(status);
+        } catch (error) {
+          // Handle error if needed
+        }
+      };
+  
+      fetchPaymentStatus();
+    }, []);
+  
+    // Function to handle navigation based on paymentStatus
+    const handleNavigation = (pathname) => {
+      if (paymentStatus === false) {
+        navigate(`/payment`); // Navigate to the payment page if paymentStatus is false
+      } else {
+        navigate(pathname); // Navigate to the corresponding pathname if paymentStatus is true
+      }
+    };
+
     return (
         <div className={'w-full overflow-clip'}>
             <TestNav />
@@ -33,10 +66,10 @@ const ChooseLoan = () => {
                             </li>
                         </ul>
                         <div className="card-actions justify-center items-center">
-                            <a className={'w-full'} href={`${config.LIVE_URL}/complete-registration`}>
-                                <button className="btn hover:bg-red-700 btn-outline rounded-3xl w-full ring-2 ring-customGreen ring-offset-2 ">Apply <i
-                                    className="fa-solid fa-circle-check"></i></button>
-                            </a>
+                            <button className="btn hover:bg-red-700 btn-outline rounded-3xl w-full ring-2 ring-customGreen ring-offset-2"
+                                onClick={() => handleNavigation('/normal-loan')}>
+                                Apply <i className="fa-solid fa-circle-check"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -66,10 +99,9 @@ const ChooseLoan = () => {
                             </li>
                         </ul>
                         <div className="card-actions justify-end">
-                            <a className={'w-full'} href={`${config.LIVE_URL}/complete-registration`}>
-                                <button className="btn hover:bg-red-700 btn-outline rounded-3xl w-full ring-2 ring-customGreen ring-offset-2 ">Apply <i
-                                    className="fa-solid fa-circle-check"></i></button>
-                            </a>
+                            <button className="btn hover:bg-red-700 btn-outline rounded-3xl w-full ring-2 ring-customGreen ring-offset-2" onClick={() => handleNavigation('/emergency-loan')}>
+                                Apply <i className="fa-solid fa-circle-check"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -99,10 +131,9 @@ const ChooseLoan = () => {
                             </li>
                         </ul>
                         <div className="card-actions justify-end">
-                            <a className={'w-full'} href={`${config.LIVE_URL}/complete-registration`}>
-                                <button className="btn hover:bg-red-700 btn-outline rounded-3xl w-full ring-2 ring-customGreen ring-offset-2 ">Apply <i
-                                    className="fa-solid fa-circle-check"></i></button>
-                            </a>
+                            <button className="btn hover:bg-red-700 btn-outline rounded-3xl w-full ring-2 ring-customGreen ring-offset-2" onClick={() => handleNavigation('/investment-loan')}>
+                                Apply <i className="fa-solid fa-circle-check"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
