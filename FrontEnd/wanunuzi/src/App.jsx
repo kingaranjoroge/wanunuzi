@@ -8,13 +8,14 @@ import Homepage from './components/home/Homepage.jsx';
 import Payment from './components/payments/Payment.jsx';
 import Loan from "./components/loans/Loan.jsx";
 import Savings from './components/savings/Savings.jsx';
+import SavingsDashboard from "./components/savings/SavingsDashboard"
+import SavingsTypes from "./components/savings/SavingsTypes"
 import VerificationSuccess from './components/auth/VerificationSuccess.jsx';
 import VerificationFailure from './components/auth/VerificationFailure.jsx';
 import VerifyGuarantor from "./components/guarantors/VerifyGuarantor.jsx";
 import Profile from "./components/user/Profile.jsx";
 import About from "./components/about/About.jsx";
 import ManageLoans from "./components/loans/ManageLoans.jsx";
-import SavingsDashboard from "./components/savings/SavingsDashboard"
 import CompleteSignUp from './components/auth/CompleteSignUp.jsx';
 import NextOfKinProfile from './components/user/NextOfKinProfile.jsx';
 import AddNewUser from './components/admin/AddNewUser'
@@ -94,11 +95,12 @@ function App() {
                 <Route path="/normal-loan" element={<ProtectedRoute><Loan /></ProtectedRoute>} />
                 <Route path="/loan" element={<ProtectedRoute><ChooseLoan /></ProtectedRoute>} />
                 <Route path="/savings" element={<Savings/>} />
+                <Route path="savings-dashboard" element={<SavingsDashboard />} />
+                <Route path="savings-types" element={<SavingsTypes />} />
                 <Route path="/upload" element={<UploadDocuments />} />
                 <Route path="/verification-success" element={<VerificationSuccess />} />
                 <Route path="/verification-failure" element={<VerificationFailure />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="savings-dashboard" element={<SavingsDashboard />} />
+                <Route path="profile" element={<Profile />} />                
                 <Route path="complete-registration" element={<CompleteSignUp />} />
                 <Route path="profile/nextOfKin" element={<NextOfKinProfile />} />
                 <Route path="add-user" element={<AddNewUser />} />
