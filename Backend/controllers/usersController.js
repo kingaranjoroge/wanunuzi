@@ -157,4 +157,23 @@ const deleteUser = async (req, res) => {
     }
 }
 
-module.exports = { createUser, getUserById, getAllUsers, updateUser, deleteUser }
+const getPaymentStatus = async (req, res) => {  
+  try {
+    // Find the user by their ID
+    const user = await User.findByPk(req.params.id);
+    
+    // Retrieve the paymentStatus from the user object
+    const paymentStatus = user.paymentStatus;
+
+    console.log(`Payment Status for User ID ${req.params.id}: ${paymentStatus}`);
+
+    // Send both user and payment status in the response
+    res.status(200).json({ user, paymentStatus });
+  } catch (error) {
+    console.error('Error retrieving payment status:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+
+module.exports = { createUser, getUserById, getAllUsers, updateUser, deleteUser, getPaymentStatus }
