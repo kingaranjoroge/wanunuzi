@@ -59,6 +59,10 @@ User.init(
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
+        paymentStatus: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
         roleId: {
             type: DataTypes.INTEGER,
             allowNull: true,
